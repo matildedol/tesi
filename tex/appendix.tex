@@ -1,0 +1,483 @@
+\appendix
+\section{Mathematical tools}
+\begin{proposition}[Linear, continuous functional commute with the Bochner integral]\label{app: trick}
+    Given a function $f:V\to\W$, $V,W \subseteq \R^d$ and a continuous functional $\ell : V \to \R$, we have
+    \begin{equation}\ell \bigg(\int f(x) \de x\bigg) = \int \ell \circ f \de x \end{equation}
+    and in particular, when $\ell = \langle \cdot,\cdot \rangle$, 
+    \begin{equation}\label{eq: commute}
+        \bigg\langle v, \int f(x) \de x \bigg\rangle = \int \langle v, f(x) \rangle \de x
+    \end{equation}
+    where the result holds also assuming boundedness instead of continuity. 
+    \begin{proof}
+        We will prove the result for the specific case of the inner product in the finite dimensional case. The infinite dimensional case follows proving the result for simple functions, and then by an approximation algorithm. 
+    \end{proof}
+\end{proposition}
+
+\begin{proposition}[Alternative characterization of expected value]\label{app: expvcmf}
+    For any non-negative random variable $Z$, it holds
+    \[
+    \expv[Z] = \int_0^\infty \Pr [Z\ge \varepsilon] \de \varepsilon.
+    \]
+    \begin{proof}
+        The proof follows directly from the definition of expected value and the relation between probability density function and the cumulative distribution function, namely $\int \mathrm{cdf} = \mathrm{pdf}. $
+        Let $p$ be our pdf, $P$ our cmf, and let $Q(z) \coloneq \Pr [Z\ge z] = 1 - P(z) $. We have
+        \[
+        \expv[Z] = \int_0^\infty z \cdot p(z) \de z = \int_0^\infty z \deriv{P(z)}{z}\de z= - \int_0^\infty z\deriv{Q(z)}{z} \de z,
+        \]
+       now integrate by parts
+        \[
+        \expv[Z] = -zQ(z)\Bigg\vert_0^\infty +\int_0^\infty Q(z) \de z = \lim_{t\to\infty} -t\Pr(Z \ge t) + 0 + \int_0^t Q(z) \de z = \int_0^\infty Q(z) \de z
+        \]
+        because \mati{ questa proof mi piace molto ma ha dei problemi con le quantità indefinite nei limiti :(}. 
+    \end{proof}
+\end{proposition}
+
+
+\begin{proposition}[Gaussian tail bound]\label{app: gtailbound}
+    The Gaussian tail bound used above to obtain (\ref{eq: mainbounds}) comes from the following result. Consider a generic Gaussian integral over the rightmost tail, then
+    \[
+    \int_{x_0}^\infty e^{-c x^2}\de x \le \frac{1}{2x_0c} e^{-c x_0}
+    \]
+    \begin{proof}
+    We express the integrand as the derivative of an exponential, and then use IBP
+    \begin{align*}
+        \int_{x_0}^\infty e^{-c x^2}\de x &= \int_{x_0}^\infty -\frac{1}{2c x} \deriv{e^{-c x^2}}{x} \de x = -\frac{e^{-c x^2}}{2c x}\Bigg\vert_{x_0}^\infty - \int_{x_0}^\infty \deriv{}{x} (-\frac{1}{2c x}) e^{-c x^2} \de x
+        \\ &=\frac{1}{2c x_0}e^{-2c x_0} - \int_{x_0}^\infty \deriv{}{x} (-\frac{1}{2c x}) e^{-c x^2} \de x
+        \le \frac{1}{2c x_0}e^{-2c x_0} 
+    \end{align*}
+    where the inequality follows from 
+    \[
+    \deriv{}{x} (-\frac{1}{c x^2}) \ge 0
+    \]
+    and hence the integral being non-negative. 
+    \end{proof}
+\end{proposition}
+
+\section{Error analysis in least squares}
+
+
+Let $(\X \times \Y, \mu)$ be a probability space, with data $\X \subseteq \R^d$, $\Y\subseteq\R$, and let $\ell:\Y\times\Y \to [0,\infty)$ be a measurable loss function.
+
+For a continuous function of the data $f:\X\to\Y$, we give the following definition. 
+
+\begin{definition}[Expected risk]
+The expected risk of $f:\X\to\Y$ is 
+\begin{equation}
+    L(f) \coloneq \expv_{(x,y)\sim\mu} \big[\ell(y,f(x))\big] = \int_{\X\times\Y} \ell(y,f(x)) \de \mu(x,y)
+\end{equation}
+\end{definition}
+
+In general, we aim at finding \begin{equation}\label{pr: exprisk}f_\mu \coloneq \argmin_{f\in\F} L(f)\end{equation}
+where the minimum runs over the space $\F$ of functions for which $L(f)$ is well defined (the space of measurable functions). Given a learning algorithm and some data $\{x_i,y_i\}_{i=1}^n, x_i \in \X, y_i \in \Y \,\forall i$, we obtain a learning solution $\hat f$. Then, the natural error measure is the excess risk
+\begin{definition}[Excess risk]
+    The excess risk of a learning problem with target $f_\mu$ and learning solution $\hat f$ is
+    $$L(\hat f) - L(f_\mu)$$
+    where $L(\cdot)$ is the expected risk.
+\end{definition}
+
+Since this minimum in (\ref{pr: exprisk}) can be hard or impossible to compute, we give the following definition. 
+
+\begin{definition}[Empirical risk]
+    Given a probability space $(\X \times \Y, \mu)$, a dataset $\{x_i,y_i\}_{i=1}^n, x_i \in \X, y_i \in \Y \,\forall i$, a continuous measurable function $f:\X\to\Y$, and a measurable loss function $\ell:\Y\times\Y \to [0,\infty)$, the empirical risk of $f$ is
+    \begin{equation}\label{eq: emprisk}
+        \hat L(f) \coloneq \sum_{i=1}^n \ell(f(x_i), y_i)
+    \end{equation}
+    and it is a finite-sample, tractable version of the expected risk. 
+\end{definition}
+The problem becomes to find \begin{equation} \min_{f} \hat L(f)\end{equation}
+which is known as {\it empirical risk minimization (ERM)},
+where $\mathcal{H}$ is the hypotheses set, a restricted set of possible solutions that we choose based on our problem. 
+% Our learning algorithm will now give $\hat f = \argmin_{\f \in \cH} \hat L (f)$.
+\\
+
+Now, we focus our analysis on regularized least squares. We consider a linear combination of the features
+\[
+f(x) = \langle w,x \rangle, \quad w\in\R^d
+\]
+hence we have $\cH =\{f:\X\to\Y \,\vert\, f(x) = \langle w,x \rangle \text{ for some } w \in\R^d\}$;
+the squared loss
+\[
+\ell\big(f(x),y\big) = \big(y - \langle w,x\rangle\big)^2
+\]
+with associated expected risk
+\[
+L(w) = \int_{\X\times\Y} \big(y - \langle w,x\rangle\big)^2\de\mu(x,y)
+\]
+(indicated as $L(w)$ with an abuse of notation).
+With a finite dataset of size $n$, our estimator will be 
+\begin{equation}\label{eq: estim}
+    \hat w_\lambda = \argmin_{w\in\R^d} \frac{1}{n} \sum_{i=1}^n \big(y_i - \langle x_i,w\rangle\big)^2 + \lambda \Vert w \Vert^2
+\end{equation}
+minimizing the empirical risk plus a regularization term with $\lambda >0$, and the natural error measure will be
+\begin{equation}\label{eq: errmeasureLS}
+    L(\hat w_\lambda) - \min_{w\in\R^d} L(w)
+\end{equation}
+i.e. the excess risk, which is a positive random variable. We are interested in bounding
+\begin{equation}\label{pr: eps1}
+    \Pr \bigg[L(\hat w_\lambda) - \min_{w\in\R^d} L(w) \le \varepsilon\bigg], \quad \forall\varepsilon>0
+\end{equation}
+
+its cumulative distribution. 
+
+Alternatively, we assume $\exists \, \kappa,M>0$ such that $\Vert x \Vert \le \kappa$ and $\vert y \vert \le M$ almost surely, and that there is a $w^* \in \R^d$ that minimizes $L(w)$. Then, we look at the error measure
+\[
+\Vert \hat w_\lambda - w^* \Vert
+\]
+and consider 
+\begin{equation}\label{pr: eps2}
+    \Pr \bigg[\Vert \hat w_\lambda - w^* \Vert \le \varepsilon\bigg]
+\end{equation}
+which is easier to analyse than (\ref{pr: eps1}), but provides worse bounds (any bound on (\ref{pr: eps2}) implies bounds on (\ref{pr: eps1})). 
+
+\paragraph{\bf Optimality conditions and other properties}
+
+We consider our problem under 3 different lenses, going from the infinite data case with no regularization to the empirical case that we actually implement, and provide optimality conditions and other results for each of them. 
+\\
+
+We start by considering problem
+\[
+\min_{w\in\R^d} L(w)
+\]
+and we define the following useful quantities
+\begin{gather*}
+    \Sigma:\R^d\to\R^d, \qquad \Sigma w = \int_{\X\times\Y} xx^tw \de \mu(x,y) = \int_{\X} xx^tw \de \mu_\X(x)\\
+    h\in\R^d, \qquad h= \int_{\X\times\Y} xy\de\mu(x,y)
+    \end{gather*}
+        where $\mu_\X (x) = \int_{\Y} \mu(x,y) \de y$ is the marginal distribution of $x$. 
+\begin{proposition}[Infinite data, no regularization]\label{prop: infinite,noreg}
+Consider the minimization problem 
+\[
+\min_{w\in\R^d} L(w)
+%= \int_{\X\times\Y} (y-\langle w,x \rangle ) ^ 2 \de \mu(x,y)
+\]
+%for $\mu$ probability over the data space $\X\times\Y$ and $\ell(x,y) = (y-\langle w,x \rangle ) ^ 2$ measurable loss function.
+then, the following hold:
+    \begin{enumerate}[label=(\roman*)]
+        \item $$\nabla L(w)=0 \quad\Longleftrightarrow\quad \Sigma w = h$$
+        with $\Sigma, h$ as above;
+        \item in particular, $$w^* = \Sigma^{-1}h$$
+        where $w^*$ minimizes $L(w)$;
+        \item additionally, we have
+        $$L(w) - L(w^*) = \langle w-w^*, \Sigma(w-w^*)\rangle$$
+    \end{enumerate}
+    \begin{proof}
+        The proof of item $(i)$ follows by expanding the gradient of $L(w)$ and noticing that the two conditions coincide:
+        \begin{align*}
+            \nabla L(w)& =\frac{\partial}{\partial w} \int (y-\langle w,x \rangle)^2 \de\mu = \int \frac{\partial}{\partial w} (y-\langle w,x \rangle)^2 \de\mu \\
+            & = \int 2 (y-\langle w,x \rangle) (-x) \de \mu = 2 \int - yx + \langle w,x \rangle x \de\mu;\\
+            \nabla L(w)=0&\Leftrightarrow \int yx \de \mu = \int x\langle w,x \rangle \de \mu \Leftrightarrow h = \Sigma w
+        \end{align*}
+        where the first line follows from continuity of $\ell(x,y)=(y-\langle w,x \rangle)^2$. Item $(ii)$ follows directly by definition of minimum and item $(i)$. 
+        Lastly, item $(iii)$ follows by manipulating the expression of $L(w)$:
+
+        \begin{align*}
+            L(w) &= \int (y-\langle w,x\rangle) ^ 2\de \mu = \int (y - \langle w^*,x\rangle + \langle w^*,x \rangle - \langle w,x\rangle)^2 \de \mu\\
+            &= \int (y-\langle w^*,x\rangle)^2 \de \mu + \int (\langle w^*,x\rangle-\langle w,x\rangle)^2 \de \mu - 2\int (y - \langle w^*,x\rangle)(\langle w^*,x\rangle-\langle w,x\rangle) \de \mu \\
+            & = L(w^*) + \int (\langle w^*,x\rangle-\langle w,x\rangle)^2 \de \mu - 2\int (y - \langle w^*,x\rangle)(\langle w^*,x\rangle-\langle w,x\rangle) \de \mu
+        \end{align*}
+        the latter term is
+        \begin{align*}
+            \int (y-\langle w^*,x\rangle) (\langle x,w^*-w\rangle) \de \mu = \bigg\langle \int (y-\langle w^*,x\rangle)x\de mu, w^*-w\bigg\rangle = \langle h-\Sigma w^*, w^*-w\rangle = 0
+        \end{align*}
+        where we used the property (\ref{app: trick}) of the integral and continuous functions, and item $(ii)$. Hence,
+        \begin{align*}
+            L(w) - L(w^*) &= \int (\langle w^*,x\rangle-\langle w,x\rangle)^2 \de \mu  = \int \langle w^*-w,x\rangle\langle w^*-w,x\rangle \de \mu = \bigg\langle w^* - w, \int \langle w^* -w, x\rangle x \de \mu \bigg\rangle \\
+            & = \langle w^*-w , \Sigma (w^*-w)\rangle
+        \end{align*}
+        
+    \end{proof}
+\end{proposition}
+
+Similarly, we have the following result.
+\begin{proposition}[Infinite data, with regularization]\label{prop: infinite,reg}
+    Consider the problem 
+    \[
+    \min_{w\in\R^d} L_\lambda(w) = L(w) + \lambda \Vert w\Vert^2
+    \]
+    for some $\lambda >0$. Then, the following hold:
+    \begin{enumerate}[label=(\roman*)]
+        \item the corresponding optimality condition is
+        $$\nabla L_\lambda(w) = 0 \quad \Longleftrightarrow \quad (\Sigma + I\lambda)w = h$$
+        where $I:\R^d \to \R^d$ is the identity map;
+        \item in particular, 
+        $$ w_\lambda = (\Sigma + \lambda I)^{-1} h$$
+        where $w_\lambda$ minimizes $L_\lambda(w)$.
+    \end{enumerate}
+    \begin{proof}
+        The proof follows by the same arguments as those in proposition (\ref{prop: infinite,noreg}). 
+    \end{proof}
+\end{proposition}
+
+Now, we turn to analysing the case of empirical least squares, and define the associated quantities
+\begin{gather*}
+    \hat\Sigma:\R^d\to\R^d, \qquad \hat \Sigma = \frac{1}{n}\sum_{i=1}^n x_i x_i^t\\
+    \hat h\in\R^d, \qquad \hat h= \frac{1}{n}\sum_{i=1}^n x_iy_i
+    \end{gather*}
+
+We consider the problem
+$$\min_{w\in\R^d} \hat L_\lambda$$
+with empirical risk
+$$\hat L_\lambda = \sum_{i=1}^n (y_i - \langle w, x_i\rangle)^2 + \lambda \Vert w \Vert ^2, \quad \lambda>0$$
+(which follows from definition (\ref{eq: emprisk}) and adding a regularizer as in $L_\lambda$).
+Repeating the same arguments, we obtain
+$$\hat w_\lambda = (\hat \Sigma + \lambda I)^{-1} \hat h$$
+where $\hat w_\lambda$ minimizes $\hat L_\lambda$.
+
+
+
+
+\section{ML ideas - Mean analysis}
+
+% \textbf{appunti chiamata 4 marzo}: nn ho capito molto. lui dice che vuole verificare se il fatto che la misura di errore sia biased è effettivamente un problema oppure no, cioè quantificare quanto questo è un problema. 
+
+% poi, dice che se io ho 100 classificatori sul test set performa in un certo modo, se ne ho 1000 sul test set performa peggio. voglio verificare questa cosa. 
+
+% insomma questo nasce da una conversazione con il suo amico Ben Recht che pensa che il primo split dei dati sia necessario mentre il secondo sia inutile. 
+
+% con aiutino di claude, quello a cui ci riferiamo è probabilmente il seguente concetto: noi misuriamo la performance di un certo numero di stimatori o modelli e prendiamo quello che performa meglio. se misuriamo 100 stimatori che hanno $\sim70\%$ di accuratezza, magari ne troviamo uno che ne ha 72. se però ne misuriamo 1000, magari ne troviamo uno che ne ha 75, e queste differenze sono date dal noise sul test set. semplicemente aumenta la probabilità di incontrare per caso valori alti lontani dalla media (valore vero). in sintesi, se lanci una moneta 10 volte potresti non beccare mai 7 teste di fila, ma se la lanci 10.000 volte probabilmente ci riesci  anche se la moneta è onesta.
+
+Qui, qualche appunto con l'obiettivo di indagare 
+
+    {\it quanto peggiora la stima dell'errore di un modello sul train set al crescere del numero di modelli considerati? }
+
+
+\vspace{0.5 cm}
+\paragraph{Notation \& references} We start from the notes `ML ideas' by Prof. Rosasco. 
+% Here, we look at neural networks rather than plain regressions. 
+We consider the following items:
+\begin{itemize}[label=$\cdot$]
+% \item a probability measure $\mu$ over $\R, \mathcal{A}$, $\mu : \mathcal{A} \to [0,1], \mu(\R) = 1$;
+    \item a probability distribution $p$ over $S \subseteq \R$;
+    \item support of the distribution $ s = s_1,\ldots,s_N$, indexed with $j$, with probabilities $p_j$:  $$\expv(X)= \sum_j s_j p_j \eqqcolon \mu; \qquad \mathrm{Var}(X) = \sum_j s_j^2 p_j - (\sum_j s_jp_j)^2 \eqqcolon \sigma^2;$$
+    \item random variables  $X_1,\ldots,X_n$, i.i.d. to $X \sim p(\mu, \sigma^2)$;
+    \item a dataset $x_1,\ldots,x_n$ realization of $X_1, \ldots, X_n$, indexed with $i$, which is therefore assumed to be sampled from our probability distribution $p$ (the assumption that Ben Recht doesn't like).
+\end{itemize}
+\vspace{0.5 cm}
+
+\paragraph{\bf Analysis I} We aim at obtaining predictions from our data. To be able to evaluate predictors, we define the following measure of error of a scalar predictor $a$.  
+
+\begin{definition}[Expected risk]
+The expected risk of a predictor $a \in \R$ is:
+    \begin{equation}
+        R(a)\coloneq
+        \sum_j (s_j-a)^2p_j
+    \end{equation}
+\end{definition}
+The motivation for this definition is that we aim at predicting some value $a$ from our distribution, and the best prediction is the one that is closest (in terms of squared distance) to each possible realization of the distirbution, weighted by their masses. 
+\begin{proposition}\label{prop: results}
+    The following results hold
+    \begin{itemize}
+        \item[$(i)$] by realizing the distirbution $p$ as our random varibale $X$, the expected risk can be expressed as \[R(a) = \expv[(X-a)^2]\]
+        \item[$(ii)$]
+        \[
+        R(a)=(a-\mu)^2 + \sigma^2
+        \]
+    \end{itemize}
+    \begin{proof}
+    $(i)$ follows plugging in $\sum s_jp_j = \expv[X]$ and from $a$ being a scalar: 
+        \begin{align*}
+            R(a) &= \sum_j (s_j-a)^2p_j = \sum_j (s_j^2 + a^2 -2s_ja)p_j = \sum_j s_j^2p_j + \sum_j a^2 p_j -2\sum_j s_jap_j \\&= \expv[X^2] + a^2 -2a\expv[X] = \expv[X^2 - 2aX + a^2]=\expv[(X-a)^2]
+        \end{align*}
+        and to obtain $(ii)$ we add and subtract $\expv^2[X]$:
+        \begin{align*}
+            R(a)&=(\expv[X^2]-\expv^2[X] + \expv[X^2]+a^2-2a\expv[X]) = \sigma^2 + \mu^2 -2a\mu + a^2 = \sigma^2 + (\mu-a)^2
+        \end{align*}
+    \end{proof}
+\end{proposition}
+
+In practice, the expected risk cannot be computed as we do not know the true distribution $p$. Therefore we use the following empirical error measure.
+
+\begin{definition}[Empirical risk]
+    The empirical risk of a predictor $a\in\R$ for some data $x_1,\ldots,x_n$ is
+    \begin{equation}
+        \hat R(a) \coloneq \frac{1}{n}\sum_{i} (x_i - a)^2
+    \end{equation}
+\end{definition}
+
+A first result on the empirical risk is that it is an {\it unbiased estimate of the expected risk}. Let us pause for a moment here. When evaluating the unbiasedness of the empirical risk, implicitamente stiamo dicendo che l'errore che un estimatore fa sui dati è aleatorio. Questa aleatorietà viene dalla aleatorietà dei dati (l'unica fonte, essendo per ora $a$ uno scalare). Infatti, il rischio empirico si può riformulare come
+\begin{equation}
+    \hat R (a) =\frac{1}{n}\sum_i (X_i - a) ^2 \qquad \text{v.s.}  \qquad R(a) = \expv[(X-a)^2]
+\end{equation}
+Quindi, noi abbiamo una distribuzione di probabilità (popolazione) su cui l'errore di un estimatore è costante (e si può calcolare se è nota $p$, entropia 0); poi, abbiamo dei dati che sono campionati da questa distribuzione (ben recht assumption), che sono modellati come una collezione di variabili aleatorie, su cui l'errore dunque %è una variabile aleatoria (entropia $>0$). perché i dati non sono fissi ma sono distribuiti secondo quella distribuzione di probabilità. 
+Ma se l'errore sulla distribuzione è costante, come può non esserlo l'errore sui dati campionati da quella distribuzione? Qui che c'è un key point concettuale: potenzialmente, se io campionassi solo due dati $x_1, x_2$, uno scalare che ha expected risk altissimo potrebbe essere top in termini di empirical risk perché per {\it pura casualità} è un numero vicino ai miei dati $x_1, x_2$. Quindi il rischio atteso mi definisce il rischio che {\it mi aspetto} il mio estimatore abbia data quella distribuzione. di fatto, non solo non lo posso calcoalre, ma neanche mi interessa troppo calcolarlo, perché se avessi solo due osservazioni non mi interesserebbe nulla del rischio atteso, guarderei solo al rischio empirico. se invece ho tante osservazioni, allora il rischio atteso e quello empirico si allineano, perché i miei dati andranno a copiare la distribuzione (concetto di expectation / long run).  questo si formalizza nella seguente prop.
+
+\begin{proposition}[Unbiasedeness of the empirical risk]\label{app: unbiased}
+    For a scalar predictor $a \in \R$, the empirical risk is an unbiased estimate of the expected risk, i.e.
+    \begin{equation}
+        \expv[\hat R (a)]= R(a).
+    \end{equation}
+    \begin{proof}
+ $$
+ \expv[\hat R(a)] = \expv [\frac{1}{n}\sum_i (X_i - a)^2] = \frac{1}{n} \sum_i \expv[(X_i - a)^2] = \frac{1}{n} n \cdot \expv[(X_i - a)^2] = \expv[(X_i - a)^2]= R(a) 
+ $$
+ using proposition \ref{prop: results} $(i)$ and that $X_1, \ldots, X_n$ are i.i.d. this is the same motivation behind the empriical mean being an unbiased estimator of the true mean. 
+    \end{proof}
+\end{proposition}
+di base, la nozione di empirical risk viene dalla seguente intuizione:
+{\color{benred} siccome non posso conoscere le varie probabilità $p_j$, le stimo come il numero di volte che la mia variabile aleatoria (campione) prendere quel valore $s_j$  $\leftarrow$ legge dei grandi numeri}
+
+\begin{remark}
+    usiamo in tutte queste note (come in letteratura) la stessa notazione per una quantità aleatoria espressa in termini di $X_i$ e la sua realizzazione espressa in termini di $x_i$ (come per $\hat R(a)$ above). questo perché $X$ e $x$ possono essere essenzialmente lo stesso oggetto, cioè $X$ è una funzione la cui immagine è $x$
+    
+\end{remark}
+una volta consolidata questa teoria e il rapporto tra rischio atteso e rischio empirico, guardiamo al caso in cui $a$ non è uno scalare. 
+
+per esempio, assumiamo di voler stimare la media della nostra distribuzione. vogliamo farlo anche perché è chiaro che il valore costante che minimizza il rischio atteso è la media della distribuzione, e il valore costante che minimizza il rischio empirico è la media empirica dei dati (essenzialmente by definition, la media è il valore che minimizza la distanza!). 
+
+soffermiamoci per un momento anche sull'idea che la media empirica minimizza il rischio empirico. come si relaziona questo al voler prevedere un nuovo dato $x_{n+1}$? la teoria mi starebbe dicendo che se io prevedo la media dei dati che ho, alla fine avrò la perdita minore possibile. in realtà però a me converrebbe prevedere il dato che vedo apparire più spesso, naivly, se il mio obiettivo è azzeccare il next sample. ma forse il mio obiettivo è avere un costo basso overall. 
+
+ora, la teoria mi dice di prevedere la media, ma io voglio quantificare quanto è un buon stimatore questa media. perché so che minimizza il rischio empirico, ma what about il rischio atteso?
+ecco, nel caso della sample mean, il rischio empirico è un biased estimate del rischio atteso. vediamolo:
+
+\begin{proposition}[Biasedeness of the empirical risk for $\hat\mu$]
+    The empirical risk $\hat R$ is a {\it biased} estimate of the true expected risk $R$ for the empirical mean $\hat\mu = \frac{1}{n}\sum_i x_i$.
+
+    \begin{proof}
+        The object we are looking at is
+        \[
+        \hat R (\hat \mu) \coloneq \frac{1}{n}\sum_{i=1}^n(X_i - \hat\mu)^2 = \frac{1}{n}\sum_{i=1}^n(X_i - \frac{1}{n}\sum_{j=1}^n X_j)^2        \] 
+        and
+        \[
+        R(\hat\mu) \coloneq \expv[(X-\hat\mu)^2] = \expv[(X -\frac{1}{n}\sum_{i=1}^n X_i)^2]
+        \]
+        and we recall that we should look at $\hat R$ as a ``score'' we give to the estimator for the mean, the lower the better, while $R$ is the true score of the estiimator. 
+        We have
+        \begin{align*}
+            \expv[\hat R(\hat \mu)] &= \expv[\frac{1}{n}\sum_{i=1}^n(X_i - \frac{1}{n}\sum_{j=1}^n X_j)^2] = \frac{1}{n} \sum_{i=1}^n \expv (X_i - \frac{1}{n}\sum_{j=1}^n X_j)^2 \\ 
+            &= \frac{1}{n}\sum_{i=1}^n ({\expv X_i^2} + 
+            {\frac{1}{n^2}\expv(\sum_{j=1}^n X_j)^2} 
+            - {\frac{2}{n}\expv (X_i \sum_{j=1}^n X_j)}) \\ &= {\color{darkorange}\frac{1}{n}\sum_{i=1}^n \expv X_i^2}  \,
+            {\color{bluette} + \frac{1}{n^2}\expv(\sum_{j=1}^n X_j)^2}\,
+            {\color{magenta} - \frac{1}{n}\sum_{i=1}^n \frac{2}{n}\expv (X_i \sum_{j=1}^n X_j)}
+        \end{align*}
+        and, similarly, 
+        \[
+        R(\hat\mu) = {\color{darkorange}\expv X^2}  \,
+            {\color{bluette} + \frac{1}{n^2}\expv(\sum_{i=1}^n X_i)^2} \,
+            {\color{pink} - \frac{2}{n}\expv (X\sum_{i=1}^n X_i)}
+        \]
+        The orange terms are equal by $X_i \sim X\,\, \forall i= 1,\ldots,n$, the blue terms are identical, hence we study the pink terms to evaluate the bias.
+        \[
+        {\color{pink} 
+        - \frac{2}{n}\expv (X\sum_{i=1}^n X_i) = - \frac{2}{n}\sum_i \expv(XX_i) =- \frac{2}{n} \sum_i \expv(X)\expv(X_i) = - \frac{2}{n} n \expv^2(X) = - 2 \expv^2(X)
+        }
+        \]
+        because $X, X_i$ are independent, and $\expv X_i = \expv X$. As for the empirical risk, we have
+        \begin{align*}
+        &{\color{magenta}
+        - \frac{1}{n}\sum_i \frac{2}{n}\expv (X_i \sum_j X_j)}\\ 
+        &{\color{magenta}= - \frac{2}{n^2}[\expv(X_1^2 + X_1X_2 + \ldots + X_1X_n) + \expv(X_2X_1 + X_2^2 + \ldots + X_2X_n) + \ldots + \expv(X_nX_1 + \ldots + X_n^2)] 
+        }
+        \\
+        &{
+        \color{magenta} = - \frac{2}{n^2} [\sum_i \expv (X_i^2 )+ \sum_{i\neq j}\expv (X_i) \expv (X_j)] = - \frac{2}{n^2}n \expv (X^2) - \frac{2}{n^2}(n^2-n)\expv^2(X) = - \frac{2}{n}\expv (X^2 ) - (2 - \frac{2}{n})\expv^2(X) }
+        \end{align*}
+        where the coefficients $- \frac{2}{n} - 2 + \frac{2}{n}$ sum to $-2$, but crucially
+        \[
+        \expv (X^2) \neq \expv^2 (X)
+        \]
+because $\expv (X^2) - \expv^2 (X) = \sigma^2 \neq 0$. In fact, if $\sigma^2 = 0$, i.e. $X$ constant, the bias would be 0, which is proposition \ref{prop: unbiased}.
+
+Subtracting the quantities, we obtain
+\begin{align*}
+\expv[\hat R(\hat \mu)] - R(\hat \mu) &=- \frac{2}{n}\expv (X^2 ) - (2 - \frac{2}{n})\expv^2(X) +2\expv^2(X) \\
+&= - \frac{2}{n}(\expv(X^2) - \expv^2(X))
+\\
+&= - 2\frac{\sigma^2}{n} \neq 0
+\end{align*}
+yielding $\expv[\hat R(\hat \mu)] < R(\hat\mu)$.
+    \end{proof}
+\end{proposition}
+Thus, the error of an estimator computed with the empirical risk in the same dataset is lower than the true one, i.e. saremo più generosi nel valutare i nostri estimatori. Concretamente, il risultato ci sta dicendo che se vogliamo valutare l'estimator $\hat\mu$ per stimare la mean (che sappiamo essere il migliore, ma immaginiamo per un attimo ce ne fossero anche altri), se lo valutiamo sullo stesso sample con cui l'abbiamo calcolato, avremo un punteggio che in media è più generoso del punteggio vero. In particolare, se ripetiamo questo esperimento molte volte cioè con molti campioni diversi della stessa distribuzione, daremo un punteggio in media $2 \sigma^2 /n$ più alto del dovuto. Quindi, il bias che ottengo si comporta come segue: è più alto se i miei dati tendono a variare di più, e più basso all'aumentare della size del mio dataset. Entrambi i risultati sono intuitivi: se il mio dataset varia molto, allora il problema del fittare i dati di training è più grave, perché a parità di $n$ copriranno una varianza minore della distribuzione vera; dall'altro lato, se ho più dati copro una varianza maggiore sempre. 
+\\
+
+\paragraph{Considerazioni}
+Ora, ammettiamo che questi risultati sul bias siano estendibili ad un estimatore più generico, cioè prendiamo un certo numero di reti neurali che vogliono predire una statistica $y$ dei miei dati, le quali hanno qualche specificazione che le differenzia (quindi sono estimatori diversi). Se io fitto le mie reti su un dataset e valuto l'estimator risultante sul dataset stesso, sarò più generosa.
+
+ \begin{remark}[Aleatorietà della rete neurale]
+     Il rischio (o inverso del punteggio) di una rete neurale (con init e altri hyperparameters fissi) è una variabile aleatoria per la presenza del dataset, non per i parametri interni. i parametri, dato un dataset, sono fissi, una volta fissata una rete neurale e quindi la sua architettura, inizializzazione, step size, senza regolarizzazioni che danno aleatorietà (ci torna?). quindi, quando parliamo della sua varianza qui ci riferiamo alla varianza dei dati.
+     \end{remark}
+     
+In particolare, se io valuto tantissimi estimator diversi looking for un estimator con un rischio abbastanza basso, la probabilità che io lo trovi aumenta all'aumentare del numero di estimator che valuto, ma magari lo trovo non perché il suo rischio vero è basso, ma per aleatorietà della misura di rischio.
+
+Mi sembrava, da come parlava il prof, che questo si ricollegasse al fatto di avere tanti parametri in una rete. Come se l'aumento in numero di parametri della rete corrispondesse al mio valutare più estimatori. Perché di fatto, se aumento il numero di parametri, gli estimatori che quella rete mi può dare aumentano esponenzialmente, però i parametri sono fissi una volta dato un dataset. 
+
+Comunque, ammettendo questo parallelismo, io starei dicendo: il tuo stimatore, se lo valuti sullo stesso dataset, performa peggio di quanto credi. C'è però la possibilità di ammettere comunque questa misura di errore? Quant'è grande questo bias? 
+
+E' grande tanto quanto la varianza e piccolo tanto quanto la grandezza del tuo dataset. 
+
+Considerando la varianza come data, quello che posso fare è aumentare la misura del mio dataset. However, se stiamo facendo tutto questo per non avere bisogno del test set e ridurre i costi di fare machine learning, siamo punto a capo. 
+\\
+
+\paragraph{\bf Analysis II} 
+%All'alba (16:25) del giorno 9 aprile rileggo la mia conversazione con Claude (\href{https://claude.ai/chat/445bd5e0-3fb1-4d82-a541-0624e95a33a9}{questa}) e comprendo che probabilmente non parliamo di usare la mia misura di errore ($\hat R$) sullo stesso dataset su cui ho fittato il modello, il train set, ma parliamo di usarla sul test set. 
+Consideriamo ora di non valutare la mia misura di errore sul train set, ma di usarla sul test set molte volte (e quindi ammettendo un po' di tuning sul test set, un po' di overfitting). 
+Quindi, il primo split dei dati è ammesso, è il secondo, in cui creiamo anche il validation set, che stiamo mettendo in dubbio. L'analogia della moneta funziona comunque: $\hat R$ è pari al punteggio vero del mio modello sul lungo periodo, ma misurazione per misurazione ha una deviazione dalla sua media che potrebbe darmi punteggi più generosi, e questo è più probabile che accada (o, comunque, presenta punteggi diversi e quindi probabilmnete più alti) su 1000 trials (1000 modelli) invece che 100. Analizziamo questo paper di Ben recht. 
+\\
+
+\noindent $\blacktriangleright$ appunti dal paper su ImageNet e CIFAR \cite{recht2019imagenet}:
+
+loro provano a  creare un nuovo test set con lo stesso data cleaning process di quello classico, usato per anni, e vedono un peggioramento nella performance di vari modelli di classificazione su entrmabi i dataset. un peggioramento talvolta equivalente a 5 anni di ricerca. 
+
+a cosa è dovuto questo peggioramento? un'ipotesi è l'adattamento dei modelli a questo test set, in modo informale tipo con specifici benchmark da battere che influenzano anche inconsciamente il ricercatore, cioè non in modo matematico ma più comportamentale. however, loro vedono che l'ordine dei modelli in termin di accuracy è mantenuto, e che non ci sono diminishing returns: modelli anche più recenti, quindi con accuracies più alte, hanno un calo in accuracy più piccolo (il ritorno è $-$ il calo in accuracy, intuitively). se il problema fosse l'adattamento, i modelli più recenti vedrebbero un calo molto maggiore. quindi, anche se c'è un'overstima sulla performance dei modelli, ``exhaustive evaluations on the test set'' are sufficient to select models, perché comunque selezioni il migliore. 
+
+la loro spiegazione, invece, si basa sulla difficoltà dei due test set (dove quello vecchio è molto più semplice). infatti, togliendo dal nuovo set le immagini un po' piu difficili (come si quantifica tale difficoltà?), migliora l'accuracy e matcha quella sul vecchio set. 
+
+{\it We adopt the standard classification setup and posit the
+existence of a “true” underlying data distribution D over
+labeled examples (x,y).} kinda polemico
+
+\[L_{S'} - L_S = (L_{S'} - L_{D'}) + (L_{D'} - L_D) + (L_D - L_S)
+\]
+core idea. generalization gap + distribution gap + adaptivity gap
+
+It is important here to treat $S'$ as our test set, and $D'$ as our distribution. Indeed, $L_{S'} - L_{D'}$ is a simple generalization gap, due to the reduction in information caused by sampling; it is a purely random error. 
+$D$ is the original distribution, which we try to resemble. Hence, $L_{D'}-L_D$ is a structural distribution gap, due to the practical impossibility (is it?) to perfectly copy a high dimensional distirbution. Lastly, $S$ is the previous test set on which some adaptation could have been done, it is characterized by models having being tested multiple times on it. Thus, $L_D - L_S$ is the adaptivity gap: ideally, it has the same distribution (notice how we consider identity in distribution, as we are treating {\it random variables}) as the generalization gap, but in practice, some adaptivity to the test set $S$ may have occured, which inflates this source of error. 
+
+\begin{remark}
+    Two remarks are in order, arising from the {\it adaptivity gap} paragraph:
+    \begin{itemize}
+        \item they deliberately mention a ``common practice'' of tuning the hyperparameters on the test set;
+        \item they treat the case of testing directly on the train set as the extreme case of having {\it some} adaptivity to the test set, which makes our analysis above not useless!
+    \end{itemize}
+\end{remark}
+
+they study the disentanglement between the different gaps looking at multiple models $\hat f_1,\ldots, \hat f_k$ evolving over time, which makes it easier. under the adaptation assumption, the adaptivity gap increases for later models, due to $L_S$ decreasing but $L_D$ remaining the same, as they improve only on the examples appearing in the test set. 
+
+this however does not happen! in fact, the authors believe the distribution gap is the main driver of the decrease in accuracy (the difficulty of reproducing the same dataset), and also posit two explanations of the lack of adaptivity. first, the fact that there is an implicit noise in the adaptivity to a test set, so i think this kind of says ``the adaptation assumption is in fact untrue''. second, and more interesting, there is a limited set of models that is actually tested, among all the models that caould be obtained (those that perform well in the train set). this limited cardinality may ensure that the test evaluation is still valid. 
+\\
+
+{\color{benred} ?} this line {\it since they are the result of more successive hyperparameter tuning on the same test set} makes me wonder whether it is still in an informal way, or they assume hyperpar tuning is being done on the test set 
+\\
+
+{\color{benred} onestamente, loro presentano $L_S(\hat f)$ come una loss, e poi senza dire nulla la trattano come accuracy, che ok si comprende ma io le tratterò come loss} 
+\\
+
+{\color{benred} !! how to read figure 1:} the black dashed line is the slope 1 line, and you see all the accuracies lying below (i.e. y smaller than x). also, later models are univocamente characterized as models with higher accuracy, as they took a line of papers with improved accuracies. also, slope of the fit (red line) is constant and it fits well $\rightarrow$ constant returns, not diminishing, hence challenging the adaptivity assumption. 
+\\
+
+{\color{benred} future directions:} {\it While our experiments rule out the most dangerous form of
+adaptive overfitting, we remark that they do not exclude all
+variants. For instance, it could be that any test set adaptiv-
+ity leads to a roughly constant drop in accuracy. Then all
+models are affected equally and we would see no diminish-
+ing returns since later models could still be better. Testing
+for this form of adaptive overfitting likely requires a new
+test set that is truly i.i.d. and not the result of a separate
+data collection effort. Finding a suitable dataset for such an
+experiment is an interesting direction for future research.}
+
+
+\newpage
+\paragraph{Experiments}
+Experiment I plan to do:
+\begin{enumerate}
+    \item dati $\sim$ distribuzione + noise
+    \item splitto 50 train 50 test
+    \item calcolo emp. mean $\hat\mu$ sul train
+    \item calcolo $\hat R(\hat\mu)$ e $R(\hat\mu)$ 
+    \item calcolo $\hat R_{test}(\hat\mu)$ con test split dati 
+    \item confronto le due misure di errore su test e train con la misura vera
+\end{enumerate}
+
+As for the gradient descent topic, I visualize due mappe animate, una con il landscape 2 dimensionale (in 3d) della perdita, dove si vede un vermicello che sarebbe il gardient descent muoversi; l'altro, a destra, dove si vede il mio modello che cambia man mano che vermicello scivola giù. questo viene fatto tipo in 3 casi: step size più grande, step size più piccola, flusso gradiente (è possibile?) 

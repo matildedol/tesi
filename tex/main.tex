@@ -1,0 +1,336 @@
+\documentclass[reqno]{amsart}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{hyperref}
+\usepackage{enumitem}
+\renewcommand{\labelenumi}{$(\roman{enumi})$}
+\renewcommand{\labelitemi}{$\cdot$}
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage{fullpage}
+\usepackage{dsfont}
+\linespread{1.2}
+\include{math}
+\usepackage{xcolor}
+\definecolor{benred}{HTML}{8B0000}
+\definecolor{bluette}{RGB}{0, 123, 255} % bright bluish tone
+\definecolor{darkorange}{RGB}{255, 140, 0}
+\definecolor{pink}{RGB}{255, 130, 190}
+
+\usepackage{xcolor}
+
+\newcommand{\loz}[1]{\textcolor{orange}{[LOZ: #1]}}
+
+\newcommand{\mati}[1]{\textcolor{magenta}{#1}}
+
+\title{Notes on analysis of gradient descent}
+\author{matilde \\ February 2026}
+
+\begin{document}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{image.png}
+    \label{fig:placeholder}
+\end{figure}
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Mathematical framework}\label{sec: math}
+
+We observe some data of the type $x\in \X\subset \R$, and $y\in \Y\subset \{-1,1\}$, and we would like to predict $y$ from $x$.
+To do so, we are given a collection of observations like $x$ and $y$, i.e. our data. This allows to observe the relationship between $x$ and $y$ multiple times and hope to estimate it well.
+% am i biased by causal inference nel parlare di relazione tra x e y? alla fine dobbiamo sempre trovare una relazione, però è forse misleading dato che è occulta in (most of) machine learning 
+
+\begin{assumption}\label{1ass: randomdata}
+    We assume our data is drawn from a probability distribution.
+Therefore, we consider the sample space $(\Omega, \mathcal{F}, \mathbb
+P)$ and define the random variables 
+\[\begin{gathered}
+    X:\Omega \to \X, \quad \omega \mapsto x \qquad \text{and}\qquad Y:\Omega \to \Y,\quad \eta \mapsto y;\\
+    (X,Y)\sim p,\quad p\coloneq (X,Y)_\#(\mathbb{P}\otimes\mathbb{P}),
+\end{gathered}\]
+with joint law $p$, the push-forward of the elementary measure $\mathbb P$. 
+\end{assumption}
+
+Since we want to obtain a collection of observations, we define an additional random variable.
+
+\begin{definition}[Dataset]
+    Given a size $n$, a probability space $(\Omega, \mathcal F, \mathbb P)$, and value spaces $\X,\Y$, a dataset $D$ is a random variable 
+    \[
+    \begin{gathered}
+        D:\Omega^n \to \X^n\times\Y^n, \qquad D\coloneq (X_i, Y_i)_{i=1}^n, \\
+     (\omega_1,\ldots,\omega_n)\mapsto ((x_1,y_1),\ldots,(x_n,y_n))\\
+     D\sim p^n
+        % D((\omega_1,\ldots,\omega_n),(\eta_1,\ldots,\eta_n)):=((X_1(\omega_1),Y_1(\eta_1)),\ldots,(X_n(\omega_n),Y_n(\eta_n))),\quad D\sim p^n
+    \end{gathered}
+    \]
+    where the $X_i$s and $Y_i$s are i.i.d copies of $X,Y$, and $X,Y,p$ are as in Assumption \ref{1ass: randomdata}. We indicate with the lower-case $d$ realizations of $D$, $d=\{(x_i,y_i)\}_{i=1}^n$. Also, we use $\mathcal{D}$ to indicate the output space of $D$ in general, and treat $\mathcal D = \X^n\times\Y^n$ as a particular case. 
+\end{definition}
+
+Now, predicting $y$ from $x$ means we want to find the best function $f$ such that $f(x)$ is a good approximation of $y$. To do so, we consider an {\it hypotheses space} $\cH$, which is the set of all functions $f:\X\to\Y$ that satisfy some hypotheses we choose to make on the relationship between $x$ and $y$.
+\begin{fact}
+    Functions in $\cH$ are deterministic objects.
+\end{fact}
+
+In order to find the best predictor $f$, we use a {\it learning algorithm}, in the idea of learning our predictor from the data. 
+
+\begin{definition}[Learning algorithm]\label{1def: learningalg}
+A learning algorithm $A$ is a deterministic function
+\[
+A:\mathcal D \to \mathcal H, \qquad d \mapsto \hat f_d
+\]
+that given some data $d\in \mathcal{D}$, outputs a prediction function $\hat f_d\in \mathcal{H}$.
+\end{definition}
+
+\begin{remark}
+    The hat notation $\hat f$ is used only to distinguish an element of $\cH$ that comes from a learning algorithm, or that depends on data, from a generic element of $\cH$, indicated as $f$. 
+\end{remark}
+
+Now, we are ready to define our central object, the predictor. 
+\begin{definition}[Predictor]
+    A predictor $\hat f_D$ is a random variable 
+    \[
+    \hat f_D : \Omega^n  \to \mathcal H, \qquad \hat f_D \coloneq A \circ D, \qquad (\omega_i)_{i=1}^n\mapsto d \mapsto \hat f_d
+    \]
+    that depends on some data $D$ and on a learning algorithm $A$. The source of randomness is the dataset $D$.  
+\end{definition}
+
+Now, we would like to have a way to {\it evaluate} our predictors, in order to select the best one. To do so, we use a metric called {\it expected risk}. First, we take a loss function $\ell:\Y\times\Y\to\R$ that takes the preidction $f(x)$ and the true value $y$ and outputs a number corresponding to the error in the prediction. 
+
+\begin{definition}[Expected risk]
+    Assume the distribution $p$ in Assumption (\ref{1ass: randomdata}) is discrete, with support $S\times\{0,1\}, S =\{s_1,\ldots, s_m\}, s_i \in \X$. Given a predictor $f$ and a loss function $\ell$, the expected risk is a deterministic function $R: (\X^m\times\Y^m) \times \cH \to \R$,
+    \begin{equation}
+        R(f) \coloneq \sum_{i=1}^m \sum_{y_i\in\{-1,1\}}\ell(f(s_i),y_i)p(s_i, y_i).
+    \end{equation}
+\end{definition}
+The issue with using $R(f)$ as a metric, however, is that we do not know the true distribution $p$ in general. Hence, we approximate the expected risk with a new, emprical metric, the {\it empirical risk}, motivated by the law of large numbers. 
+
+\begin{definition}[Empirical risk]
+Given a dataset $D$, a predictor $f$, and a loss function $\ell$, the empirical risk is
+    \begin{equation}
+        \hat R_D(f) \coloneq \frac{1}{n}\sum_{i=1}^n \ell(f(X_i),Y_i), \qquad D = (X_1,Y_1),\ldots,(X_n,Y_n).
+    \end{equation}
+    It is a random variable due to the randomness in $D$, in the sense that $\hat R_D \coloneq \hat R \circ D$ for a deterministic function $\hat R:\cH \times \mathcal{D}\to\R$.
+\end{definition}
+
+\begin{remark}
+    Notice that we implicitly define the two metrics as operators applying the loss function $\ell$ to their inputs, but we could equivalently define them taking inputs from $\R$, the image space of $\ell$. 
+\end{remark}
+For a deterministic estimator $f\in\cH$, the following result holds.
+
+\begin{proposition}[Unbiasedness of the empirical risk]\label{1prop: unbiased}
+    Given a scalar $a \in \R$, the empirical risk of $a$ is an unbiased estimator of the expected risk,
+    \begin{equation}
+    \expv[\hat R_D(a)] = R(a).
+\end{equation}
+\begin{proof}
+A proof is found in the appendix (Proposition \ref{app: unbiased}).
+\end{proof}
+\end{proposition}
+
+\section{Evaluating the bias} \label{sec: bias}
+
+With the technology defined above, we define an estimator given a dataset $D$ and an hypotheses space $\cH$ as
+\begin{equation}\label{1eq: argmin}
+    \hat f_D \coloneq \argmin_{f\in\cH} \hat R_D(f).
+\end{equation}
+This means that among all candidates in $\cH$, we select the one that minimizes the empirical risk. Solving problem (\ref{1eq: argmin}) corresponds to {\it fitting} the estimator to the data $D$ or {\it training} the estimator on $D$. 
+
+Subsequently, it is natural to look for a measure of performance of $\hat f_D$, for instance to choose the best one among a set of different hypotheses (e.g. different architectures of a neural network), or to provide a measure of reliability of our prediction. However, our estimator is now a random variable of the data. This makes the result in Proposition \ref{1prop: unbiased} not valid anymore: the empirical risk computed on a dataset $D$ is a biased estimate of the true, expected risk of an estimator trained on $D$. This intuitively comes from the correlation between datapoints, as seen in Example \ref{ex: toy}. 
+As a solution, classical statistical theory provides splitting the dataset into two parts $(D_{train},D_{test})=D$ to preserve unbiasedness. Usually, we fit the estimator to $D_{train}$ and compute $\hat R$ on $D_{test}$, to obtain $\hat R_{D_{test}}$ as an unbiased estimate of the risk of $\hat f_{D_{train}}$. 
+
+The question we pose in this work is whether using two different datasets is really necessary in practice. More practically, we quantify the bias arising from using the same dataset. Before presenting our main result in this respect, we provide a toy example to convince the reader of the presence of a bias.
+
+\begin{example}[Least squares with toy dataset]\label{ex: toy}
+    Let $\ell(f(x_i),y_i) = (f(x_i)-y_i)^2$ the quadratic loss, and $\cH = \{x\mapsto ax:a\in\R\}$ the space of linear functions. We obtain the least squares estimator
+    \begin{align}
+    \hat f_d (x_i)= \frac{\sum_i x_iy_i}{\sum_i x_i^2}x_i, \qquad x_i,y_i \in d.
+    \end{align}
+    Now, consider $d = \{(x_1,y_1),(x_2,y_2)\}$ realization of $D$. First, we fit our estimator to the observation $(x_1,y_1)$ and use $(x_2,y_2)$ as a test set, in the spirit of classical statistical theory. 
+    The empirical risk equals 
+        \begin{align}
+    \hat R_{d_2} (\hat f_{d_1}) &= \ell(\hat f_{d_1}(x_2)-y_2) \notag\\
+    &= (\frac{x_1y_1}{x_1^2}x_2-y_2)^2 \notag\\
+    &= \frac{(x_1y_1)^2}{x_1^4}x_2^2 + y_2^2 -2x_2y_2\frac{x_1y_1}{x_1^2}
+    \end{align}
+    Taking expectations (with a little abuse of notation),
+    \begin{align}
+    \expv_{d_2\sim p}[\hat R_{d_2} (\hat f_{d_1})] &= \sum_{x_2,y_2} \ell(\hat f_{d_1}(x_2) -y_2) p(x_2,y_2)\notag \\
+    &= \frac{(x_1y_1)^2}{x_1^4}\sum_{x_2} x_2^2p_x(x_2) + \sum_{y_2} y_2^2p_y(y_2) - 2\frac{x_1y_1}{x_1^2}\sum_{x_2,y_2} p(x_2,y_2)x_2y_2\label{example ERhat}
+    \end{align}
+where $\sum_x$ is the sum over all possible values of $x$, and $p_x,p_y$ are marginal distributions. Recall that the expected risk equals
+\begin{align}
+    R(\hat f_{d_1}) &= \sum_{s_i,y_i} \ell (\hat f_{d_1}(s_i) -y_i)p(s_i,y_i)
+\end{align}
+and since the sums in equation (\ref{example ERhat}) run over all the possible values $x_2$ and $y_2$ can take, the two quantities are equal. The result does not change if we consider larger datasets.
+ Now, we look at the case where we fit and evaluate the estimator on a single dataset $(x_1,y_1)$. In this case, we would have
+        \[
+    \expv[\hat R_{d_1} (\hat f_{d_1})] = \sum_{x_1,y_1} \frac{(x_1y_1)^2}{x_1^4}x_1^2p_x(x_1) + \sum_{y_1} p_y(y_1)y_1^2 - \sum_{x_1,y_1} 2\frac{x_1y_1}{x_1^2}p(x_1,y_1)x_1y_1.
+    \]
+    Where the ``cross'' terms make the estimator biased. Doing the math,
+    \[
+    \expv[\hat R_{d_1} (\hat f_{d_1})] = 2\sum_{y_1}y_1^2 p_y(y_1) - 2\sum_{y_1}y_1^2 p_y(y_1) = 0 \le R(\hat f_{d_1}) 
+    \]
+    where the inequality comes from $\ell(\cdot)\ge 0$. Hence, in this example the empirical risk evaluated on the same data to which the estimator is fitted underestimates the risk of the estimator. We will see that this is always the case.
+\end{example}
+
+Going back to our setting, we make the following specifications. 
+\begin{assumption}[Form of the hypotheses space and loss]\label{1ass: shapeH}
+    Let $\mathcal{G}$ be the space of functions $g:\X\to\R$ and $\mathcal{H}$ the space of functions $f:\R\to\Y$ such that
+\begin{equation}
+    f \coloneqq \sgn \circ g .
+\end{equation}
+This means that for any $g$ there is a $f_g = \sgn \circ g$. Observe that $g$ encodes the complexity of our hypotheses space (e.g. the structure of the tree in the case of decision trees) and $f$ encodes binary predictions. Also, we consider
+    \begin{equation}
+        \ell(f(x_i), y_i ) = (y_i-f(x_i))^2
+    \end{equation}
+    the quadratic loss.
+\end{assumption}
+Now we are ready to state our main result. 
+
+
+\begin{proposition}[Bounds on the bias]
+The empirical and the expected risk of an estimator trained and evaluated on $D$ satisfy the following bound
+\begin{equation}\label{eq: mainbounds}
+    0 \le \expv_D[ R(\hat f_D) - \hat R_D(\hat f_D)] \le 4\sqrt{\frac{2\log \vert \cH \vert}{n}}.
+\end{equation}
+
+
+\begin{proof}
+We prove the lower bound ($0\le\expv_D...$) first. All the expectations are over the randomness of the data $D$, we drop the subscript to light notation. We have
+\begin{equation}\label{ineq: minimizer1}
+\hat R_D(\hat f_D) \le\hat R_D(f) \quad \forall f\in \cH,
+\end{equation}
+since $\hat f_D \coloneq \argmin_{f\in\cH} \hat R_D (f) $. 
+Then, take expectations 
+\begin{equation}
+    \expv[\hat R_D(\hat f_D)] \le \expv[\hat R_D(f)] \quad \forall f\in \cH.
+\end{equation}
+Now, since the functions in $\cH$ are deterministic, by Proposition \ref{1prop: unbiased} we have
+\begin{equation}
+    \expv[\hat R_D(f)] = R(f) \quad \forall f\in\cH,
+\end{equation}
+so that 
+\begin{equation}\label{1eq: keybound}
+    \expv[\hat R_D(\hat f_D)] \le R(f) \quad \forall f\in \cH.
+\end{equation}
+Now take $d$ a generic realization of $D$ and consider in particular $f=\hat f_d$,
+\begin{equation}
+    \expv[\hat R_D(\hat f_D)] \le R(\hat f_d) \quad \forall d\in \mathcal D.
+\end{equation}
+Since this is valid pointwise for any $d$ realization of $D$, we have
+\begin{equation}
+    \expv[\hat R_D(\hat f_D)] \le R(\hat f_D) \quad \text{a.s.}
+\end{equation}
+and, finally, taking expectations
+\begin{equation}
+        \expv[\hat R_D(\hat f_D)] \le \expv[R(\hat f_D)] \quad \text{a.s.}
+\end{equation}
+Next, we prove the upper bound ($\expv \le 2 \sqrt...$). For any $f \in \cH$, $\expv [\hat R_D (f)]=R(f)$. Let $Z_i \coloneq \ell(f(x_i),y_i)$ and have
+\[
+\hat R_D(f) =\frac{1}{n}\sum_i Z_i 
+\]
+We now want to apply Hoeffding's inequality. To do so, we need to satisfy 3 conditions:
+\begin{enumerate}
+    \item $Z_1, \ldots, Z_n$ i.i.d.
+    \item $\expv[Z_1] = \ldots = \expv[Z_n]$
+    \item $b_i \le Z_i \le a_i$ for some $a_1, \ldots, a_n \in \R$ and $b_1,\ldots,b_n\in\R$. 
+\end{enumerate}
+We have that $(i)$ is satisfied by $Z_is$ being i.i.d. by construction. Condition $(ii)$ is satisfied since all the $(x_i,y_i)$ have the same distribution. As for $(iii)$, it is satisfied by Assumption \ref{1ass: shapeH} with $b_1=\ldots=b_n=0$ and $a_1 = \ldots = a_n = 4$. 
+Now we can apply Hoeffding's. We obtain 
+\begin{equation*}
+    \Pr [\frac{1}{n}\sum_i Z_i - \mu \ge \varepsilon] \le e^{-n\varepsilon^2/8}
+\end{equation*}
+and thus
+\begin{equation}\label{ineq: applyhoeffding}
+    \Pr [ R(f) - \hat R_D(f) \ge \varepsilon]\le e^{- n\varepsilon^2/8}
+\end{equation}
+Now, to obtain a bound for $\hat f_D$ we bound it with the union of the probabilities of the events for each $f\in\cH$. 
+We have
+\begin{equation}
+    \Pr[R(\hat f_D)-\hat R_D(\hat f_D) \ge \varepsilon] \le \bigcup_{f \in \cH} \Pr[R(f)-\hat R_D(f) \ge \varepsilon]
+\end{equation}
+trivially, and also 
+\begin{equation}
+    \bigcup_{f \in \cH} \Pr[R(f)-\hat R_D(f) \ge \varepsilon] \le \sum_{f \in \cH} \Pr[R(f)-\hat R_D(f) \ge \varepsilon] \le \sum_{f \in \cH} e^{- n\varepsilon^2/8} = \vert \cH \vert  e^{- n\varepsilon^2/8}
+\end{equation}
+where the first inequality follows by a union bound and the second by Hoeffding. All in all, we obtain
+\begin{equation}\label{eq: upper bound}
+    \Pr[R(\hat f_D)-\hat R_D(\hat f_D) \ge \varepsilon] \le \vert \cH \vert  e^{- n\varepsilon^2/8}
+\end{equation}
+
+To obtain our initial inequality from this result on a probability, we use a technique called tail integration. The key ingredient is the following
+\begin{equation}\label{eq: keying}
+    \expv[X] = \int_0^\infty \Pr(X\ge \varepsilon) \de \varepsilon
+\end{equation}
+which is true for any non-negative random variable $X$, see Proposition \ref{app: expvcmf} in the appendix. Then, we want to use our bound (\ref{eq: upper bound}) for the integrand. Let $a\coloneq \vert\cH\vert$ and $c\coloneq n/8$, so that
+\[
+\Pr (X\ge \varepsilon) \le a e^{-c\varepsilon^2}.
+\] 
+Notice that for high values of $\varepsilon$, the bound is a very good one, but for $\varepsilon \gg 1$ it is bad. Indeed, we can use a better bound:
+\begin{equation}
+    \Pr[X\ge \varepsilon] \le \min\{1, a  e^{-c\varepsilon^2}\}
+\end{equation}
+Therefore, it makes sense to split the integral in (\ref{eq: keying}) in two parts with a threshold $a  e^{-c\varepsilon_0^2} = 1$. This means splitting the integral at $\varepsilon_0 = \sqrt{\frac{\log a}{c}}$. We obtain 
+\begin{align*}
+\expv[X] &= \int_0^\infty \Pr(X\ge \varepsilon) \de \varepsilon \le \int_0^{\sqrt\frac{\log a}{c}} 1 \de \varepsilon + \int_{\sqrt\frac{\log a}{c}}^\infty ae^{-c\varepsilon^2}\de \varepsilon\\
+&=\sqrt\frac{\log a}{c} + a\frac{1}{2\sqrt{c\log a}}e^{-c\varepsilon^2} = \sqrt\frac{\log a}{c} + \frac{1}{2\sqrt{c\log a}}
+\end{align*}
+where the second integral is solved with a standard Gaussian tail bound (see Proposition \ref{app: gtailbound}), and in the last equality we substituted $a = 1/e^{-c\varepsilon^2}$. Finally, we can use a looser but simpler bound assuming  $a\ge e^{1/2}$, which is sensible since $a=\vert\cH\vert $ and $e^{1/2}<2$,
+\begin{equation}\label{eq}
+    \expv[X] \le 2\sqrt\frac{\log a}{c}
+\end{equation}
+which yields the result for $X = R(\hat f_D)-\hat R(\hat f_D)$, $a = \vert \cH\vert$, and $c=n/8$. 
+\end{proof}
+\end{proposition}
+\begin{remark}[Logic of the proof]
+    Intuitively, the key step in the proof of the lower bound is that equation (\ref{1eq: keybound}) is an inequality between {\it numbers}. The expected value of $\hat R_D(\hat f_D)$ is a {\it number}, say 3, and we are showing that this is lower than all the numbers $R(f), f\in\cH$. Instead, in equation (\ref{ineq: applyhoeffding}) we use a probabilistic bound and work with random variables. 
+\end{remark}
+
+\section{Ideas on interpretation of the bound}
+\begin{itemize}
+\item $\vert \cH\vert$ is a measure of the complexity of our neural netwrok, i.e. proportional to the number of parameters: the more complex the neural network, the more functions it will be able to model, hence the {\it richer} our hypotheses class
+
+\item the bound tells us that, for a fixed test size, as we increase complexity the gap between test error ($R$) and training error ($\hat R$) increases. this is aligend with trainig error going to 0 and test error increasing due to overfitting
+
+\item it does not exlpain precisely an initial decrease in both errors, and a successive divergence
+
+\item can we say that the increase in model complexity is exponential in the number of parameters added, hence $\log\vert\cH\vert$ gives a linear dependence on the number of parameters? 
+
+\item anyways, the crucial point for our developments is that this bound only predicts an increase in the gap, and not the second descent in the test error. also, for a fixed data size you don't have a meaningful bound for $\vert \cH\vert$ large. 
+
+\item also, uno spoiler che mi ha fatto Claude è che la cardinalità non è una buona misura di complessità per noi, perché GD esplora una porzione molto ridotta di tutto lo spazio. il concetto è quello di counting vs. covering.
+
+\end{itemize}
+
+\newpage
+\section*{chiamata 28 aprile}
+
+Next steps:
+\begin{enumerate}
+    \item theoretical side - provo a rifare i conti sulle note ML Ideas usando un'altra loss, non con indicatore, ma logistica oppure LS. Nota che sarà utile usare due variabili diverse, $f$ per le funzioni a valori binari, e $g$ per le funzioni (argomento di $f$) a valori reali (che in realtà hanno un dominio discretizzato, non $\R$ propriamente); 
+    \item applied side - fare una shallo network in 1 dimensione con
+    \begin{itemize}
+        \item dati che vivono in $[0,1]$ oppure $[0,10]$ per questioni numeriche, campionati con una misura uniforme 
+        \item prendiamo una funzione $f$ generica (mantieni possibiltà di usarne altre), convessa (per non preoccuparsi di convergenza)
+        \item generi le $y$ come $y = \mathrm{sgn}(f(x)) + \varepsilon$
+        \item usa weights randomici
+    \end{itemize}
+    poi si plotta sulle ascisse la complessità della rete (larghezza, essendo 1 dim), e sulle ordinate l'errore che conta e un altro errore (CE, LS)
+\end{enumerate}
+
+in generale poi, ci siamo detti che poi andremo a discretizzare il dominio anche nella simulazione, e vediamo se c'è ancora la curva del double descent (``dimensione'' non infinita). poi, faremo la stessa cosa con gli alberi di decisione: qui osserveremo se l'errore va giù e quindi conferma la teoria, allora giocheremo con l'esperimento; oppure se l'errore va su e giù, allora cerchermo di sviluppare la teoria per descriverlo. 
+
+[extra] inoltre, lui prevedere che nell'esperimento con il dominio discretizzato, l'algoritmo si comporterà diversamente se i punti sono molto vicini tra loro (necessario polinomio grado molto alto per fittare perfettamente il rumore) oppure se sono lontani. in dimensione alta sono sempre molto lontani. altra cosa interessante è che se non usassimo dominio finito, dunque non potessimo {\it contare} quanti modelli abbiamo a disposizione, dovremmo contarli in un modo diverso più geometrico che si chiama covering, tipo riempiendo il cubo con delle sfere. eventualmente poi ci giocheremo.
+\\
+
+In Section \ref{sec: bias} we develop point $(i)$. 
+\newpage
+\bibliography{refs}
+\bibliographystyle{plain}
+
+\newpage
+\include{appendix}
+
+
+\end{document}
