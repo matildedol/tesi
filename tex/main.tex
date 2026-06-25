@@ -287,7 +287,21 @@ which yields the result for $X = R(\hat f_D)-\hat R(\hat f_D)$, $a = \vert \cH\v
     Intuitively, the key step in the proof of the lower bound is that equation (\ref{1eq: keybound}) is an inequality between {\it numbers}. The expected value of $\hat R_D(\hat f_D)$ is a {\it number}, say 3, and we are showing that this is lower than all the numbers $R(f), f\in\cH$. Instead, in equation (\ref{ineq: applyhoeffding}) we use a probabilistic bound and work with random variables. 
 \end{remark}
 
-\section{Ideas on interpretation of the bound}
+\subsection{Experiments}
+
+The first experiment we have done consist in fitting a number of binary trees to a synthetic dataset and inspecting how the gap $\expv{[R(\hat f_D) - \hat R(\hat f_D)]}$ changes as we increase model complexity $\vert\cH\vert$. Specifically, the experiment consists in 
+\begin{enumerate}
+    \item support: we discretize an interval $I\subset \R$ into $N$ numbers (we chose $I=[0,10], N = 10,000$);
+    \item sample $x$: we sample $x$ from the support, uniformly according to a chosen distribution (we start with the uniform one, then inspect a Gaussian one and an adversarial one);
+    \item sample $y$: we create the outcome variables according to the law \[y = \sgn(f(x)+\sigma\varepsilon), \qquad \varepsilon\sim\mathcal{N}(0,1), \sigma\in\R\]where $\sigma$ controls the amount of noise (we use values of $1,2,3,5$) and $f:I\to\R$ is a convex function chosen to yield roughly half of the points with positive image and half negative (we use $f(x) = (x-5)^2 -6.25$);
+    \item dataset generation: then, we create a training dataset with size $n<<N$ and a test dataset with size $N<<n_\text{test}$ indistinguishable from $\infty$ (we choose $n=10,20,50$ and $n_\text{test}=200,000$);
+    \item select depths: we select a list of depths for our trees, specifically each integer in a multiple of the range of the overfitting threshold, which is $\log_2(n)$;
+    \item fit models: we fit a number of binary trees with different depths to this data and evaluate for each one the error on the training set ($\hat R$) and the error on the test set ($R$);
+    \item plot: we plot the two errors against the depth of the trees, highlighting the overfitting depth. 
+\end{enumerate}
+what we observe is that the training data size and the standard deviation of the noise have inverse (respectively, positive and negative) influences on the performance of the model on training data, hence we balance them accordingly. Also, for a greater number of training samples size we inspect a greater number of depths (e.g. up to $4*$floor(threshold)) to observe the long-term trend. 
+
+\section*{Ideas on interpretation of the bound}
 \begin{itemize}
 \item $\vert \cH\vert$ is a measure of the complexity of our neural netwrok, i.e. proportional to the number of parameters: the more complex the neural network, the more functions it will be able to model, hence the {\it richer} our hypotheses class
 
@@ -302,7 +316,11 @@ which yields the result for $X = R(\hat f_D)-\hat R(\hat f_D)$, $a = \vert \cH\v
 \item also, uno spoiler che mi ha fatto Claude è che la cardinalità non è una buona misura di complessità per noi, perché GD esplora una porzione molto ridotta di tutto lo spazio. il concetto è quello di counting vs. covering.
 
 \end{itemize}
-
+\section*{Cose che mi devo ricordare}
+\begin{itemize}
+    \item le cose, come dire, oggettive sugli esperimenti le scrivo sempre sul latex. sul md file o codice in generale scrivo dei commenti più ricchi di significato sopra cui lavorare ancora. 
+    \item scrivo tutto o qui o sul codice, nulla di importante rimane solo sui fogli (speriamo)
+\end{itemize}
 \newpage
 \section*{chiamata 28 aprile}
 
