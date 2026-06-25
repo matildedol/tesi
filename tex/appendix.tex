@@ -28,7 +28,7 @@
         \[
         \expv[Z] = -zQ(z)\Bigg\vert_0^\infty +\int_0^\infty Q(z) \de z = \lim_{t\to\infty} -t\Pr(Z \ge t) + 0 + \int_0^t Q(z) \de z = \int_0^\infty Q(z) \de z
         \]
-        because \mati{ questa proof mi piace molto ma ha dei problemi con le quantità indefinite nei limiti :(}. 
+        because \mati{questa proof mi piace molto ma ha dei problemi con le quantità indefinite nei limiti}. 
     \end{proof}
 \end{proposition}
 
@@ -68,17 +68,17 @@ The expected risk of $f:\X\to\Y$ is
 \end{definition}
 
 In general, we aim at finding \begin{equation}\label{pr: exprisk}f_\mu \coloneq \argmin_{f\in\F} L(f)\end{equation}
-where the minimum runs over the space $\F$ of functions for which $L(f)$ is well defined (the space of measurable functions). Given a learning algorithm and some data $\{x_i,y_i\}_{i=1}^n, x_i \in \X, y_i \in \Y \,\forall i$, we obtain a learning solution $\hat f$. Then, the natural error measure is the excess risk
+where the minimum runs over the space $\F$ of functions for which $L(f)$ is well defined (the space of measurable functions). Given a learning algorithm and some data ${\{x_i,y_i\}}_{i=1}^n, x_i \in \X, y_i \in \Y \,\forall i$, we obtain a learning solution $\hat f$. Then, the natural error measure is the excess risk
 \begin{definition}[Excess risk]
     The excess risk of a learning problem with target $f_\mu$ and learning solution $\hat f$ is
-    $$L(\hat f) - L(f_\mu)$$
+    \[ L(\hat f) - L(f_\mu)\]
     where $L(\cdot)$ is the expected risk.
 \end{definition}
 
 Since this minimum in (\ref{pr: exprisk}) can be hard or impossible to compute, we give the following definition. 
 
 \begin{definition}[Empirical risk]
-    Given a probability space $(\X \times \Y, \mu)$, a dataset $\{x_i,y_i\}_{i=1}^n, x_i \in \X, y_i \in \Y \,\forall i$, a continuous measurable function $f:\X\to\Y$, and a measurable loss function $\ell:\Y\times\Y \to [0,\infty)$, the empirical risk of $f$ is
+    Given a probability space $(\X \times \Y, \mu)$, a dataset ${\{x_i,y_i\}}_{i=1}^n, x_i \in \X, y_i \in \Y \,\forall i$, a continuous measurable function $f:\X\to\Y$, and a measurable loss function $\ell:\Y\times\Y \to [0,\infty)$, the empirical risk of $f$ is
     \begin{equation}\label{eq: emprisk}
         \hat L(f) \coloneq \sum_{i=1}^n \ell(f(x_i), y_i)
     \end{equation}
@@ -97,7 +97,7 @@ f(x) = \langle w,x \rangle, \quad w\in\R^d
 hence we have $\cH =\{f:\X\to\Y \,\vert\, f(x) = \langle w,x \rangle \text{ for some } w \in\R^d\}$;
 the squared loss
 \[
-\ell\big(f(x),y\big) = \big(y - \langle w,x\rangle\big)^2
+\ell\big(f(x),y\big) = {\big(y - \langle w,x\rangle\big)}^2
 \]
 with associated expected risk
 \[
@@ -153,12 +153,12 @@ Consider the minimization problem
 %for $\mu$ probability over the data space $\X\times\Y$ and $\ell(x,y) = (y-\langle w,x \rangle ) ^ 2$ measurable loss function.
 then, the following hold:
     \begin{enumerate}[label=(\roman*)]
-        \item $$\nabla L(w)=0 \quad\Longleftrightarrow\quad \Sigma w = h$$
+        \item \[\nabla L(w)=0 \quad\Longleftrightarrow\quad \Sigma w = h\]
         with $\Sigma, h$ as above;
-        \item in particular, $$w^* = \Sigma^{-1}h$$
+        \item in particular, \[w^* = \Sigma^{-1}h\]
         where $w^*$ minimizes $L(w)$;
         \item additionally, we have
-        $$L(w) - L(w^*) = \langle w-w^*, \Sigma(w-w^*)\rangle$$
+        \[L(w) - L(w^*) = \langle w-w^*, \Sigma(w-w^*)\rangle\]
     \end{enumerate}
     \begin{proof}
         The proof of item $(i)$ follows by expanding the gradient of $L(w)$ and noticing that the two conditions coincide:
@@ -197,10 +197,10 @@ Similarly, we have the following result.
     for some $\lambda >0$. Then, the following hold:
     \begin{enumerate}[label=(\roman*)]
         \item the corresponding optimality condition is
-        $$\nabla L_\lambda(w) = 0 \quad \Longleftrightarrow \quad (\Sigma + I\lambda)w = h$$
+        \[\nabla L_\lambda(w) = 0 \quad \Longleftrightarrow \quad (\Sigma + I\lambda)w = h\]
         where $I:\R^d \to \R^d$ is the identity map;
         \item in particular, 
-        $$ w_\lambda = (\Sigma + \lambda I)^{-1} h$$
+        \[ w_\lambda = (\Sigma + \lambda I)^{-1} h\]
         where $w_\lambda$ minimizes $L_\lambda(w)$.
     \end{enumerate}
     \begin{proof}
@@ -215,12 +215,12 @@ Now, we turn to analysing the case of empirical least squares, and define the as
     \end{gather*}
 
 We consider the problem
-$$\min_{w\in\R^d} \hat L_\lambda$$
+\[\min_{w\in\R^d} \hat L_\lambda\]
 with empirical risk
-$$\hat L_\lambda = \sum_{i=1}^n (y_i - \langle w, x_i\rangle)^2 + \lambda \Vert w \Vert ^2, \quad \lambda>0$$
+\[\hat L_\lambda = \sum_{i=1}^n (y_i - \langle w, x_i\rangle)^2 + \lambda \Vert w \Vert ^2, \quad \lambda>0\]
 (which follows from definition (\ref{eq: emprisk}) and adding a regularizer as in $L_\lambda$).
 Repeating the same arguments, we obtain
-$$\hat w_\lambda = (\hat \Sigma + \lambda I)^{-1} \hat h$$
+\[\hat w_\lambda = (\hat \Sigma + \lambda I)^{-1} \hat h\]
 where $\hat w_\lambda$ minimizes $\hat L_\lambda$.
 
 
@@ -238,7 +238,7 @@ where $\hat w_\lambda$ minimizes $\hat L_\lambda$.
 
 Qui, qualche appunto con l'obiettivo di indagare 
 
-    {\it quanto peggiora la stima dell'errore di un modello sul train set al crescere del numero di modelli considerati? }
+{\it quanto peggiora la stima dell'errore di un modello sul train set al crescere del numero di modelli considerati?}
 
 
 \vspace{0.5 cm}
@@ -248,8 +248,8 @@ We consider the following items:
 \begin{itemize}[label=$\cdot$]
 % \item a probability measure $\mu$ over $\R, \mathcal{A}$, $\mu : \mathcal{A} \to [0,1], \mu(\R) = 1$;
     \item a probability distribution $p$ over $S \subseteq \R$;
-    \item support of the distribution $ s = s_1,\ldots,s_N$, indexed with $j$, with probabilities $p_j$:  $$\expv(X)= \sum_j s_j p_j \eqqcolon \mu; \qquad \mathrm{Var}(X) = \sum_j s_j^2 p_j - (\sum_j s_jp_j)^2 \eqqcolon \sigma^2;$$
-    \item random variables  $X_1,\ldots,X_n$, i.i.d. to $X \sim p(\mu, \sigma^2)$;
+    \item support of the distribution $ s = s_1,\ldots,s_N$, indexed with $j$, with probabilities $p_j$:  \[\expv(X)= \sum_j s_j p_j \eqqcolon \mu; \qquad \mathrm{Var}(X) = \sum_j s_j^2 p_j - (\sum_j s_jp_j)^2 \eqqcolon \sigma^2;\]
+    \item random variables  $X_1,\ldots,X_n$, i.i.d.`\'to $X \sim p(\mu, \sigma^2)$;
     \item a dataset $x_1,\ldots,x_n$ realization of $X_1, \ldots, X_n$, indexed with $i$, which is therefore assumed to be sampled from our probability distribution $p$ (the assumption that Ben Recht doesn't like).
 \end{itemize}
 \vspace{0.5 cm}
@@ -260,7 +260,7 @@ We consider the following items:
 The expected risk of a predictor $a \in \R$ is:
     \begin{equation}
         R(a)\coloneq
-        \sum_j (s_j-a)^2p_j
+        \sum_j {(s_j-a)}^2p_j
     \end{equation}
 \end{definition}
 The motivation for this definition is that we aim at predicting some value $a$ from our distribution, and the best prediction is the one that is closest (in terms of squared distance) to each possible realization of the distirbution, weighted by their masses. 
@@ -307,9 +307,9 @@ Ma se l'errore sulla distribuzione è costante, come può non esserlo l'errore s
         \expv[\hat R (a)]= R(a).
     \end{equation}
     \begin{proof}
- $$
+ \[
  \expv[\hat R(a)] = \expv [\frac{1}{n}\sum_i (X_i - a)^2] = \frac{1}{n} \sum_i \expv[(X_i - a)^2] = \frac{1}{n} n \cdot \expv[(X_i - a)^2] = \expv[(X_i - a)^2]= R(a) 
- $$
+ \]
  using proposition \ref{prop: results} $(i)$ and that $X_1, \ldots, X_n$ are i.i.d. this is the same motivation behind the empriical mean being an unbiased estimator of the true mean. 
     \end{proof}
 \end{proposition}
