@@ -54,6 +54,8 @@ with joint law $p$, the push-forward of the elementary measure $\mathbb P$.
 
 Since we want to obtain a collection of observations, we define an additional random variable.
 
+\mati{$\X$ compatto numerabile}
+
 \begin{definition}[Dataset]
     Given a size $n$, a probability space $(\Omega, \mathcal F, \mathbb P)$, and value spaces $\X,\Y$, a dataset $D$ is a random variable 
     \[
@@ -174,15 +176,15 @@ and since the sums in equation (\ref{example ERhat}) run over all the possible v
     where the inequality comes from $\ell(\cdot)\ge 0$. Hence, in this example the empirical risk evaluated on the same data to which the estimator is fitted underestimates the risk of the estimator. We will see that this is always the case.
 \end{example}
 
-Going back to our setting, we make the following specifications. 
-\begin{assumption}[Form of the hypotheses space and loss]\label{1ass: shapeH}
+Going back to our setting, we start with the following specifications. 
+\begin{assumption}[Sign function and quadratic loss]\label{1ass: shapeH}
     Let $\mathcal{G}$ be the space of functions $g:\X\to\R$ and $\mathcal{H}$ the space of functions $f:\R\to\Y$ such that
 \begin{equation}
     f \coloneqq \sgn \circ g .
 \end{equation}
-This means that for any $g$ there is a $f_g = \sgn \circ g$. Observe that $g$ encodes the complexity of our hypotheses space (e.g. the structure of the tree in the case of decision trees) and $f$ encodes binary predictions. Also, we consider
+This means that for any $g$ there is a $f_g = \sgn \circ g$. Observe that $g$ encodes the complexity of our hypotheses space (e.g. the structure of the tree in the case of decision trees) and $f$ encodes binary predictions. Notice that if the size of the support is $\vert\X\vert=N$, then $\vert\cH\vert = 2^N$. Also, we consider
     \begin{equation}
-        \ell(f(x_i), y_i ) = (y_i-f(x_i))^2
+        \ell(f(x_i), y_i ) = {(y_i-f(x_i))}^2
     \end{equation}
     the quadratic loss.
 \end{assumption}
@@ -190,7 +192,8 @@ Now we are ready to state our main result.
 
 
 \begin{proposition}[Bounds on the bias]
-The empirical and the expected risk of an estimator trained and evaluated on $D$ satisfy the following bound
+Given data $D: \Omega^n \to \X^n \times \Y^n$ and a predictor $f:\X \to \{-1,1\}$,
+the empirical and the expected risk of trained and evaluated on $D$ with a quadratic loss function satisfy the following bound
 \begin{equation}\label{eq: mainbounds}
     0 \le \expv_D[ R(\hat f_D) - \hat R_D(\hat f_D)] \le 4\sqrt{\frac{2\log \vert \cH \vert}{n}}.
 \end{equation}
@@ -286,6 +289,63 @@ which yields the result for $X = R(\hat f_D)-\hat R(\hat f_D)$, $a = \vert \cH\v
 \begin{remark}[Logic of the proof]
     Intuitively, the key step in the proof of the lower bound is that equation (\ref{1eq: keybound}) is an inequality between {\it numbers}. The expected value of $\hat R_D(\hat f_D)$ is a {\it number}, say 3, and we are showing that this is lower than all the numbers $R(f), f\in\cH$. Instead, in equation (\ref{ineq: applyhoeffding}) we use a probabilistic bound and work with random variables. 
 \end{remark}
+
+Now, we study the same result but in a different setting, namely considering real-valued prediction functions instead of a sign function, and a logistic loss.
+\begin{assumption}[Real-valued prediction function and logistic loss]\label{1ass: logistic}
+    Let $\mathcal{H}$ be the space of functions $f:\X\to\R$, for instance linear functions of the type 
+    \begin{equation}
+        f_{wb}(x) \coloneqq w x + b, \qquad w,b \in\R.
+    \end{equation}
+    Notice that if $\X$ has size $N$, then $\cH = \{\sgn(f(x)) \vert w,b \in \R\}$ is such that $\vert\cH\vert = 2(N+1)$. Furthermore, we consider the logistic loss
+    \begin{equation}
+        \ell(f(x_i), y_i ) = \log( 1 + e^{-y_i f(x_i)} ).
+    \end{equation}
+\end{assumption}
+Then, the following result holds on the bias between the expected and empirical risks. 
+
+\begin{proposition}[Bounds on the bias - logistic, real-valued case]
+Given data $D: \Omega^n \to \X^n \times \Y^n$ and a predictor $f:\X \to \R$,
+the empirical and the expected risk of trained and evaluated on $D$ with a logistic loss function satisfy the following bound
+\begin{equation}\label{eq: mainbounds}
+    0 \le \expv_D[ R(\hat f_D) - \hat R_D(\hat f_D)] \le 2 \sqrt{\frac{\log \vert\cH\vert}{n}}
+\end{equation}
+
+\begin{proof}
+    The proof of the lower bound is the same as in Proposition~\ref{prop: results}. We therefore show the proof of the upper bound 
+($\expv \le ...$). Again, we define $Z_i \coloneq \ell(f(x_i),y_i)$ and check the three conditions required by Hoeffding's inequality. As before, the random variables are i.i.d. and have the same expected value by construction. As for obtaining bounds on $Z_i$, we perform the following rescaling for $f_{w,b}(x) \neq 0$
+\begin{equation}
+f_{w,b}(x) = \frac{f_{w,b}(x)}{\Vert f_{w,b}\Vert_\infty}
+\end{equation}
+where 
+\begin{equation}
+    \Vert f \Vert_{\infty} \coloneqq \max_{x\in\X} \vert f_{w,b}(x) \vert.
+\end{equation}
+Then, we obtain 
+\[
+-1 \le f(x_i) \le 1 \qquad \forall i
+\]
+and hence
+\[
+\log (1 + \frac{1}{e}) \le \log (1+e^{-y_i f(x_i)}) \le \log (1+ e) \qquad \forall i. 
+\] 
+Plugging these bounds into Hoeffding's inequality, we obtain 
+\begin{equation}
+    \Pr [\frac{1}{n}\sum_i Z_i - \mu \ge \varepsilon] \le e^{-n\varepsilon^2/8}
+\end{equation}
+and thus
+\begin{align*}\label{ineq: applyhoeffding2}
+    \Pr [ R(f) - \hat R_D(f) \ge \varepsilon]&\le e^{- n\varepsilon^2/{(\log (1+e) - \log (1 + \frac{1}{e}))}^2} \\
+    &= e^{- n\varepsilon^2/{(\log (\frac{1+e}{1 + \frac{1}{e}}))}^2} \\
+    &= e^{- n\varepsilon^2/{(\log e)}^2} \\
+    &= e^{- n\varepsilon^2}
+\end{align*}
+Now, proceeding as before (trivial bound with the union + union bound) we obtain
+\begin{equation}\label{eq: upper bound2}
+    \Pr[R(\hat f_D)-\hat R_D(\hat f_D) \ge \varepsilon] \le \vert \cH \vert  e^{- n\varepsilon^2}.
+\end{equation}
+The proof is then completed exactly as before, with parameters $a = \vert\cH\vert$ and $c = n$. 
+\end{proof}
+\end{proposition}
 
 \subsection{Experiments}
 
