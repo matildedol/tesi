@@ -8,6 +8,7 @@ env/
 .ipynb_checkpoints/
 .pytest_cache/
 .mypy_cache/
+*.png
 
 # --- LaTeX ---
 *.aux
