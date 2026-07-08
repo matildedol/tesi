@@ -1,0 +1,169 @@
+\section{Error analysis in least squares}
+
+
+Let $(\X \times \Y, \mu)$ be a probability space, with data $\X \subseteq \R^d$, $\Y\subseteq\R$, and let $\ell:\Y\times\Y \to [0,\infty)$ be a measurable loss function.
+
+For a continuous function of the data $f:\X\to\Y$, we give the following definition. 
+
+\begin{definition}[Expected risk]
+The expected risk of $f:\X\to\Y$ is 
+\begin{equation}
+    L(f) \coloneq \expv_{(x,y)\sim\mu} \big[\ell(y,f(x))\big] = \int_{\X\times\Y} \ell(y,f(x)) \de \mu(x,y)
+\end{equation}
+\end{definition}
+
+In general, we aim at finding \begin{equation}\label{pr: exprisk}f_\mu \coloneq \argmin_{f\in\F} L(f)\end{equation}
+where the minimum runs over the space $\F$ of functions for which $L(f)$ is well defined (the space of measurable functions). Given a learning algorithm and some data ${\{x_i,y_i\}}_{i=1}^n, x_i \in \X, y_i \in \Y \,\forall i$, we obtain a learning solution $\hat f$. Then, the natural error measure is the excess risk
+\begin{definition}[Excess risk]
+    The excess risk of a learning problem with target $f_\mu$ and learning solution $\hat f$ is
+    \[ L(\hat f) - L(f_\mu)\]
+    where $L(\cdot)$ is the expected risk.
+\end{definition}
+
+Since this minimum in (\ref{pr: exprisk}) can be hard or impossible to compute, we give the following definition. 
+
+\begin{definition}[Empirical risk]
+    Given a probability space $(\X \times \Y, \mu)$, a dataset ${\{x_i,y_i\}}_{i=1}^n, x_i \in \X, y_i \in \Y \,\forall i$, a continuous measurable function $f:\X\to\Y$, and a measurable loss function $\ell:\Y\times\Y \to [0,\infty)$, the empirical risk of $f$ is
+    \begin{equation}\label{eq: emprisk}
+        \hat L(f) \coloneq \sum_{i=1}^n \ell(f(x_i), y_i)
+    \end{equation}
+    and it is a finite-sample, tractable version of the expected risk. 
+\end{definition}
+The problem becomes to find \begin{equation} \min_{f} \hat L(f)\end{equation}
+which is known as {\it empirical risk minimization (ERM)},
+where $\mathcal{H}$ is the hypotheses set, a restricted set of possible solutions that we choose based on our problem. 
+% Our learning algorithm will now give $\hat f = \argmin_{\f \in \cH} \hat L (f)$.
+\\
+
+Now, we focus our analysis on regularized least squares. We consider a linear combination of the features
+\[
+f(x) = \langle w,x \rangle, \quad w\in\R^d
+\]
+hence we have $\cH =\{f:\X\to\Y \,\vert\, f(x) = \langle w,x \rangle \text{ for some } w \in\R^d\}$;
+the squared loss
+\[
+\ell\big(f(x),y\big) = {\big(y - \langle w,x\rangle\big)}^2
+\]
+with associated expected risk
+\[
+L(w) = \int_{\X\times\Y} \big(y - \langle w,x\rangle\big)^2\de\mu(x,y)
+\]
+(indicated as $L(w)$ with an abuse of notation).
+With a finite dataset of size $n$, our estimator will be 
+\begin{equation}\label{eq: estim}
+    \hat w_\lambda = \argmin_{w\in\R^d} \frac{1}{n} \sum_{i=1}^n \big(y_i - \langle x_i,w\rangle\big)^2 + \lambda \Vert w \Vert^2
+\end{equation}
+minimizing the empirical risk plus a regularization term with $\lambda >0$, and the natural error measure will be
+\begin{equation}\label{eq: errmeasureLS}
+    L(\hat w_\lambda) - \min_{w\in\R^d} L(w)
+\end{equation}
+i.e. the excess risk, which is a positive random variable. We are interested in bounding
+\begin{equation}\label{pr: eps1}
+    \Pr \bigg[L(\hat w_\lambda) - \min_{w\in\R^d} L(w) \le \varepsilon\bigg], \quad \forall\varepsilon>0
+\end{equation}
+
+its cumulative distribution. 
+
+Alternatively, we assume $\exists \, \kappa,M>0$ such that $\Vert x \Vert \le \kappa$ and $\vert y \vert \le M$ almost surely, and that there is a $w^* \in \R^d$ that minimizes $L(w)$. Then, we look at the error measure
+\[
+\Vert \hat w_\lambda - w^* \Vert
+\]
+and consider 
+\begin{equation}\label{pr: eps2}
+    \Pr \bigg[\Vert \hat w_\lambda - w^* \Vert \le \varepsilon\bigg]
+\end{equation}
+which is easier to analyse than (\ref{pr: eps1}), but provides worse bounds (any bound on (\ref{pr: eps2}) implies bounds on (\ref{pr: eps1})). 
+
+\paragraph{\bf Optimality conditions and other properties}
+
+We consider our problem under 3 different lenses, going from the infinite data case with no regularization to the empirical case that we actually implement, and provide optimality conditions and other results for each of them. 
+\\
+
+We start by considering problem
+\[
+\min_{w\in\R^d} L(w)
+\]
+and we define the following useful quantities
+\begin{gather*}
+    \Sigma:\R^d\to\R^d, \qquad \Sigma w = \int_{\X\times\Y} xx^tw \de \mu(x,y) = \int_{\X} xx^tw \de \mu_\X(x)\\
+    h\in\R^d, \qquad h= \int_{\X\times\Y} xy\de\mu(x,y)
+    \end{gather*}
+        where $\mu_\X (x) = \int_{\Y} \mu(x,y) \de y$ is the marginal distribution of $x$. 
+\begin{proposition}[Infinite data, no regularization]\label{prop: infinite,noreg}
+Consider the minimization problem 
+\[
+\min_{w\in\R^d} L(w)
+%= \int_{\X\times\Y} (y-\langle w,x \rangle ) ^ 2 \de \mu(x,y)
+\]
+%for $\mu$ probability over the data space $\X\times\Y$ and $\ell(x,y) = (y-\langle w,x \rangle ) ^ 2$ measurable loss function.
+then, the following hold:
+    \begin{enumerate}[label=(\roman*)]
+        \item \[\nabla L(w)=0 \quad\Longleftrightarrow\quad \Sigma w = h\]
+        with $\Sigma, h$ as above;
+        \item in particular, \[w^* = \Sigma^{-1}h\]
+        where $w^*$ minimizes $L(w)$;
+        \item additionally, we have
+        \[L(w) - L(w^*) = \langle w-w^*, \Sigma(w-w^*)\rangle\]
+    \end{enumerate}
+    \begin{proof}
+        The proof of item $(i)$ follows by expanding the gradient of $L(w)$ and noticing that the two conditions coincide:
+        \begin{align*}
+            \nabla L(w)& =\frac{\partial}{\partial w} \int (y-\langle w,x \rangle)^2 \de\mu = \int \frac{\partial}{\partial w} (y-\langle w,x \rangle)^2 \de\mu \\
+            & = \int 2 (y-\langle w,x \rangle) (-x) \de \mu = 2 \int - yx + \langle w,x \rangle x \de\mu;\\
+            \nabla L(w)=0&\Leftrightarrow \int yx \de \mu = \int x\langle w,x \rangle \de \mu \Leftrightarrow h = \Sigma w
+        \end{align*}
+        where the first line follows from continuity of $\ell(x,y)=(y-\langle w,x \rangle)^2$. Item $(ii)$ follows directly by definition of minimum and item $(i)$. 
+        Lastly, item $(iii)$ follows by manipulating the expression of $L(w)$:
+
+        \begin{align*}
+            L(w) &= \int (y-\langle w,x\rangle) ^ 2\de \mu = \int (y - \langle w^*,x\rangle + \langle w^*,x \rangle - \langle w,x\rangle)^2 \de \mu\\
+            &= \int (y-\langle w^*,x\rangle)^2 \de \mu + \int (\langle w^*,x\rangle-\langle w,x\rangle)^2 \de \mu - 2\int (y - \langle w^*,x\rangle)(\langle w^*,x\rangle-\langle w,x\rangle) \de \mu \\
+            & = L(w^*) + \int (\langle w^*,x\rangle-\langle w,x\rangle)^2 \de \mu - 2\int (y - \langle w^*,x\rangle)(\langle w^*,x\rangle-\langle w,x\rangle) \de \mu
+        \end{align*}
+        the latter term is
+        \begin{align*}
+            \int (y-\langle w^*,x\rangle) (\langle x,w^*-w\rangle) \de \mu = \bigg\langle \int (y-\langle w^*,x\rangle)x\de mu, w^*-w\bigg\rangle = \langle h-\Sigma w^*, w^*-w\rangle = 0
+        \end{align*}
+        where we used the property (\ref{app: trick}) of the integral and continuous functions, and item $(ii)$. Hence,
+        \begin{align*}
+            L(w) - L(w^*) &= \int (\langle w^*,x\rangle-\langle w,x\rangle)^2 \de \mu  = \int \langle w^*-w,x\rangle\langle w^*-w,x\rangle \de \mu = \bigg\langle w^* - w, \int \langle w^* -w, x\rangle x \de \mu \bigg\rangle \\
+            & = \langle w^*-w , \Sigma (w^*-w)\rangle
+        \end{align*}
+        
+    \end{proof}
+\end{proposition}
+
+Similarly, we have the following result.
+\begin{proposition}[Infinite data, with regularization]\label{prop: infinite,reg}
+    Consider the problem 
+    \[
+    \min_{w\in\R^d} L_\lambda(w) = L(w) + \lambda \Vert w\Vert^2
+    \]
+    for some $\lambda >0$. Then, the following hold:
+    \begin{enumerate}[label=(\roman*)]
+        \item the corresponding optimality condition is
+        \[\nabla L_\lambda(w) = 0 \quad \Longleftrightarrow \quad (\Sigma + I\lambda)w = h\]
+        where $I:\R^d \to \R^d$ is the identity map;
+        \item in particular, 
+        \[ w_\lambda = (\Sigma + \lambda I)^{-1} h\]
+        where $w_\lambda$ minimizes $L_\lambda(w)$.
+    \end{enumerate}
+    \begin{proof}
+        The proof follows by the same arguments as those in proposition (\ref{prop: infinite,noreg}). 
+    \end{proof}
+\end{proposition}
+
+Now, we turn to analysing the case of empirical least squares, and define the associated quantities
+\begin{gather*}
+    \hat\Sigma:\R^d\to\R^d, \qquad \hat \Sigma = \frac{1}{n}\sum_{i=1}^n x_i x_i^t\\
+    \hat h\in\R^d, \qquad \hat h= \frac{1}{n}\sum_{i=1}^n x_iy_i
+    \end{gather*}
+
+We consider the problem
+\[\min_{w\in\R^d} \hat L_\lambda\]
+with empirical risk
+\[\hat L_\lambda = \sum_{i=1}^n (y_i - \langle w, x_i\rangle)^2 + \lambda \Vert w \Vert ^2, \quad \lambda>0\]
+(which follows from definition (\ref{eq: emprisk}) and adding a regularizer as in $L_\lambda$).
+Repeating the same arguments, we obtain
+\[\hat w_\lambda = (\hat \Sigma + \lambda I)^{-1} \hat h\]
+where $\hat w_\lambda$ minimizes $\hat L_\lambda$.

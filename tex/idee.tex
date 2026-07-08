@@ -1,0 +1,15 @@
+\section{Ideas on developments}
+\begin{itemize}
+\item $\vert \cH\vert$ is a measure of the complexity of our neural netwrok, i.e. proportional to the number of parameters: the more complex the neural network, the more functions it will be able to model, hence the {\it richer} our hypotheses class
+
+\item the bound tells us that, for a fixed test size, as we increase complexity the gap between test error ($R$) and training error ($\hat R$) increases. this is aligend with trainig error going to 0 and test error increasing due to overfitting
+
+\item it does not exlpain precisely an initial decrease in both errors, and a successive divergence
+
+\item can we say that the increase in model complexity is exponential in the number of parameters added, hence $\log\vert\cH\vert$ gives a linear dependence on the number of parameters? 
+
+\item anyways, the crucial point for our developments is that this bound only predicts an increase in the gap, and not the second descent in the test error. also, for a fixed data size you don't have a meaningful bound for $\vert \cH\vert$ large. 
+
+\item also, uno spoiler che mi ha fatto Claude è che la cardinalità non è una buona misura di complessità per noi, perché GD esplora una porzione molto ridotta di tutto lo spazio. il concetto è quello di counting vs. covering.
+
+\end{itemize}

@@ -38,7 +38,7 @@
 \section{Mathematical framework}\label{sec: math}
 
 We observe $x\in \X = \{\bar x_1, \ldots, \bar x_N\}\subset \R$, and $y\in \Y\subset \{-1,1\}$ and we would like to predict $y$ from $x$.
-To do so, we are given a collection of observations like $x$ and $y$, i.e.\ our data. This allows to observe the relationship between $x$ and $y$ multiple times and hope to estimate it well.
+To do so, we are given a collection of observations like $x$ and $y$, i.e. our data. This allows to observe the relationship between $x$ and $y$ multiple times and hope to estimate it well.
 % am i biased by causal inference nel parlare di relazione tra x e y? alla fine dobbiamo sempre trovare una relazione, però è forse misleading dato che è occulta in (most of) machine learning 
 
 \begin{assumption}\label{1ass: randomdata}
@@ -48,7 +48,7 @@ Therefore, we consider the sample space $\Omega$ and define the random variables
     X:\Omega \to \X, \quad \omega \mapsto x \qquad \text{and}\qquad Y:\Omega \to \Y,\quad \eta \mapsto y;\\
     (X,Y)\sim p,
 \end{gathered}\]
-with joint law $p$, which is a  cathegorical probability distribution over  $\X\times\Y = \{\bar x_1,\ldots,\bar x_N\}\times\{-1,1\}$.
+with joint law $p$, which is a cathegorical probability distribution over  $\X\times\Y = \{\bar x_1,\ldots,\bar x_N\}\times\{-1,1\}$.
 \end{assumption}
 
 Since we want to obtain a collection of observations, we define an additional random variable.
@@ -200,11 +200,10 @@ Notice that we can always take a {\it\/truncation map} $T:\R\to[-1,1]$, defined 
         1 & a\ge 1,
     \end{cases}
 \end{equation}
-so that $T\circ f(x)$ is always bounded. Hence, we can take $A = \{T\circ f(x) : f \in\cH, x\in\X\}$ and $\mathcal{F}\coloneq\{f \vert f:\X \to \R\}$, $\cH \subseteq \mathcal{F}, \cH = \{T\circ f \vert f \in \mathcal{F}\}$. Now, we are ready to state our main result. 
+so that $T\circ f(x)$ is bounded for any $f$ and $x$. Hence, we consider $A = \{T\circ f(x) : f \in\cH, x\in\X\}$ and $\mathcal{F}\coloneq\{f \vert f:\X \to \R\}$, $\cH \subseteq \mathcal{F}, \cH = \{T\circ f \vert f \in \mathcal{F}\}$. Now, we are ready to state our main result. 
 
 \begin{proposition}[Bounds on the bias]\label{prop: main bound}
-Consider data $D: \Omega^n \to \X^n \times \Y^n$, a predictor $\hat f_D \in \cH$, and a loss function $\ell:\Y\times\Y\to\R^+$ as in Assumption~\ref{ass: lipsch loss}.
-The empirical and the expected risk of $\hat f_D$ satisfy the following bound
+Consider data $D: \Omega^n \to \X^n \times \Y^n$, a predictor $\hat f_D \in \cH$, and a loss function $\ell:\Y\times\Y\to\R^+$ as in Assumption~\ref{ass: lipsch loss}, so that $\ell(\cdot) \le M$ for some $M\in\R$. The empirical and the expected risk of $\hat f_D$ satisfy the following bound
 \begin{equation}\label{eq: mainbounds}
     0 \le \expv_D[ R(\hat f_D) - \hat R_D(\hat f_D)] \le 2M\sqrt{\frac{\log \vert \cH \vert}{2n}}.
 \end{equation}
@@ -303,74 +302,32 @@ Let us see how this bound looks like for a logistic loss function. By our defini
 \end{equation}
 \end{example}
 
-\subsection{Experiments}
 
-The first experiment we have done consist in fitting a number of binary trees to a synthetic dataset and inspecting how the gap $\expv{[R(\hat f_D) - \hat R(\hat f_D)]}$ changes as we increase model complexity $\vert\cH\vert$. Specifically, the experiment consists in 
-\begin{enumerate}
-    \item support: we discretize an interval $I\subset \R$ into $N$ numbers (we chose $I=[0,10], N = 10,000$);
-    \item sample $x$: we sample $x$ from the support, uniformly according to a chosen distribution (we start with the uniform one, then inspect a Gaussian one and an adversarial one);
-    \item sample $y$: we create the outcome variables according to the law \[y = \sgn(f(x)+\sigma\varepsilon), \qquad \varepsilon\sim\mathcal{N}(0,1), \sigma\in\R\]where $\sigma$ controls the amount of noise (we use values of $1,2,3,5$) and $f:I\to\R$ is a convex function chosen to yield roughly half of the points with positive image and half negative (we use $f(x) = (x-5)^2 -6.25$);
-    \item dataset generation: then, we create a training dataset with size $n<<N$ and a test dataset with size $N<<n_\text{test}$ indistinguishable from $\infty$ (we choose $n=10,20,50$ and $n_\text{test}=200,000$);
-    \item select depths: we select a list of depths for our trees, specifically each integer in a multiple of the range of the overfitting threshold, which is $\log_2(n)$;
-    \item fit models: we fit a number of binary trees with different depths to this data and evaluate for each one the error on the training set ($\hat R$) and the error on the test set ($R$);
-    \item plot: we plot the two errors against the depth of the trees, highlighting the overfitting depth. 
-\end{enumerate}
-what we observe is that the training data size and the standard deviation of the noise have inverse (respectively, positive and negative) influences on the performance of the model on training data, hence we balance them accordingly. Also, for a greater number of training samples size we inspect a greater number of depths (e.g. up to $4*$floor(threshold)) to observe the long-term trend. 
 
-\section*{Ideas on interpretation of the bound}
-\begin{itemize}
-\item $\vert \cH\vert$ is a measure of the complexity of our neural netwrok, i.e. proportional to the number of parameters: the more complex the neural network, the more functions it will be able to model, hence the {\it richer} our hypotheses class
-
-\item the bound tells us that, for a fixed test size, as we increase complexity the gap between test error ($R$) and training error ($\hat R$) increases. this is aligend with trainig error going to 0 and test error increasing due to overfitting
-
-\item it does not exlpain precisely an initial decrease in both errors, and a successive divergence
-
-\item can we say that the increase in model complexity is exponential in the number of parameters added, hence $\log\vert\cH\vert$ gives a linear dependence on the number of parameters? 
-
-\item anyways, the crucial point for our developments is that this bound only predicts an increase in the gap, and not the second descent in the test error. also, for a fixed data size you don't have a meaningful bound for $\vert \cH\vert$ large. 
-
-\item also, uno spoiler che mi ha fatto Claude è che la cardinalità non è una buona misura di complessità per noi, perché GD esplora una porzione molto ridotta di tutto lo spazio. il concetto è quello di counting vs. covering.
-
-\end{itemize}
-\section*{Cose che mi devo ricordare}
-\begin{itemize}
-    \item le cose, come dire, oggettive sugli esperimenti le scrivo sempre sul latex. sul md file o codice in generale scrivo dei commenti più ricchi di significato sopra cui lavorare ancora. 
-    \item scrivo tutto o qui o sul codice, nulla di importante rimane solo sui fogli (speriamo)
-\end{itemize}
 \newpage
-\section*{chiamata 28 aprile}
+% \section*{chiamata 28 aprile}
 
-Next steps:
-\begin{enumerate}
-    \item theoretical side - provo a rifare i conti sulle note ML Ideas usando un'altra loss, non con indicatore, ma logistica oppure LS. Nota che sarà utile usare due variabili diverse, $f$ per le funzioni a valori binari, e $g$ per le funzioni (argomento di $f$) a valori reali (che in realtà hanno un dominio discretizzato, non $\R$ propriamente); 
-    \item applied side - fare una shallo network in 1 dimensione con
-    \begin{itemize}
-        \item dati che vivono in $[0,1]$ oppure $[0,10]$ per questioni numeriche, campionati con una misura uniforme 
-        \item prendiamo una funzione $f$ generica (mantieni possibiltà di usarne altre), convessa (per non preoccuparsi di convergenza)
-        \item generi le $y$ come $y = \mathrm{sgn}(f(x)) + \varepsilon$
-        \item usa weights randomici
-    \end{itemize}
-    poi si plotta sulle ascisse la complessità della rete (larghezza, essendo 1 dim), e sulle ordinate l'errore che conta e un altro errore (CE, LS)
-\end{enumerate}
+% Next steps:
+% \begin{enumerate}
+%     \item theoretical side - provo a rifare i conti sulle note ML Ideas usando un'altra loss, non con indicatore, ma logistica oppure LS. Nota che sarà utile usare due variabili diverse, $f$ per le funzioni a valori binari, e $g$ per le funzioni (argomento di $f$) a valori reali (che in realtà hanno un dominio discretizzato, non $\R$ propriamente); 
+%     \item applied side - fare una shallo network in 1 dimensione con
+%     \begin{itemize}
+%         \item dati che vivono in $[0,1]$ oppure $[0,10]$ per questioni numeriche, campionati con una misura uniforme 
+%         \item prendiamo una funzione $f$ generica (mantieni possibiltà di usarne altre), convessa (per non preoccuparsi di convergenza)
+%         \item generi le $y$ come $y = \mathrm{sgn}(f(x)) + \varepsilon$
+%         \item usa weights randomici
+%     \end{itemize}
+%     poi si plotta sulle ascisse la complessità della rete (larghezza, essendo 1 dim), e sulle ordinate l'errore che conta e un altro errore (CE, LS)
+% \end{enumerate}
 
-in generale poi, ci siamo detti che poi andremo a discretizzare il dominio anche nella simulazione, e vediamo se c'è ancora la curva del double descent (``dimensione'' non infinita). poi, faremo la stessa cosa con gli alberi di decisione: qui osserveremo se l'errore va giù e quindi conferma la teoria, allora giocheremo con l'esperimento; oppure se l'errore va su e giù, allora cerchermo di sviluppare la teoria per descriverlo. 
+% in generale poi, ci siamo detti che poi andremo a discretizzare il dominio anche nella simulazione, e vediamo se c'è ancora la curva del double descent (``dimensione'' non infinita). poi, faremo la stessa cosa con gli alberi di decisione: qui osserveremo se l'errore va giù e quindi conferma la teoria, allora giocheremo con l'esperimento; oppure se l'errore va su e giù, allora cerchermo di sviluppare la teoria per descriverlo. 
 
-[extra] inoltre, lui prevedere che nell'esperimento con il dominio discretizzato, l'algoritmo si comporterà diversamente se i punti sono molto vicini tra loro (necessario polinomio grado molto alto per fittare perfettamente il rumore) oppure se sono lontani. in dimensione alta sono sempre molto lontani. altra cosa interessante è che se non usassimo dominio finito, dunque non potessimo {\it contare} quanti modelli abbiamo a disposizione, dovremmo contarli in un modo diverso più geometrico che si chiama covering, tipo riempiendo il cubo con delle sfere. eventualmente poi ci giocheremo.
-\\
+% [extra] inoltre, lui prevedere che nell'esperimento con il dominio discretizzato, l'algoritmo si comporterà diversamente se i punti sono molto vicini tra loro (necessario polinomio grado molto alto per fittare perfettamente il rumore) oppure se sono lontani. in dimensione alta sono sempre molto lontani. altra cosa interessante è che se non usassimo dominio finito, dunque non potessimo {\it contare} quanti modelli abbiamo a disposizione, dovremmo contarli in un modo diverso più geometrico che si chiama covering, tipo riempiendo il cubo con delle sfere. eventualmente poi ci giocheremo.
+% \\
 
-In Section \ref{sec: bias} we develop point $(i)$. 
+% In Section \ref{sec: bias} we develop point $(i)$. 
 
-\section*{chiacchierata 25 giugno}
-to do: 
-\begin{itemize}
-    \item esperimenti: discretizzare dominio, fixare $n, n_\text{train}, N$, calcolare che la $f(x)$ mi dia 50 1 50 -1
-    \item teoria: rifare i conti once and for all per loss logistica e $f$ a valori reali non binari
-\end{itemize}
-questions:
-\begin{itemize}
-    \item la loss e l'estimator per gli alberi quale sarebbe? counting? e?
-    \item guardare dalle sue note il discorso che diceva su i vari tipi di alberi 
-\end{itemize}
+
 \newpage
 \bibliography{refs}
 \bibliographystyle{plain}

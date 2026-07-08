@@ -121,7 +121,7 @@ and since the sums in equation (\ref{example ERhat}) run over all the possible v
 
 Here, we show the bound result Proposition \ref{prop: main bound} in two different seetings from before. 
 
-\subsection{Sign function and quadratic loss}
+\paragraph{Sign function and quadratic loss}
     Let $\mathcal{G}$ be the space of functions $g:\X\to\R$ and $\mathcal{H}$ the space of functions $f:\R\to\Y$ such that
 \begin{equation}
     f \coloneqq \sgn \circ g .
@@ -231,7 +231,7 @@ which yields the result for $X = R(\hat f_D)-\hat R(\hat f_D)$, $a = \vert \cH\v
     Intuitively, the key step in the proof of the lower bound is that equation (\ref{1eq: keybound}) is an inequality between {\it numbers}. The expected value of $\hat R_D(\hat f_D)$ is a {\it number}, say 3, and we are showing that this is lower than all the numbers $R(f), f\in\cH$. Instead, in equation (\ref{ineq: applyhoeffding}) we use a probabilistic bound and work with random variables. 
 \end{remark}
 
-\subsection{Real-valued prediction function and logistic loss}
+\paragraph{Real-valued prediction function and logistic loss}
 Now, we study the same result but in a different setting, namely considering real-valued prediction functions instead of a sign function, and a logistic loss.
     Let $\mathcal{H}$ be the space of functions $f:\X\to\R$, for instance linear functions of the type 
     \begin{equation}
@@ -289,180 +289,11 @@ The proof is then completed exactly as before, with parameters $a = \vert\cH\ver
 
 
 
-\section{Error analysis in least squares}
-
-
-Let $(\X \times \Y, \mu)$ be a probability space, with data $\X \subseteq \R^d$, $\Y\subseteq\R$, and let $\ell:\Y\times\Y \to [0,\infty)$ be a measurable loss function.
-
-For a continuous function of the data $f:\X\to\Y$, we give the following definition. 
-
-\begin{definition}[Expected risk]
-The expected risk of $f:\X\to\Y$ is 
-\begin{equation}
-    L(f) \coloneq \expv_{(x,y)\sim\mu} \big[\ell(y,f(x))\big] = \int_{\X\times\Y} \ell(y,f(x)) \de \mu(x,y)
-\end{equation}
-\end{definition}
-
-In general, we aim at finding \begin{equation}\label{pr: exprisk}f_\mu \coloneq \argmin_{f\in\F} L(f)\end{equation}
-where the minimum runs over the space $\F$ of functions for which $L(f)$ is well defined (the space of measurable functions). Given a learning algorithm and some data ${\{x_i,y_i\}}_{i=1}^n, x_i \in \X, y_i \in \Y \,\forall i$, we obtain a learning solution $\hat f$. Then, the natural error measure is the excess risk
-\begin{definition}[Excess risk]
-    The excess risk of a learning problem with target $f_\mu$ and learning solution $\hat f$ is
-    \[ L(\hat f) - L(f_\mu)\]
-    where $L(\cdot)$ is the expected risk.
-\end{definition}
-
-Since this minimum in (\ref{pr: exprisk}) can be hard or impossible to compute, we give the following definition. 
-
-\begin{definition}[Empirical risk]
-    Given a probability space $(\X \times \Y, \mu)$, a dataset ${\{x_i,y_i\}}_{i=1}^n, x_i \in \X, y_i \in \Y \,\forall i$, a continuous measurable function $f:\X\to\Y$, and a measurable loss function $\ell:\Y\times\Y \to [0,\infty)$, the empirical risk of $f$ is
-    \begin{equation}\label{eq: emprisk}
-        \hat L(f) \coloneq \sum_{i=1}^n \ell(f(x_i), y_i)
-    \end{equation}
-    and it is a finite-sample, tractable version of the expected risk. 
-\end{definition}
-The problem becomes to find \begin{equation} \min_{f} \hat L(f)\end{equation}
-which is known as {\it empirical risk minimization (ERM)},
-where $\mathcal{H}$ is the hypotheses set, a restricted set of possible solutions that we choose based on our problem. 
-% Our learning algorithm will now give $\hat f = \argmin_{\f \in \cH} \hat L (f)$.
-\\
-
-Now, we focus our analysis on regularized least squares. We consider a linear combination of the features
-\[
-f(x) = \langle w,x \rangle, \quad w\in\R^d
-\]
-hence we have $\cH =\{f:\X\to\Y \,\vert\, f(x) = \langle w,x \rangle \text{ for some } w \in\R^d\}$;
-the squared loss
-\[
-\ell\big(f(x),y\big) = {\big(y - \langle w,x\rangle\big)}^2
-\]
-with associated expected risk
-\[
-L(w) = \int_{\X\times\Y} \big(y - \langle w,x\rangle\big)^2\de\mu(x,y)
-\]
-(indicated as $L(w)$ with an abuse of notation).
-With a finite dataset of size $n$, our estimator will be 
-\begin{equation}\label{eq: estim}
-    \hat w_\lambda = \argmin_{w\in\R^d} \frac{1}{n} \sum_{i=1}^n \big(y_i - \langle x_i,w\rangle\big)^2 + \lambda \Vert w \Vert^2
-\end{equation}
-minimizing the empirical risk plus a regularization term with $\lambda >0$, and the natural error measure will be
-\begin{equation}\label{eq: errmeasureLS}
-    L(\hat w_\lambda) - \min_{w\in\R^d} L(w)
-\end{equation}
-i.e. the excess risk, which is a positive random variable. We are interested in bounding
-\begin{equation}\label{pr: eps1}
-    \Pr \bigg[L(\hat w_\lambda) - \min_{w\in\R^d} L(w) \le \varepsilon\bigg], \quad \forall\varepsilon>0
-\end{equation}
-
-its cumulative distribution. 
-
-Alternatively, we assume $\exists \, \kappa,M>0$ such that $\Vert x \Vert \le \kappa$ and $\vert y \vert \le M$ almost surely, and that there is a $w^* \in \R^d$ that minimizes $L(w)$. Then, we look at the error measure
-\[
-\Vert \hat w_\lambda - w^* \Vert
-\]
-and consider 
-\begin{equation}\label{pr: eps2}
-    \Pr \bigg[\Vert \hat w_\lambda - w^* \Vert \le \varepsilon\bigg]
-\end{equation}
-which is easier to analyse than (\ref{pr: eps1}), but provides worse bounds (any bound on (\ref{pr: eps2}) implies bounds on (\ref{pr: eps1})). 
-
-\paragraph{\bf Optimality conditions and other properties}
-
-We consider our problem under 3 different lenses, going from the infinite data case with no regularization to the empirical case that we actually implement, and provide optimality conditions and other results for each of them. 
-\\
-
-We start by considering problem
-\[
-\min_{w\in\R^d} L(w)
-\]
-and we define the following useful quantities
-\begin{gather*}
-    \Sigma:\R^d\to\R^d, \qquad \Sigma w = \int_{\X\times\Y} xx^tw \de \mu(x,y) = \int_{\X} xx^tw \de \mu_\X(x)\\
-    h\in\R^d, \qquad h= \int_{\X\times\Y} xy\de\mu(x,y)
-    \end{gather*}
-        where $\mu_\X (x) = \int_{\Y} \mu(x,y) \de y$ is the marginal distribution of $x$. 
-\begin{proposition}[Infinite data, no regularization]\label{prop: infinite,noreg}
-Consider the minimization problem 
-\[
-\min_{w\in\R^d} L(w)
-%= \int_{\X\times\Y} (y-\langle w,x \rangle ) ^ 2 \de \mu(x,y)
-\]
-%for $\mu$ probability over the data space $\X\times\Y$ and $\ell(x,y) = (y-\langle w,x \rangle ) ^ 2$ measurable loss function.
-then, the following hold:
-    \begin{enumerate}[label=(\roman*)]
-        \item \[\nabla L(w)=0 \quad\Longleftrightarrow\quad \Sigma w = h\]
-        with $\Sigma, h$ as above;
-        \item in particular, \[w^* = \Sigma^{-1}h\]
-        where $w^*$ minimizes $L(w)$;
-        \item additionally, we have
-        \[L(w) - L(w^*) = \langle w-w^*, \Sigma(w-w^*)\rangle\]
-    \end{enumerate}
-    \begin{proof}
-        The proof of item $(i)$ follows by expanding the gradient of $L(w)$ and noticing that the two conditions coincide:
-        \begin{align*}
-            \nabla L(w)& =\frac{\partial}{\partial w} \int (y-\langle w,x \rangle)^2 \de\mu = \int \frac{\partial}{\partial w} (y-\langle w,x \rangle)^2 \de\mu \\
-            & = \int 2 (y-\langle w,x \rangle) (-x) \de \mu = 2 \int - yx + \langle w,x \rangle x \de\mu;\\
-            \nabla L(w)=0&\Leftrightarrow \int yx \de \mu = \int x\langle w,x \rangle \de \mu \Leftrightarrow h = \Sigma w
-        \end{align*}
-        where the first line follows from continuity of $\ell(x,y)=(y-\langle w,x \rangle)^2$. Item $(ii)$ follows directly by definition of minimum and item $(i)$. 
-        Lastly, item $(iii)$ follows by manipulating the expression of $L(w)$:
-
-        \begin{align*}
-            L(w) &= \int (y-\langle w,x\rangle) ^ 2\de \mu = \int (y - \langle w^*,x\rangle + \langle w^*,x \rangle - \langle w,x\rangle)^2 \de \mu\\
-            &= \int (y-\langle w^*,x\rangle)^2 \de \mu + \int (\langle w^*,x\rangle-\langle w,x\rangle)^2 \de \mu - 2\int (y - \langle w^*,x\rangle)(\langle w^*,x\rangle-\langle w,x\rangle) \de \mu \\
-            & = L(w^*) + \int (\langle w^*,x\rangle-\langle w,x\rangle)^2 \de \mu - 2\int (y - \langle w^*,x\rangle)(\langle w^*,x\rangle-\langle w,x\rangle) \de \mu
-        \end{align*}
-        the latter term is
-        \begin{align*}
-            \int (y-\langle w^*,x\rangle) (\langle x,w^*-w\rangle) \de \mu = \bigg\langle \int (y-\langle w^*,x\rangle)x\de mu, w^*-w\bigg\rangle = \langle h-\Sigma w^*, w^*-w\rangle = 0
-        \end{align*}
-        where we used the property (\ref{app: trick}) of the integral and continuous functions, and item $(ii)$. Hence,
-        \begin{align*}
-            L(w) - L(w^*) &= \int (\langle w^*,x\rangle-\langle w,x\rangle)^2 \de \mu  = \int \langle w^*-w,x\rangle\langle w^*-w,x\rangle \de \mu = \bigg\langle w^* - w, \int \langle w^* -w, x\rangle x \de \mu \bigg\rangle \\
-            & = \langle w^*-w , \Sigma (w^*-w)\rangle
-        \end{align*}
-        
-    \end{proof}
-\end{proposition}
-
-Similarly, we have the following result.
-\begin{proposition}[Infinite data, with regularization]\label{prop: infinite,reg}
-    Consider the problem 
-    \[
-    \min_{w\in\R^d} L_\lambda(w) = L(w) + \lambda \Vert w\Vert^2
-    \]
-    for some $\lambda >0$. Then, the following hold:
-    \begin{enumerate}[label=(\roman*)]
-        \item the corresponding optimality condition is
-        \[\nabla L_\lambda(w) = 0 \quad \Longleftrightarrow \quad (\Sigma + I\lambda)w = h\]
-        where $I:\R^d \to \R^d$ is the identity map;
-        \item in particular, 
-        \[ w_\lambda = (\Sigma + \lambda I)^{-1} h\]
-        where $w_\lambda$ minimizes $L_\lambda(w)$.
-    \end{enumerate}
-    \begin{proof}
-        The proof follows by the same arguments as those in proposition (\ref{prop: infinite,noreg}). 
-    \end{proof}
-\end{proposition}
-
-Now, we turn to analysing the case of empirical least squares, and define the associated quantities
-\begin{gather*}
-    \hat\Sigma:\R^d\to\R^d, \qquad \hat \Sigma = \frac{1}{n}\sum_{i=1}^n x_i x_i^t\\
-    \hat h\in\R^d, \qquad \hat h= \frac{1}{n}\sum_{i=1}^n x_iy_i
-    \end{gather*}
-
-We consider the problem
-\[\min_{w\in\R^d} \hat L_\lambda\]
-with empirical risk
-\[\hat L_\lambda = \sum_{i=1}^n (y_i - \langle w, x_i\rangle)^2 + \lambda \Vert w \Vert ^2, \quad \lambda>0\]
-(which follows from definition (\ref{eq: emprisk}) and adding a regularizer as in $L_\lambda$).
-Repeating the same arguments, we obtain
-\[\hat w_\lambda = (\hat \Sigma + \lambda I)^{-1} \hat h\]
-where $\hat w_\lambda$ minimizes $\hat L_\lambda$.
 
 
 
 
-\section{ML ideas - Mean analysis}
+\section{Mean analysis}
 
 % \textbf{appunti chiamata 4 marzo}: nn ho capito molto. lui dice che vuole verificare se il fatto che la misura di errore sia biased è effettivamente un problema oppure no, cioè quantificare quanto questo è un problema. 
 
@@ -478,7 +309,7 @@ Qui, qualche appunto con l'obiettivo di indagare
 
 
 \vspace{0.5 cm}
-\paragraph{Notation \& references} We start from the notes `ML ideas' by Prof. Rosasco. 
+\paragraph{Notation and references} We start from the notes `ML ideas' by Prof. Rosasco. 
 % Here, we look at neural networks rather than plain regressions. 
 We consider the following items:
 \begin{itemize}[label=$\cdot$]
@@ -490,7 +321,8 @@ We consider the following items:
 \end{itemize}
 \vspace{0.5 cm}
 
-\paragraph{\bf Analysis I} We aim at obtaining predictions from our data. To be able to evaluate predictors, we define the following measure of error of a scalar predictor $a$.  
+
+We aim at obtaining predictions from our data. To be able to evaluate predictors, we define the following measure of error of a scalar predictor $a$.  
 
 \begin{definition}[Expected risk]
 The expected risk of a predictor $a \in \R$ is:
@@ -645,75 +477,3 @@ E' grande tanto quanto la varianza e piccolo tanto quanto la grandezza del tuo d
 Considerando la varianza come data, quello che posso fare è aumentare la misura del mio dataset. However, se stiamo facendo tutto questo per non avere bisogno del test set e ridurre i costi di fare machine learning, siamo punto a capo. 
 \\
 
-\paragraph{\bf Analysis II} 
-%All'alba (16:25) del giorno 9 aprile rileggo la mia conversazione con Claude (\href{https://claude.ai/chat/445bd5e0-3fb1-4d82-a541-0624e95a33a9}{questa}) e comprendo che probabilmente non parliamo di usare la mia misura di errore ($\hat R$) sullo stesso dataset su cui ho fittato il modello, il train set, ma parliamo di usarla sul test set. 
-Consideriamo ora di non valutare la mia misura di errore sul train set, ma di usarla sul test set molte volte (e quindi ammettendo un po' di tuning sul test set, un po' di overfitting). 
-Quindi, il primo split dei dati è ammesso, è il secondo, in cui creiamo anche il validation set, che stiamo mettendo in dubbio. L'analogia della moneta funziona comunque: $\hat R$ è pari al punteggio vero del mio modello sul lungo periodo, ma misurazione per misurazione ha una deviazione dalla sua media che potrebbe darmi punteggi più generosi, e questo è più probabile che accada (o, comunque, presenta punteggi diversi e quindi probabilmnete più alti) su 1000 trials (1000 modelli) invece che 100. Analizziamo questo paper di Ben recht. 
-\\
-
-\noindent $\blacktriangleright$ appunti dal paper su ImageNet e CIFAR \cite{recht2019imagenet}:
-
-loro provano a  creare un nuovo test set con lo stesso data cleaning process di quello classico, usato per anni, e vedono un peggioramento nella performance di vari modelli di classificazione su entrmabi i dataset. un peggioramento talvolta equivalente a 5 anni di ricerca. 
-
-a cosa è dovuto questo peggioramento? un'ipotesi è l'adattamento dei modelli a questo test set, in modo informale tipo con specifici benchmark da battere che influenzano anche inconsciamente il ricercatore, cioè non in modo matematico ma più comportamentale. however, loro vedono che l'ordine dei modelli in termin di accuracy è mantenuto, e che non ci sono diminishing returns: modelli anche più recenti, quindi con accuracies più alte, hanno un calo in accuracy più piccolo (il ritorno è $-$ il calo in accuracy, intuitively). se il problema fosse l'adattamento, i modelli più recenti vedrebbero un calo molto maggiore. quindi, anche se c'è un'overstima sulla performance dei modelli, ``exhaustive evaluations on the test set'' are sufficient to select models, perché comunque selezioni il migliore. 
-
-la loro spiegazione, invece, si basa sulla difficoltà dei due test set (dove quello vecchio è molto più semplice). infatti, togliendo dal nuovo set le immagini un po' piu difficili (come si quantifica tale difficoltà?), migliora l'accuracy e matcha quella sul vecchio set. 
-
-{\it We adopt the standard classification setup and posit the
-existence of a “true” underlying data distribution D over
-labeled examples (x,y).} kinda polemico
-
-\[L_{S'} - L_S = (L_{S'} - L_{D'}) + (L_{D'} - L_D) + (L_D - L_S)
-\]
-core idea. generalization gap + distribution gap + adaptivity gap
-
-It is important here to treat $S'$ as our test set, and $D'$ as our distribution. Indeed, $L_{S'} - L_{D'}$ is a simple generalization gap, due to the reduction in information caused by sampling; it is a purely random error. 
-$D$ is the original distribution, which we try to resemble. Hence, $L_{D'}-L_D$ is a structural distribution gap, due to the practical impossibility (is it?) to perfectly copy a high dimensional distirbution. Lastly, $S$ is the previous test set on which some adaptation could have been done, it is characterized by models having being tested multiple times on it. Thus, $L_D - L_S$ is the adaptivity gap: ideally, it has the same distribution (notice how we consider identity in distribution, as we are treating {\it random variables}) as the generalization gap, but in practice, some adaptivity to the test set $S$ may have occured, which inflates this source of error. 
-
-\begin{remark}
-    Two remarks are in order, arising from the {\it adaptivity gap} paragraph:
-    \begin{itemize}
-        \item they deliberately mention a ``common practice'' of tuning the hyperparameters on the test set;
-        \item they treat the case of testing directly on the train set as the extreme case of having {\it some} adaptivity to the test set, which makes our analysis above not useless!
-    \end{itemize}
-\end{remark}
-
-they study the disentanglement between the different gaps looking at multiple models $\hat f_1,\ldots, \hat f_k$ evolving over time, which makes it easier. under the adaptation assumption, the adaptivity gap increases for later models, due to $L_S$ decreasing but $L_D$ remaining the same, as they improve only on the examples appearing in the test set. 
-
-this however does not happen! in fact, the authors believe the distribution gap is the main driver of the decrease in accuracy (the difficulty of reproducing the same dataset), and also posit two explanations of the lack of adaptivity. first, the fact that there is an implicit noise in the adaptivity to a test set, so i think this kind of says ``the adaptation assumption is in fact untrue''. second, and more interesting, there is a limited set of models that is actually tested, among all the models that caould be obtained (those that perform well in the train set). this limited cardinality may ensure that the test evaluation is still valid. 
-\\
-
-{\color{benred} ?} this line {\it since they are the result of more successive hyperparameter tuning on the same test set} makes me wonder whether it is still in an informal way, or they assume hyperpar tuning is being done on the test set 
-\\
-
-{\color{benred} onestamente, loro presentano $L_S(\hat f)$ come una loss, e poi senza dire nulla la trattano come accuracy, che ok si comprende ma io le tratterò come loss} 
-\\
-
-{\color{benred} !! how to read figure 1:} the black dashed line is the slope 1 line, and you see all the accuracies lying below (i.e. y smaller than x). also, later models are univocamente characterized as models with higher accuracy, as they took a line of papers with improved accuracies. also, slope of the fit (red line) is constant and it fits well $\rightarrow$ constant returns, not diminishing, hence challenging the adaptivity assumption. 
-\\
-
-{\color{benred} future directions:} {\it While our experiments rule out the most dangerous form of
-adaptive overfitting, we remark that they do not exclude all
-variants. For instance, it could be that any test set adaptiv-
-ity leads to a roughly constant drop in accuracy. Then all
-models are affected equally and we would see no diminish-
-ing returns since later models could still be better. Testing
-for this form of adaptive overfitting likely requires a new
-test set that is truly i.i.d. and not the result of a separate
-data collection effort. Finding a suitable dataset for such an
-experiment is an interesting direction for future research.}
-
-
-\newpage
-\paragraph{Experiments}
-Experiment I plan to do:
-\begin{enumerate}
-    \item dati $\sim$ distribuzione + noise
-    \item splitto 50 train 50 test
-    \item calcolo emp. mean $\hat\mu$ sul train
-    \item calcolo $\hat R(\hat\mu)$ e $R(\hat\mu)$ 
-    \item calcolo $\hat R_{test}(\hat\mu)$ con test split dati 
-    \item confronto le due misure di errore su test e train con la misura vera
-\end{enumerate}
-
-As for the gradient descent topic, I visualize due mappe animate, una con il landscape 2 dimensionale (in 3d) della perdita, dove si vede un vermicello che sarebbe il gardient descent muoversi; l'altro, a destra, dove si vede il mio modello che cambia man mano che vermicello scivola giù. questo viene fatto tipo in 3 casi: step size più grande, step size più piccola, flusso gradiente (è possibile?) 
