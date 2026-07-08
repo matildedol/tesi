@@ -37,24 +37,21 @@
 
 \section{Mathematical framework}\label{sec: math}
 
-We observe some data of the type $x\in \X\subset \R$, and $y\in \Y\subset \{-1,1\}$, and we would like to predict $y$ from $x$.
-To do so, we are given a collection of observations like $x$ and $y$, i.e. our data. This allows to observe the relationship between $x$ and $y$ multiple times and hope to estimate it well.
+We observe $x\in \X = \{\bar x_1, \ldots, \bar x_N\}\subset \R$, and $y\in \Y\subset \{-1,1\}$ and we would like to predict $y$ from $x$.
+To do so, we are given a collection of observations like $x$ and $y$, i.e.\ our data. This allows to observe the relationship between $x$ and $y$ multiple times and hope to estimate it well.
 % am i biased by causal inference nel parlare di relazione tra x e y? alla fine dobbiamo sempre trovare una relazione, però è forse misleading dato che è occulta in (most of) machine learning 
 
 \begin{assumption}\label{1ass: randomdata}
     We assume our data is drawn from a probability distribution.
-Therefore, we consider the sample space $(\Omega, \mathcal{F}, \mathbb
-P)$ and define the random variables 
+Therefore, we consider the sample space $\Omega$ and define the random variables 
 \[\begin{gathered}
     X:\Omega \to \X, \quad \omega \mapsto x \qquad \text{and}\qquad Y:\Omega \to \Y,\quad \eta \mapsto y;\\
-    (X,Y)\sim p,\quad p\coloneq (X,Y)_\#(\mathbb{P}\otimes\mathbb{P}),
+    (X,Y)\sim p,
 \end{gathered}\]
-with joint law $p$, the push-forward of the elementary measure $\mathbb P$. 
+with joint law $p$, which is a  cathegorical probability distribution over  $\X\times\Y = \{\bar x_1,\ldots,\bar x_N\}\times\{-1,1\}$.
 \end{assumption}
 
 Since we want to obtain a collection of observations, we define an additional random variable.
-
-\mati{$\X$ compatto numerabile}
 
 \begin{definition}[Dataset]
     Given a size $n$, a probability space $(\Omega, \mathcal F, \mathbb P)$, and value spaces $\X,\Y$, a dataset $D$ is a random variable 
@@ -97,12 +94,12 @@ Now, we are ready to define our central object, the predictor.
     that depends on some data $D$ and on a learning algorithm $A$. The source of randomness is the dataset $D$.  
 \end{definition}
 
-Now, we would like to have a way to {\it evaluate} our predictors, in order to select the best one. To do so, we use a metric called {\it expected risk}. First, we take a loss function $\ell:\Y\times\Y\to\R$ that takes the preidction $f(x)$ and the true value $y$ and outputs a number corresponding to the error in the prediction. 
+Now, we would like to have a way to {\it\/ evaluate} our predictors, in order to select the best one. To do so, we use a metric called {\it expected risk}. First, we take a loss function $\ell:\Y\times\Y\to\R^+$ that takes the preidction $f(x)$ and the true value $y$ and outputs a number corresponding to the error in the prediction. 
 
 \begin{definition}[Expected risk]
-    Assume the distribution $p$ in Assumption (\ref{1ass: randomdata}) is discrete, with support $S\times\{0,1\}, S =\{s_1,\ldots, s_m\}, s_i \in \X$. Given a predictor $f$ and a loss function $\ell$, the expected risk is a deterministic function $R: (\X^m\times\Y^m) \times \cH \to \R$,
+     Given a predictor $f$ and a loss function $\ell$, the expected risk is a deterministic function $R: (\X\times\Y) \times \cH \to \R$,
     \begin{equation}
-        R(f) \coloneq \sum_{i=1}^m \sum_{y_i\in\{-1,1\}}\ell(f(s_i),y_i)p(s_i, y_i).
+        R(f) \coloneq \sum_{i=1}^m \sum_{y_i\in\{-1,1\}}\ell(f(\bar x_i),y_i)p(\bar x_i, y_i).
     \end{equation}
 \end{definition}
 The issue with using $R(f)$ as a metric, however, is that we do not know the true distribution $p$ in general. Hence, we approximate the expected risk with a new, emprical metric, the {\it empirical risk}, motivated by the law of large numbers. 
@@ -126,11 +123,11 @@ For a deterministic estimator $f\in\cH$, the following result holds.
     \expv[\hat R_D(a)] = R(a).
 \end{equation}
 \begin{proof}
-A proof is found in the appendix (Proposition \ref{app: unbiased}).
+A proof is found in the appendix (Proposition~\ref{app: unbiased}).
 \end{proof}
 \end{proposition}
 
-\section{Evaluating the bias} \label{sec: bias}
+\section{Evaluating the bias}\label{sec: bias}
 
 With the technology defined above, we define an estimator given a dataset $D$ and an hypotheses space $\cH$ as
 \begin{equation}\label{1eq: argmin}
@@ -138,67 +135,79 @@ With the technology defined above, we define an estimator given a dataset $D$ an
 \end{equation}
 This means that among all candidates in $\cH$, we select the one that minimizes the empirical risk. Solving problem (\ref{1eq: argmin}) corresponds to {\it fitting} the estimator to the data $D$ or {\it training} the estimator on $D$. 
 
-Subsequently, it is natural to look for a measure of performance of $\hat f_D$, for instance to choose the best one among a set of different hypotheses (e.g. different architectures of a neural network), or to provide a measure of reliability of our prediction. However, our estimator is now a random variable of the data. This makes the result in Proposition \ref{1prop: unbiased} not valid anymore: the empirical risk computed on a dataset $D$ is a biased estimate of the true, expected risk of an estimator trained on $D$. This intuitively comes from the correlation between datapoints, as seen in Example \ref{ex: toy}. 
+Subsequently, it is natural to look for a measure of performance of $\hat f_D$, for instance to choose the best one among a set of different hypotheses (e.g. different architectures of a neural network), or to provide a measure of reliability of our prediction. However, our estimator is now a random variable of the data. This makes the result in Proposition \ref{1prop: unbiased} not valid anymore: the empirical risk computed on a dataset $D$ is a biased estimate of the true, expected risk of an estimator trained on $D$. This intuitively comes from the correlation between datapoints, as seen in Example \ref{app: toy}. 
 As a solution, classical statistical theory provides splitting the dataset into two parts $(D_{train},D_{test})=D$ to preserve unbiasedness. Usually, we fit the estimator to $D_{train}$ and compute $\hat R$ on $D_{test}$, to obtain $\hat R_{D_{test}}$ as an unbiased estimate of the risk of $\hat f_{D_{train}}$. 
 
-The question we pose in this work is whether using two different datasets is really necessary in practice. More practically, we quantify the bias arising from using the same dataset. Before presenting our main result in this respect, we provide a toy example to convince the reader of the presence of a bias.
+We begin by asking the following question: how many splits of the dataset are really necessary in practice? To answer this, we want to study the bias arising from using the same dataset for training and evaluating a model. 
 
-\begin{example}[Least squares with toy dataset]\label{ex: toy}
-    Let $\ell(f(x_i),y_i) = (f(x_i)-y_i)^2$ the quadratic loss, and $\cH = \{x\mapsto ax:a\in\R\}$ the space of linear functions. We obtain the least squares estimator
-    \begin{align}
-    \hat f_d (x_i)= \frac{\sum_i x_iy_i}{\sum_i x_i^2}x_i, \qquad x_i,y_i \in d.
-    \end{align}
-    Now, consider $d = \{(x_1,y_1),(x_2,y_2)\}$ realization of $D$. First, we fit our estimator to the observation $(x_1,y_1)$ and use $(x_2,y_2)$ as a test set, in the spirit of classical statistical theory. 
-    The empirical risk equals 
-        \begin{align}
-    \hat R_{d_2} (\hat f_{d_1}) &= \ell(\hat f_{d_1}(x_2)-y_2) \notag\\
-    &= (\frac{x_1y_1}{x_1^2}x_2-y_2)^2 \notag\\
-    &= \frac{(x_1y_1)^2}{x_1^4}x_2^2 + y_2^2 -2x_2y_2\frac{x_1y_1}{x_1^2}
-    \end{align}
-    Taking expectations (with a little abuse of notation),
-    \begin{align}
-    \expv_{d_2\sim p}[\hat R_{d_2} (\hat f_{d_1})] &= \sum_{x_2,y_2} \ell(\hat f_{d_1}(x_2) -y_2) p(x_2,y_2)\notag \\
-    &= \frac{(x_1y_1)^2}{x_1^4}\sum_{x_2} x_2^2p_x(x_2) + \sum_{y_2} y_2^2p_y(y_2) - 2\frac{x_1y_1}{x_1^2}\sum_{x_2,y_2} p(x_2,y_2)x_2y_2\label{example ERhat}
-    \end{align}
-where $\sum_x$ is the sum over all possible values of $x$, and $p_x,p_y$ are marginal distributions. Recall that the expected risk equals
-\begin{align}
-    R(\hat f_{d_1}) &= \sum_{s_i,y_i} \ell (\hat f_{d_1}(s_i) -y_i)p(s_i,y_i)
-\end{align}
-and since the sums in equation (\ref{example ERhat}) run over all the possible values $x_2$ and $y_2$ can take, the two quantities are equal. The result does not change if we consider larger datasets.
- Now, we look at the case where we fit and evaluate the estimator on a single dataset $(x_1,y_1)$. In this case, we would have
-        \[
-    \expv[\hat R_{d_1} (\hat f_{d_1})] = \sum_{x_1,y_1} \frac{(x_1y_1)^2}{x_1^4}x_1^2p_x(x_1) + \sum_{y_1} p_y(y_1)y_1^2 - \sum_{x_1,y_1} 2\frac{x_1y_1}{x_1^2}p(x_1,y_1)x_1y_1.
-    \]
-    Where the ``cross'' terms make the estimator biased. Doing the math,
+We make the following assumptions.
+
+\begin{assumption}[Boundedness of loss function]\label{ass: bounded loss}
+    Given a loss function $\ell:\Y\times\Y\to\R^+$ and a prediction function $f:\X\to\Y$, 
+    $\exists M\in\R$ s.t.
     \[
-    \expv[\hat R_{d_1} (\hat f_{d_1})] = 2\sum_{y_1}y_1^2 p_y(y_1) - 2\sum_{y_1}y_1^2 p_y(y_1) = 0 \le R(\hat f_{d_1}) 
+    \ell (f(x), y) \le M \qquad \forall x\in\X, y\in\Y.
     \]
-    where the inequality comes from $\ell(\cdot)\ge 0$. Hence, in this example the empirical risk evaluated on the same data to which the estimator is fitted underestimates the risk of the estimator. We will see that this is always the case.
+\end{assumption}
+
+\begin{assumption}[Lipschitzness of loss function and bound at zero]\label{ass: lipsch loss}
+Given a loss function $\ell:\Y\times\Y\to\R^+$ and a prediction function $f:\X\to\Y$, 
+    \begin{enumerate}
+        \item $\exists C>0$ s.t.
+        \[ \forall a,a^\prime\in\R, \vert \ell(a)-\ell(a^\prime)\vert \le C\vert a-a^\prime\vert\]
+
+        \item $\exists C^\prime >0$ s.t.
+        \[ \vert \ell(0)\vert \le C^\prime
+        \]
+    \end{enumerate}
+\end{assumption}
+
+Let us make an example of a loss function that satisfies these assumptions.
+
+\begin{example}[Logistic loss function]\label{ex: logistic}
+    Let $\ell (a) = \log (1+e^{-a}), a \in \R$. Notice that to apply this to our setting we take the product $f(x)\cdot y$ and then apply $\ell$.
+    We have
+    \[
+    \ell'(a) = -\frac{e^{-a}}{1+e^{-a}} = -\frac{1}{1+e^a}\quad \Rightarrow \quad \vert \ell'(a)\vert < 1 \qquad\forall a \in \R
+    \]
+    hence 
+    \[
+    C = \sup_{a\in\R} \vert \ell^\prime\vert \le 1.
+    \]
+    Also,
+    \[
+    \ell(0) = \log 2 = C^\prime.
+    \]
 \end{example}
 
-Going back to our setting, we start with the following specifications. 
-\begin{assumption}[Sign function and quadratic loss]\label{1ass: shapeH}
-    Let $\mathcal{G}$ be the space of functions $g:\X\to\R$ and $\mathcal{H}$ the space of functions $f:\R\to\Y$ such that
+\begin{proposition}\label{prop: suff assump 2.2}
+    For $a\in A\subset\R, A\coloneqq \{a\in\R : \vert a \vert \le B\text{ for some constant } B \in \R\}$, Assumption~\ref{ass: lipsch loss} $\Rightarrow$ Assumption~\ref{ass: bounded loss}. 
+    \begin{proof} For $a\in A$,
+        \begin{align*}
+            \ell(a) &= \vert \ell(a)\vert \\
+            &= \vert \ell(a)-\ell(0)+\ell(0)\vert \\
+            &\le \vert \ell(a)-\ell(0)\vert + \vert \ell(0)\vert \\
+            &\le C\vert a \vert + C^\prime \\
+            &\le CB + C^\prime \eqqcolon M
+        \end{align*}
+    \end{proof} 
+\end{proposition}
+Notice that we can always take a {\it\/truncation map} $T:\R\to[-1,1]$, defined as 
 \begin{equation}
-    f \coloneqq \sgn \circ g .
+    T(a) = \begin{cases}
+        -1 & a \le -1\\
+        a & -1<a<1\\
+        1 & a\ge 1,
+    \end{cases}
 \end{equation}
-This means that for any $g$ there is a $f_g = \sgn \circ g$. Observe that $g$ encodes the complexity of our hypotheses space (e.g. the structure of the tree in the case of decision trees) and $f$ encodes binary predictions. Notice that if the size of the support is $\vert\X\vert=N$, then $\vert\cH\vert = 2^N$. Also, we consider
-    \begin{equation}
-        \ell(f(x_i), y_i ) = {(y_i-f(x_i))}^2
-    \end{equation}
-    the quadratic loss.
-\end{assumption}
-Now we are ready to state our main result. 
+so that $T\circ f(x)$ is always bounded. Hence, we can take $A = \{T\circ f(x) : f \in\cH, x\in\X\}$ and $\mathcal{F}\coloneq\{f \vert f:\X \to \R\}$, $\cH \subseteq \mathcal{F}, \cH = \{T\circ f \vert f \in \mathcal{F}\}$. Now, we are ready to state our main result. 
 
-
-\begin{proposition}[Bounds on the bias]
-Given data $D: \Omega^n \to \X^n \times \Y^n$ and a predictor $f:\X \to \{-1,1\}$,
-the empirical and the expected risk of trained and evaluated on $D$ with a quadratic loss function satisfy the following bound
+\begin{proposition}[Bounds on the bias]\label{prop: main bound}
+Consider data $D: \Omega^n \to \X^n \times \Y^n$, a predictor $\hat f_D \in \cH$, and a loss function $\ell:\Y\times\Y\to\R^+$ as in Assumption~\ref{ass: lipsch loss}.
+The empirical and the expected risk of $\hat f_D$ satisfy the following bound
 \begin{equation}\label{eq: mainbounds}
-    0 \le \expv_D[ R(\hat f_D) - \hat R_D(\hat f_D)] \le 4\sqrt{\frac{2\log \vert \cH \vert}{n}}.
+    0 \le \expv_D[ R(\hat f_D) - \hat R_D(\hat f_D)] \le 2M\sqrt{\frac{\log \vert \cH \vert}{2n}}.
 \end{equation}
-
-
 \begin{proof}
 We prove the lower bound ($0\le\expv_D...$) first. All the expectations are over the randomness of the data $D$, we drop the subscript to light notation. We have
 \begin{equation}\label{ineq: minimizer1}
@@ -209,7 +218,7 @@ Then, take expectations
 \begin{equation}
     \expv[\hat R_D(\hat f_D)] \le \expv[\hat R_D(f)] \quad \forall f\in \cH.
 \end{equation}
-Now, since the functions in $\cH$ are deterministic, by Proposition \ref{1prop: unbiased} we have
+Now, since the functions in $\cH$ are deterministic, by Proposition~\ref{1prop: unbiased} we have
 \begin{equation}
     \expv[\hat R_D(f)] = R(f) \quad \forall f\in\cH,
 \end{equation}
@@ -233,20 +242,20 @@ Next, we prove the upper bound ($\expv \le 2 \sqrt...$). For any $f \in \cH$, $\
 \[
 \hat R_D(f) =\frac{1}{n}\sum_i Z_i 
 \]
-We now want to apply Hoeffding's inequality. To do so, we need to satisfy 3 conditions:
+We now want to apply Hoeffding's inequality (Proposition~\ref{app: hoeffding} in the appendix). To do so, we need to satisfy 3 conditions:
 \begin{enumerate}
     \item $Z_1, \ldots, Z_n$ i.i.d.
-    \item $\expv[Z_1] = \ldots = \expv[Z_n]$
+    \item $\expv[Z_1] = \cdots = \expv[Z_n]$
     \item $b_i \le Z_i \le a_i$ for some $a_1, \ldots, a_n \in \R$ and $b_1,\ldots,b_n\in\R$. 
 \end{enumerate}
-We have that $(i)$ is satisfied by $Z_is$ being i.i.d. by construction. Condition $(ii)$ is satisfied since all the $(x_i,y_i)$ have the same distribution. As for $(iii)$, it is satisfied by Assumption \ref{1ass: shapeH} with $b_1=\ldots=b_n=0$ and $a_1 = \ldots = a_n = 4$. 
+We have that $(i)$ is satisfied by ${Z_i}s$ being i.i.d.\ by construction. Condition $(ii)$ is satisfied since all the $(x_i,y_i)$ have the same distribution. $(iii)$ is satisfied with $b_1=\cdots=b_n=0$ and $a_1 = \cdots = a_n = M$ by non-negativity of the loss function and Proposition~\ref{prop: suff assump 2.2} with our definition of $\cH$. 
 Now we can apply Hoeffding's. We obtain 
 \begin{equation*}
-    \Pr [\frac{1}{n}\sum_i Z_i - \mu \ge \varepsilon] \le e^{-n\varepsilon^2/8}
+    \Pr [\frac{1}{n}\sum_i Z_i - \mu \ge \varepsilon] \le e^{-2n\varepsilon^2/M^2}
 \end{equation*}
 and thus
 \begin{equation}\label{ineq: applyhoeffding}
-    \Pr [ R(f) - \hat R_D(f) \ge \varepsilon]\le e^{- n\varepsilon^2/8}
+    \Pr [ R(f) - \hat R_D(f) \ge \varepsilon]\le e^{- 2n\varepsilon^2/M^2}
 \end{equation}
 Now, to obtain a bound for $\hat f_D$ we bound it with the union of the probabilities of the events for each $f\in\cH$. 
 We have
@@ -255,18 +264,18 @@ We have
 \end{equation}
 trivially, and also 
 \begin{equation}
-    \bigcup_{f \in \cH} \Pr[R(f)-\hat R_D(f) \ge \varepsilon] \le \sum_{f \in \cH} \Pr[R(f)-\hat R_D(f) \ge \varepsilon] \le \sum_{f \in \cH} e^{- n\varepsilon^2/8} = \vert \cH \vert  e^{- n\varepsilon^2/8}
+    \bigcup_{f \in \cH} \Pr[R(f)-\hat R_D(f) \ge \varepsilon] \le \sum_{f \in \cH} \Pr[R(f)-\hat R_D(f) \ge \varepsilon] \le \sum_{f \in \cH} e^{- 2n\varepsilon^2/M^2} = \vert \cH \vert  e^{- 2n\varepsilon^2/M^2}
 \end{equation}
 where the first inequality follows by a union bound and the second by Hoeffding. All in all, we obtain
 \begin{equation}\label{eq: upper bound}
-    \Pr[R(\hat f_D)-\hat R_D(\hat f_D) \ge \varepsilon] \le \vert \cH \vert  e^{- n\varepsilon^2/8}
+    \Pr[R(\hat f_D)-\hat R_D(\hat f_D) \ge \varepsilon] \le \vert \cH \vert  e^{- 2n\varepsilon^2/M^2}
 \end{equation}
 
 To obtain our initial inequality from this result on a probability, we use a technique called tail integration. The key ingredient is the following
 \begin{equation}\label{eq: keying}
     \expv[X] = \int_0^\infty \Pr(X\ge \varepsilon) \de \varepsilon
 \end{equation}
-which is true for any non-negative random variable $X$, see Proposition \ref{app: expvcmf} in the appendix. Then, we want to use our bound (\ref{eq: upper bound}) for the integrand. Let $a\coloneq \vert\cH\vert$ and $c\coloneq n/8$, so that
+which is true for any non-negative random variable $X$, see Proposition \ref{app: expvcmf} in the appendix. Then, we want to use our bound (\ref{eq: upper bound}) for the integrand. Let $a\coloneq \vert\cH\vert$ and $c\coloneq 2n/M^2$, so that
 \[
 \Pr (X\ge \varepsilon) \le a e^{-c\varepsilon^2}.
 \] 
@@ -283,69 +292,16 @@ where the second integral is solved with a standard Gaussian tail bound (see Pro
 \begin{equation}\label{eq}
     \expv[X] \le 2\sqrt\frac{\log a}{c}
 \end{equation}
-which yields the result for $X = R(\hat f_D)-\hat R(\hat f_D)$, $a = \vert \cH\vert$, and $c=n/8$. 
+which yields the result for $X = R(\hat f_D)-\hat R(\hat f_D)$, $a = \vert \cH\vert$, and $c=2n/M^2$. 
 \end{proof}
 \end{proposition}
-\begin{remark}[Logic of the proof]
-    Intuitively, the key step in the proof of the lower bound is that equation (\ref{1eq: keybound}) is an inequality between {\it numbers}. The expected value of $\hat R_D(\hat f_D)$ is a {\it number}, say 3, and we are showing that this is lower than all the numbers $R(f), f\in\cH$. Instead, in equation (\ref{ineq: applyhoeffding}) we use a probabilistic bound and work with random variables. 
-\end{remark}
 
-Now, we study the same result but in a different setting, namely considering real-valued prediction functions instead of a sign function, and a logistic loss.
-\begin{assumption}[Real-valued prediction function and logistic loss]\label{1ass: logistic}
-    Let $\mathcal{H}$ be the space of functions $f:\X\to\R$, for instance linear functions of the type 
-    \begin{equation}
-        f_{wb}(x) \coloneqq w x + b, \qquad w,b \in\R.
-    \end{equation}
-    Notice that if $\X$ has size $N$, then $\cH = \{\sgn(f(x)) \vert w,b \in \R\}$ is such that $\vert\cH\vert = 2(N+1)$. Furthermore, we consider the logistic loss
-    \begin{equation}
-        \ell(f(x_i), y_i ) = \log( 1 + e^{-y_i f(x_i)} ).
-    \end{equation}
-\end{assumption}
-Then, the following result holds on the bias between the expected and empirical risks. 
-
-\begin{proposition}[Bounds on the bias - logistic, real-valued case]
-Given data $D: \Omega^n \to \X^n \times \Y^n$ and a predictor $f:\X \to \R$,
-the empirical and the expected risk of trained and evaluated on $D$ with a logistic loss function satisfy the following bound
-\begin{equation}\label{eq: mainbounds}
-    0 \le \expv_D[ R(\hat f_D) - \hat R_D(\hat f_D)] \le 2 \sqrt{\frac{\log \vert\cH\vert}{n}}
-\end{equation}
-
-\begin{proof}
-    The proof of the lower bound is the same as in Proposition~\ref{prop: results}. We therefore show the proof of the upper bound 
-($\expv \le ...$). Again, we define $Z_i \coloneq \ell(f(x_i),y_i)$ and check the three conditions required by Hoeffding's inequality. As before, the random variables are i.i.d. and have the same expected value by construction. As for obtaining bounds on $Z_i$, we perform the following rescaling for $f_{w,b}(x) \neq 0$
+\begin{example}[Bound for the logistic loss function]
+Let us see how this bound looks like for a logistic loss function. By our definition of $\cH$ via the truncation map, we have $B=1$; then, $C = 1$ and $C^\prime = \log2$ by Example~\ref{ex: logistic}. Hence,
 \begin{equation}
-f_{w,b}(x) = \frac{f_{w,b}(x)}{\Vert f_{w,b}\Vert_\infty}
+        0 \le \expv_D[ R(\hat f_D) - \hat R_D(\hat f_D)] \le (2+2\log 2)\sqrt{\frac{\log \vert \cH \vert}{2n}}.
 \end{equation}
-where 
-\begin{equation}
-    \Vert f \Vert_{\infty} \coloneqq \max_{x\in\X} \vert f_{w,b}(x) \vert.
-\end{equation}
-Then, we obtain 
-\[
--1 \le f(x_i) \le 1 \qquad \forall i
-\]
-and hence
-\[
-\log (1 + \frac{1}{e}) \le \log (1+e^{-y_i f(x_i)}) \le \log (1+ e) \qquad \forall i. 
-\] 
-Plugging these bounds into Hoeffding's inequality, we obtain 
-\begin{equation}
-    \Pr [\frac{1}{n}\sum_i Z_i - \mu \ge \varepsilon] \le e^{-n\varepsilon^2/8}
-\end{equation}
-and thus
-\begin{align*}\label{ineq: applyhoeffding2}
-    \Pr [ R(f) - \hat R_D(f) \ge \varepsilon]&\le e^{- n\varepsilon^2/{(\log (1+e) - \log (1 + \frac{1}{e}))}^2} \\
-    &= e^{- n\varepsilon^2/{(\log (\frac{1+e}{1 + \frac{1}{e}}))}^2} \\
-    &= e^{- n\varepsilon^2/{(\log e)}^2} \\
-    &= e^{- n\varepsilon^2}
-\end{align*}
-Now, proceeding as before (trivial bound with the union + union bound) we obtain
-\begin{equation}\label{eq: upper bound2}
-    \Pr[R(\hat f_D)-\hat R_D(\hat f_D) \ge \varepsilon] \le \vert \cH \vert  e^{- n\varepsilon^2}.
-\end{equation}
-The proof is then completed exactly as before, with parameters $a = \vert\cH\vert$ and $c = n$. 
-\end{proof}
-\end{proposition}
+\end{example}
 
 \subsection{Experiments}
 
