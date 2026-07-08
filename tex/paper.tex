@@ -1,0 +1,72 @@
+FOLLOW UP DI APPENDIX SU MEAN ANALYSIS
+%All'alba (16:25) del giorno 9 aprile rileggo la mia conversazione con Claude (\href{https://claude.ai/chat/445bd5e0-3fb1-4d82-a541-0624e95a33a9}{questa}) e comprendo che probabilmente non parliamo di usare la mia misura di errore ($\hat R$) sullo stesso dataset su cui ho fittato il modello, il train set, ma parliamo di usarla sul test set. 
+Consideriamo ora di non valutare la mia misura di errore sul train set, ma di usarla sul test set molte volte (e quindi ammettendo un po' di tuning sul test set, un po' di overfitting). 
+Quindi, il primo split dei dati è ammesso, è il secondo, in cui creiamo anche il validation set, che stiamo mettendo in dubbio. L'analogia della moneta funziona comunque: $\hat R$ è pari al punteggio vero del mio modello sul lungo periodo, ma misurazione per misurazione ha una deviazione dalla sua media che potrebbe darmi punteggi più generosi, e questo è più probabile che accada (o, comunque, presenta punteggi diversi e quindi probabilmnete più alti) su 1000 trials (1000 modelli) invece che 100. Analizziamo questo paper di Ben recht. 
+\\
+
+\noindent $\blacktriangleright$ appunti dal paper su ImageNet e CIFAR \cite{recht2019imagenet}:
+
+loro provano a  creare un nuovo test set con lo stesso data cleaning process di quello classico, usato per anni, e vedono un peggioramento nella performance di vari modelli di classificazione su entrmabi i dataset. un peggioramento talvolta equivalente a 5 anni di ricerca. 
+
+a cosa è dovuto questo peggioramento? un'ipotesi è l'adattamento dei modelli a questo test set, in modo informale tipo con specifici benchmark da battere che influenzano anche inconsciamente il ricercatore, cioè non in modo matematico ma più comportamentale. however, loro vedono che l'ordine dei modelli in termin di accuracy è mantenuto, e che non ci sono diminishing returns: modelli anche più recenti, quindi con accuracies più alte, hanno un calo in accuracy più piccolo (il ritorno è $-$ il calo in accuracy, intuitively). se il problema fosse l'adattamento, i modelli più recenti vedrebbero un calo molto maggiore. quindi, anche se c'è un'overstima sulla performance dei modelli, ``exhaustive evaluations on the test set'' are sufficient to select models, perché comunque selezioni il migliore. 
+
+la loro spiegazione, invece, si basa sulla difficoltà dei due test set (dove quello vecchio è molto più semplice). infatti, togliendo dal nuovo set le immagini un po' piu difficili (come si quantifica tale difficoltà?), migliora l'accuracy e matcha quella sul vecchio set. 
+
+{\it We adopt the standard classification setup and posit the
+existence of a “true” underlying data distribution D over
+labeled examples (x,y).} kinda polemico
+
+\[L_{S'} - L_S = (L_{S'} - L_{D'}) + (L_{D'} - L_D) + (L_D - L_S)
+\]
+core idea. generalization gap + distribution gap + adaptivity gap
+
+It is important here to treat $S'$ as our test set, and $D'$ as our distribution. Indeed, $L_{S'} - L_{D'}$ is a simple generalization gap, due to the reduction in information caused by sampling; it is a purely random error. 
+$D$ is the original distribution, which we try to resemble. Hence, $L_{D'}-L_D$ is a structural distribution gap, due to the practical impossibility (is it?) to perfectly copy a high dimensional distirbution. Lastly, $S$ is the previous test set on which some adaptation could have been done, it is characterized by models having being tested multiple times on it. Thus, $L_D - L_S$ is the adaptivity gap: ideally, it has the same distribution (notice how we consider identity in distribution, as we are treating {\it random variables}) as the generalization gap, but in practice, some adaptivity to the test set $S$ may have occured, which inflates this source of error. 
+
+\begin{remark}
+    Two remarks are in order, arising from the {\it adaptivity gap} paragraph:
+    \begin{itemize}
+        \item they deliberately mention a ``common practice'' of tuning the hyperparameters on the test set;
+        \item they treat the case of testing directly on the train set as the extreme case of having {\it some} adaptivity to the test set, which makes our analysis above not useless!
+    \end{itemize}
+\end{remark}
+
+they study the disentanglement between the different gaps looking at multiple models $\hat f_1,\ldots, \hat f_k$ evolving over time, which makes it easier. under the adaptation assumption, the adaptivity gap increases for later models, due to $L_S$ decreasing but $L_D$ remaining the same, as they improve only on the examples appearing in the test set. 
+
+this however does not happen! in fact, the authors believe the distribution gap is the main driver of the decrease in accuracy (the difficulty of reproducing the same dataset), and also posit two explanations of the lack of adaptivity. first, the fact that there is an implicit noise in the adaptivity to a test set, so i think this kind of says ``the adaptation assumption is in fact untrue''. second, and more interesting, there is a limited set of models that is actually tested, among all the models that caould be obtained (those that perform well in the train set). this limited cardinality may ensure that the test evaluation is still valid. 
+\\
+
+{\color{benred} ?} this line {\it since they are the result of more successive hyperparameter tuning on the same test set} makes me wonder whether it is still in an informal way, or they assume hyperpar tuning is being done on the test set 
+\\
+
+{\color{benred} onestamente, loro presentano $L_S(\hat f)$ come una loss, e poi senza dire nulla la trattano come accuracy, che ok si comprende ma io le tratterò come loss} 
+\\
+
+{\color{benred} !! how to read figure 1:} the black dashed line is the slope 1 line, and you see all the accuracies lying below (i.e. y smaller than x). also, later models are univocamente characterized as models with higher accuracy, as they took a line of papers with improved accuracies. also, slope of the fit (red line) is constant and it fits well $\rightarrow$ constant returns, not diminishing, hence challenging the adaptivity assumption. 
+\\
+
+{\color{benred} future directions:} {\it While our experiments rule out the most dangerous form of
+adaptive overfitting, we remark that they do not exclude all
+variants. For instance, it could be that any test set adaptiv-
+ity leads to a roughly constant drop in accuracy. Then all
+models are affected equally and we would see no diminish-
+ing returns since later models could still be better. Testing
+for this form of adaptive overfitting likely requires a new
+test set that is truly i.i.d. and not the result of a separate
+data collection effort. Finding a suitable dataset for such an
+experiment is an interesting direction for future research.}
+
+
+\newpage
+\paragraph{Experiments}
+Experiment I plan to do:
+\begin{enumerate}
+    \item dati $\sim$ distribuzione + noise
+    \item splitto 50 train 50 test
+    \item calcolo emp. mean $\hat\mu$ sul train
+    \item calcolo $\hat R(\hat\mu)$ e $R(\hat\mu)$ 
+    \item calcolo $\hat R_{test}(\hat\mu)$ con test split dati 
+    \item confronto le due misure di errore su test e train con la misura vera
+\end{enumerate}
+
+As for the gradient descent topic, I visualize due mappe animate, una con il landscape 2 dimensionale (in 3d) della perdita, dove si vede un vermicello che sarebbe il gardient descent muoversi; l'altro, a destra, dove si vede il mio modello che cambia man mano che vermicello scivola giù. questo viene fatto tipo in 3 casi: step size più grande, step size più piccola, flusso gradiente (è possibile?) 
