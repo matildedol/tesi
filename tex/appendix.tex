@@ -19,16 +19,19 @@
     \expv[Z] = \int_0^\infty \Pr [Z\ge \varepsilon] \de \varepsilon.
     \]
     \begin{proof}
-        The proof follows directly from the definition of expected value and the relation between probability density function and the cumulative distribution function, namely $\int \mathrm{cdf} = \mathrm{pdf}. $
-        Let $p$ be our pdf, $P$ our cmf, and let $Q(z) \coloneq \Pr [Z\ge z] = 1 - P(z) $. We have
-        \[
-        \expv[Z] = \int_0^\infty z \cdot p(z) \de z = \int_0^\infty z \deriv{P(z)}{z}\de z= - \int_0^\infty z\deriv{Q(z)}{z} \de z,
-        \]
-       now integrate by parts
-        \[
-        \expv[Z] = -zQ(z)\Bigg\vert_0^\infty +\int_0^\infty Q(z) \de z = \lim_{t\to\infty} -t\Pr(Z \ge t) + 0 + \int_0^t Q(z) \de z = \int_0^\infty Q(z) \de z
-        \]
-        because \mati{questa proof mi piace molto ma ha dei problemi con le quantità indefinite nei limiti}. 
+        The proof follows directly from the definition of expected value and the Fubini-Tonelli theorem. 
+        First observe that, for any $z \in \R^+$,
+        \begin{equation}
+            z = \int_0^z \de \varepsilon = \int \mathbb{I}(0\le \varepsilon \le z)\de\varepsilon.
+        \end{equation}
+        Hence
+        \begin{align*}
+            \expv [Z] &= \int_0^\infty z p(z) \de z \\ 
+            &= \int_0^\infty \int \mathbb{I}(0\le \varepsilon \le z) \de\varepsilon \,\, p(z) \de z\\
+            &=\int \int_0^\infty \mathbb{I}(0\le \varepsilon \le z) p(z) \de z \de \varepsilon  \\
+            &= \int \Pr[Z \ge \varepsilon] \de \varepsilon
+        \end{align*}
+        where in the third line we used Fubini-Tonelli and in the last line we observe that the expected value of an indicator function is the probability that the event is true. 
     \end{proof}
 \end{proposition}
 
