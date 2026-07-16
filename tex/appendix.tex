@@ -59,7 +59,7 @@
 \begin{proposition}[Hoeffding's inequality]\label{app: hoeffding}
     Let $Z_1,\ldots,Z_n$ be independent random variables such that $Z_i \in [b_i,a_i]$ almost surely for constants $a_i,b_i\in\R$, and let $\mu \coloneq \expv\big[\frac1n\sum_i Z_i\big] = \frac1n \sum_i \expv[Z_i]$. Then, for every $\varepsilon>0$,
     \[
-    \Pr\bigg[\frac1n\sum_{i=1}^n Z_i - \mu \ge \varepsilon\bigg] \le \exp\bigg(-\frac{2n^2\varepsilon^2}{\sum_{i=1}^n (a_i-b_i)^2}\bigg).
+    \Pr\bigg[\frac1n\sum_{i=1}^n Z_i - \mu \ge \varepsilon\bigg] \le \exp\bigg(-\frac{2n^2\varepsilon^2}{\sum_{i=1}^n {(a_i-b_i)}^2}\bigg).
     \]
     In particular, if all the $Z_i$ take values in an interval of the same length $M\coloneq a_i - b_i$, this simplifies to
     \[
@@ -72,15 +72,15 @@
     \]
     By Hoeffding's lemma, since $Z_i - \expv[Z_i]$ has zero mean and takes values in an interval of length $a_i - b_i$, we have
     \[
-    \expv\big[e^{t(Z_i - \expv[Z_i])}\big] \le \exp\bigg(\frac{t^2 (a_i-b_i)^2}{8}\bigg),
+    \expv\big[e^{t(Z_i - \expv[Z_i])}\big] \le \exp\bigg(\frac{t^2 {(a_i-b_i)}^2}{8}\bigg),
     \]
     so that
     \[
-    \Pr\bigg[\sum_i Z_i - n\mu \ge n\varepsilon\bigg] \le \exp\bigg(-tn\varepsilon + \frac{t^2}{8}\sum_i (a_i-b_i)^2\bigg).
+    \Pr\bigg[\sum_i Z_i - n\mu \ge n\varepsilon\bigg] \le \exp\bigg(-tn\varepsilon + \frac{t^2}{8}\sum_i {(a_i-b_i)}^2\bigg).
     \]
-    The right-hand side is minimized at $t = 4n\varepsilon / \sum_i (a_i-b_i)^2$, which gives
+    The right-hand side is minimized at $t = 4n\varepsilon / \sum_i {(a_i-b_i)}^2$, which gives
     \[
-    \Pr\bigg[\sum_i Z_i - n\mu \ge n\varepsilon\bigg] \le \exp\bigg(-\frac{2n^2\varepsilon^2}{\sum_i (a_i-b_i)^2}\bigg),
+    \Pr\bigg[\sum_i Z_i - n\mu \ge n\varepsilon\bigg] \le \exp\bigg(-\frac{2n^2\varepsilon^2}{\sum_i {(a_i-b_i)}^2}\bigg),
     \]
     and dividing the event by $n$ yields the claim.
     \end{proof}
@@ -89,21 +89,21 @@
 \section{Toy example}
 
 \begin{example}[Least squares with toy dataset]\label{app: toy}
-    Let $\ell(f(x_i),y_i) = (f(x_i)-y_i)^2$ the quadratic loss, and $\cH = \{x\mapsto ax:a\in\R\}$ the space of linear functions. We obtain the least squares estimator
+    Let $\ell(f(x_i),y_i) = {(f(x_i)-y_i)}^2$ the quadratic loss, and $\cH = \{x\mapsto ax:a\in\R\}$ the space of linear functions. We obtain the least squares estimator
     \begin{align}
-    \hat f_d (x_i)= \frac{\sum_i x_iy_i}{\sum_i x_i^2}x_i, \qquad x_i,y_i \in d.
+    \hat f_d (x_i)= \frac{\sum_i x_i y_i}{\sum_i x_i^2}x_i, \qquad x_i,y_i \in d.
     \end{align}
     Now, consider $d = \{(x_1,y_1),(x_2,y_2)\}$ realization of $D$. First, we fit our estimator to the observation $(x_1,y_1)$ and use $(x_2,y_2)$ as a test set, in the spirit of classical statistical theory. 
     The empirical risk equals 
         \begin{align}
     \hat R_{d_2} (\hat f_{d_1}) &= \ell(\hat f_{d_1}(x_2)-y_2) \notag\\
-    &= (\frac{x_1y_1}{x_1^2}x_2-y_2)^2 \notag\\
-    &= \frac{(x_1y_1)^2}{x_1^4}x_2^2 + y_2^2 -2x_2y_2\frac{x_1y_1}{x_1^2}
+    &= {(\frac{x_1y_1}{x_1^2}x_2-y_2)}^2 \notag\\
+    &= \frac{{(x_1y_1)}^2}{x_1^4}x_2^2 + y_2^2 -2x_2y_2\frac{x_1y_1}{x_1^2}
     \end{align}
     Taking expectations (with a little abuse of notation),
     \begin{align}
     \expv_{d_2\sim p}[\hat R_{d_2} (\hat f_{d_1})] &= \sum_{x_2,y_2} \ell(\hat f_{d_1}(x_2) -y_2) p(x_2,y_2)\notag \\
-    &= \frac{(x_1y_1)^2}{x_1^4}\sum_{x_2} x_2^2p_x(x_2) + \sum_{y_2} y_2^2p_y(y_2) - 2\frac{x_1y_1}{x_1^2}\sum_{x_2,y_2} p(x_2,y_2)x_2y_2\label{example ERhat}
+    &= \frac{{(x_1y_1)}^2}{x_1^4}\sum_{x_2} x_2^2p_x(x_2) + \sum_{y_2} y_2^2p_y(y_2) - 2\frac{x_1y_1}{x_1^2}\sum_{x_2,y_2} p(x_2,y_2)x_2y_2\label{example ERhat}
     \end{align}
 where $\sum_x$ is the sum over all possible values of $x$, and $p_x,p_y$ are marginal distributions. Recall that the expected risk equals
 \begin{align}
@@ -112,7 +112,7 @@ where $\sum_x$ is the sum over all possible values of $x$, and $p_x,p_y$ are mar
 and since the sums in equation (\ref{example ERhat}) run over all the possible values $x_2$ and $y_2$ can take, the two quantities are equal. The result does not change if we consider larger datasets.
  Now, we look at the case where we fit and evaluate the estimator on a single dataset $(x_1,y_1)$. In this case, we would have
         \[
-    \expv[\hat R_{d_1} (\hat f_{d_1})] = \sum_{x_1,y_1} \frac{(x_1y_1)^2}{x_1^4}x_1^2p_x(x_1) + \sum_{y_1} p_y(y_1)y_1^2 - \sum_{x_1,y_1} 2\frac{x_1y_1}{x_1^2}p(x_1,y_1)x_1y_1.
+    \expv[\hat R_{d_1} (\hat f_{d_1})] = \sum_{x_1,y_1} \frac{{(x_1y_1)}^2}{x_1^4}x_1^2p_x(x_1) + \sum_{y_1} p_y(y_1)y_1^2 - \sum_{x_1,y_1} 2\frac{x_1y_1}{x_1^2}p(x_1,y_1)x_1y_1.
     \]
     Where the ``cross'' terms make the estimator biased. Doing the math,
     \[
@@ -122,14 +122,14 @@ and since the sums in equation (\ref{example ERhat}) run over all the possible v
 \end{example}
 \section{Bound proposition in different settings}
 
-Here, we show the bound result Proposition \ref{prop: main bound} in two different seetings from before. 
+Here, we show the bound result Proposition~\ref{prop: main bound} in two different seetings from before. 
 
 \paragraph{Sign function and quadratic loss}
     Let $\mathcal{G}$ be the space of functions $g:\X\to\R$ and $\mathcal{H}$ the space of functions $f:\R\to\Y$ such that
 \begin{equation}
     f \coloneqq \sgn \circ g .
 \end{equation}
-This means that for any $g$ there is a $f_g = \sgn \circ g$. Observe that $g$ encodes the complexity of our hypotheses space (e.g. the structure of the tree in the case of decision trees) and $f$ encodes binary predictions. Notice that if the size of the support is $\vert\X\vert=N$, then $\vert\cH\vert = 2^N$. Also, we consider
+This means that for any $g$ there is a $f_g = \sgn \circ g$. Observe that $g$ encodes the complexity of our hypotheses space (e.g.\ the structure of the tree in the case of decision trees) and $f$ encodes binary predictions. Notice that if the size of the support is $\vert\X\vert=N$, then $\vert\cH\vert = 2^N$. Also, we consider
     \begin{equation}
         \ell(f(x_i), y_i ) = {(y_i-f(x_i))}^2
     \end{equation}
@@ -138,14 +138,14 @@ This means that for any $g$ there is a $f_g = \sgn \circ g$. Observe that $g$ en
 \begin{proposition}[Bounds on the bias I]
 Given data $D: \Omega^n \to \X^n \times \Y^n$ and a predictor $f:\X \to \{-1,1\}$,
 the empirical and the expected risk of trained and evaluated on $D$ with a quadratic loss function satisfy the following bound
-\begin{equation}\label{eq: mainbounds}
+\begin{equation}\label{eq: mainboundsI}
     0 \le \expv_D[ R(\hat f_D) - \hat R_D(\hat f_D)] \le 4\sqrt{\frac{2\log \vert \cH \vert}{n}}.
 \end{equation}
 
 
 \begin{proof}
-We prove the lower bound ($0\le\expv_D...$) first. All the expectations are over the randomness of the data $D$, we drop the subscript to light notation. We have
-\begin{equation}\label{ineq: minimizer1}
+We prove the lower bound ($0\le\expv_D\ldots$) first. All the expectations are over the randomness of the data $D$, we drop the subscript to light notation. We have
+\begin{equation}\label{ineq: minimizer1app}
 \hat R_D(\hat f_D) \le\hat R_D(f) \quad \forall f\in \cH,
 \end{equation}
 since $\hat f_D \coloneq \argmin_{f\in\cH} \hat R_D (f) $. 
@@ -153,12 +153,12 @@ Then, take expectations
 \begin{equation}
     \expv[\hat R_D(\hat f_D)] \le \expv[\hat R_D(f)] \quad \forall f\in \cH.
 \end{equation}
-Now, since the functions in $\cH$ are deterministic, by Proposition \ref{1prop: unbiased} we have
+Now, since the functions in $\cH$ are deterministic, by Proposition~\ref{1prop: unbiased} we have
 \begin{equation}
     \expv[\hat R_D(f)] = R(f) \quad \forall f\in\cH,
 \end{equation}
 so that 
-\begin{equation}\label{1eq: keybound}
+\begin{equation}\label{1eq: keyboundapp}
     \expv[\hat R_D(\hat f_D)] \le R(f) \quad \forall f\in \cH.
 \end{equation}
 Now take $d$ a generic realization of $D$ and consider in particular $f=\hat f_d$,
@@ -173,23 +173,23 @@ and, finally, taking expectations
 \begin{equation}
         \expv[\hat R_D(\hat f_D)] \le \expv[R(\hat f_D)] \quad \text{a.s.}
 \end{equation}
-Next, we prove the upper bound ($\expv \le 2 \sqrt...$). For any $f \in \cH$, $\expv [\hat R_D (f)]=R(f)$. Let $Z_i \coloneq \ell(f(x_i),y_i)$ and have
+Next, we prove the upper bound ($\expv \le 2 \sqrt{}\ldots$). For any $f \in \cH$, $\expv [\hat R_D (f)]=R(f)$. Let $Z_i \coloneq \ell(f(x_i),y_i)$ and have
 \[
 \hat R_D(f) =\frac{1}{n}\sum_i Z_i 
 \]
 We now want to apply Hoeffding's inequality. To do so, we need to satisfy 3 conditions:
 \begin{enumerate}
     \item $Z_1, \ldots, Z_n$ i.i.d.
-    \item $\expv[Z_1] = \ldots = \expv[Z_n]$
+    \item $\expv[Z_1] = \cdots = \expv[Z_n]$
     \item $b_i \le Z_i \le a_i$ for some $a_1, \ldots, a_n \in \R$ and $b_1,\ldots,b_n\in\R$. 
 \end{enumerate}
-We have that $(i)$ is satisfied by $Z_is$ being i.i.d. by construction. Condition $(ii)$ is satisfied since all the $(x_i,y_i)$ have the same distribution. As for $(iii)$, it is satisfied by the structure of the problem (quadratic loss) with $b_1=\ldots=b_n=0$ and $a_1 = \ldots = a_n = 4$. 
+We have that $(i)$ is satisfied by ${Z_i}s$ being i.i.d.\ by construction. Condition $(ii)$ is satisfied since all the $(x_i,y_i)$ have the same distribution. As for $(iii)$, it is satisfied by the structure of the problem (quadratic loss) with $b_1=\cdots=b_n=0$ and $a_1 = \cdots = a_n = 4$. 
 Now we can apply Hoeffding's. We obtain 
 \begin{equation*}
     \Pr [\frac{1}{n}\sum_i Z_i - \mu \ge \varepsilon] \le e^{-n\varepsilon^2/8}
 \end{equation*}
 and thus
-\begin{equation}\label{ineq: applyhoeffding}
+\begin{equation}\label{ineq: applyhoeffdingapp}
     \Pr [ R(f) - \hat R_D(f) \ge \varepsilon]\le e^{- n\varepsilon^2/8}
 \end{equation}
 Now, to obtain a bound for $\hat f_D$ we bound it with the union of the probabilities of the events for each $f\in\cH$. 
@@ -202,15 +202,15 @@ trivially, and also
     \bigcup_{f \in \cH} \Pr[R(f)-\hat R_D(f) \ge \varepsilon] \le \sum_{f \in \cH} \Pr[R(f)-\hat R_D(f) \ge \varepsilon] \le \sum_{f \in \cH} e^{- n\varepsilon^2/8} = \vert \cH \vert  e^{- n\varepsilon^2/8}
 \end{equation}
 where the first inequality follows by a union bound and the second by Hoeffding. All in all, we obtain
-\begin{equation}\label{eq: upper bound}
+\begin{equation}\label{eq: upper boundI}
     \Pr[R(\hat f_D)-\hat R_D(\hat f_D) \ge \varepsilon] \le \vert \cH \vert  e^{- n\varepsilon^2/8}
 \end{equation}
 
 To obtain our initial inequality from this result on a probability, we use a technique called tail integration. The key ingredient is the following
-\begin{equation}\label{eq: keying}
+\begin{equation}\label{eq: keyingapp}
     \expv[X] = \int_0^\infty \Pr(X\ge \varepsilon) \de \varepsilon
 \end{equation}
-which is true for any non-negative random variable $X$, see Proposition \ref{app: expvcmf} in the appendix. Then, we want to use our bound (\ref{eq: upper bound}) for the integrand. Let $a\coloneq \vert\cH\vert$ and $c\coloneq n/8$, so that
+which is true for any non-negative random variable $X$, see Proposition~\ref{app: expvcmf} in the appendix. Then, we want to use our bound (\ref{eq: upper boundI}) for the integrand. Let $a\coloneq \vert\cH\vert$ and $c\coloneq n/8$, so that
 \[
 \Pr (X\ge \varepsilon) \le a e^{-c\varepsilon^2}.
 \] 
@@ -218,20 +218,20 @@ Notice that for high values of $\varepsilon$, the bound is a very good one, but 
 \begin{equation}
     \Pr[X\ge \varepsilon] \le \min\{1, a  e^{-c\varepsilon^2}\}
 \end{equation}
-Therefore, it makes sense to split the integral in (\ref{eq: keying}) in two parts with a threshold $a  e^{-c\varepsilon_0^2} = 1$. This means splitting the integral at $\varepsilon_0 = \sqrt{\frac{\log a}{c}}$. We obtain 
+Therefore, it makes sense to split the integral in (\ref{eq: keyingapp}) in two parts with a threshold $a  e^{-c\varepsilon_0^2} = 1$. This means splitting the integral at $\varepsilon_0 = \sqrt{\frac{\log a}{c}}$. We obtain 
 \begin{align*}
 \expv[X] &= \int_0^\infty \Pr(X\ge \varepsilon) \de \varepsilon \le \int_0^{\sqrt\frac{\log a}{c}} 1 \de \varepsilon + \int_{\sqrt\frac{\log a}{c}}^\infty ae^{-c\varepsilon^2}\de \varepsilon\\
 &=\sqrt\frac{\log a}{c} + a\frac{1}{2\sqrt{c\log a}}e^{-c\varepsilon^2} = \sqrt\frac{\log a}{c} + \frac{1}{2\sqrt{c\log a}}
 \end{align*}
-where the second integral is solved with a standard Gaussian tail bound (see Proposition \ref{app: gtailbound}), and in the last equality we substituted $a = 1/e^{-c\varepsilon^2}$. Finally, we can use a looser but simpler bound assuming  $a\ge e^{1/2}$, which is sensible since $a=\vert\cH\vert $ and $e^{1/2}<2$,
-\begin{equation}\label{eq}
+where the second integral is solved with a standard Gaussian tail bound (see Proposition~\ref{app: gtailbound}), and in the last equality we substituted $a = 1/e^{-c\varepsilon^2}$. Finally, we can use a looser but simpler bound assuming  $a\ge e^{1/2}$, which is sensible since $a=\vert\cH\vert $ and $e^{1/2}<2$,
+\begin{equation}\label{eq: finalboundI}
     \expv[X] \le 2\sqrt\frac{\log a}{c}
 \end{equation}
 which yields the result for $X = R(\hat f_D)-\hat R(\hat f_D)$, $a = \vert \cH\vert$, and $c=n/8$. 
 \end{proof}
 \end{proposition}
 \begin{remark}[Logic of the proof]
-    Intuitively, the key step in the proof of the lower bound is that equation (\ref{1eq: keybound}) is an inequality between {\it numbers}. The expected value of $\hat R_D(\hat f_D)$ is a {\it number}, say 3, and we are showing that this is lower than all the numbers $R(f), f\in\cH$. Instead, in equation (\ref{ineq: applyhoeffding}) we use a probabilistic bound and work with random variables. 
+    Intuitively, the key step in the proof of the lower bound is that equation (\ref{1eq: keyboundapp}) is an inequality between {\it numbers}. The expected value of $\hat R_D(\hat f_D)$ is a {\it number}, say 3, and we are showing that this is lower than all the numbers $R(f), f\in\cH$. Instead, in equation (\ref{ineq: applyhoeffdingapp}) we use a probabilistic bound and work with random variables.
 \end{remark}
 
 \paragraph{Real-valued prediction function and logistic loss}
@@ -249,13 +249,13 @@ Then, the following result holds on the bias between the expected and empirical 
 \begin{proposition}[Bounds on the bias II]
 Given data $D: \Omega^n \to \X^n \times \Y^n$ and a predictor $f:\X \to \R$,
 the empirical and the expected risk of trained and evaluated on $D$ with a logistic loss function satisfy the following bound
-\begin{equation}\label{eq: mainbounds}
+\begin{equation}\label{eq: mainboundsII}
     0 \le \expv_D[ R(\hat f_D) - \hat R_D(\hat f_D)] \le 2 \sqrt{\frac{\log \vert\cH\vert}{n}}
 \end{equation}
 
 \begin{proof}
     The proof of the lower bound is the same as in Proposition~\ref{prop: results}. We therefore show the proof of the upper bound 
-($\expv \le ...$). Again, we define $Z_i \coloneq \ell(f(x_i),y_i)$ and check the three conditions required by Hoeffding's inequality. As before, the random variables are i.i.d. and have the same expected value by construction. As for obtaining bounds on $Z_i$, we perform the following rescaling for $f_{w,b}(x) \neq 0$
+($\expv \le \ldots$). Again, we define $Z_i \coloneq \ell(f(x_i),y_i)$ and check the three conditions required by Hoeffding's inequality. As before, the random variables are i.i.d.\ and have the same expected value by construction. As for obtaining bounds on $Z_i$, we perform the following rescaling for $f_{w,b}(x) \neq 0$
 \begin{equation}
 f_{w,b}(x) = \frac{f_{w,b}(x)}{\Vert f_{w,b}\Vert_\infty}
 \end{equation}
@@ -308,17 +308,17 @@ The proof is then completed exactly as before, with parameters $a = \vert\cH\ver
 
 Qui, qualche appunto con l'obiettivo di indagare 
 
-{\it quanto peggiora la stima dell'errore di un modello sul train set al crescere del numero di modelli considerati?}
+{\it quanto peggiora la stima dell'errore di un modello sul train set al crescere del numero di modelli considerati?\/}
 
 
 \vspace{0.5 cm}
-\paragraph{Notation and references} We start from the notes `ML ideas' by Prof. Rosasco. 
+\paragraph{Notation and references} We start from the notes `ML ideas' by Prof.\ Rosasco. 
 % Here, we look at neural networks rather than plain regressions. 
 We consider the following items:
 \begin{itemize}[label=$\cdot$]
 % \item a probability measure $\mu$ over $\R, \mathcal{A}$, $\mu : \mathcal{A} \to [0,1], \mu(\R) = 1$;
     \item a probability distribution $p$ over $S \subseteq \R$;
-    \item support of the distribution $ s = s_1,\ldots,s_N$, indexed with $j$, with probabilities $p_j$:  \[\expv(X)= \sum_j s_j p_j \eqqcolon \mu; \qquad \mathrm{Var}(X) = \sum_j s_j^2 p_j - (\sum_j s_jp_j)^2 \eqqcolon \sigma^2;\]
+    \item support of the distribution $ s = s_1,\ldots,s_N$, indexed with $j$, with probabilities $p_j$:  \[\expv(X)= \sum_j s_j p_j \eqqcolon \mu; \qquad \mathrm{Var}(X) = \sum_j s_j^2 p_j - {(\sum_j s_j p_j)}^2 \eqqcolon \sigma^2;\]
     \item random variables  $X_1,\ldots,X_n$, i.i.d.`\'to $X \sim p(\mu, \sigma^2)$;
     \item a dataset $x_1,\ldots,x_n$ realization of $X_1, \ldots, X_n$, indexed with $i$, which is therefore assumed to be sampled from our probability distribution $p$ (the assumption that Ben Recht doesn't like).
 \end{itemize}
@@ -338,20 +338,20 @@ The motivation for this definition is that we aim at predicting some value $a$ f
 \begin{proposition}\label{prop: results}
     The following results hold
     \begin{itemize}
-        \item[$(i)$] by realizing the distirbution $p$ as our random varibale $X$, the expected risk can be expressed as \[R(a) = \expv[(X-a)^2]\]
+        \item[$(i)$] by realizing the distirbution $p$ as our random varibale $X$, the expected risk can be expressed as \[R(a) = \expv[{(X-a)}^2]\]
         \item[$(ii)$]
         \[
-        R(a)=(a-\mu)^2 + \sigma^2
+        R(a)={(a-\mu)}^2 + \sigma^2
         \]
     \end{itemize}
     \begin{proof}
-    $(i)$ follows plugging in $\sum s_jp_j = \expv[X]$ and from $a$ being a scalar: 
+    $(i)$ follows plugging in $\sum s_j p_j = \expv[X]$ and from $a$ being a scalar: 
         \begin{align*}
-            R(a) &= \sum_j (s_j-a)^2p_j = \sum_j (s_j^2 + a^2 -2s_ja)p_j = \sum_j s_j^2p_j + \sum_j a^2 p_j -2\sum_j s_jap_j \\&= \expv[X^2] + a^2 -2a\expv[X] = \expv[X^2 - 2aX + a^2]=\expv[(X-a)^2]
+            R(a) &= \sum_j {(s_j-a)}^2p_j = \sum_j (s_j^2 + a^2 -2s_j a)p_j = \sum_j s_j^2p_j + \sum_j a^2 p_j -2\sum_j s_j ap_j \\&= \expv[X^2] + a^2 -2a\expv[X] = \expv[X^2 - 2aX + a^2]=\expv[{(X-a)}^2]
         \end{align*}
         and to obtain $(ii)$ we add and subtract $\expv^2[X]$:
         \begin{align*}
-            R(a)&=(\expv[X^2]-\expv^2[X] + \expv[X^2]+a^2-2a\expv[X]) = \sigma^2 + \mu^2 -2a\mu + a^2 = \sigma^2 + (\mu-a)^2
+            R(a)&=(\expv[X^2]-\expv^2[X] + \expv[X^2]+a^2-2a\expv[X]) = \sigma^2 + \mu^2 -2a\mu + a^2 = \sigma^2 + {(\mu-a)}^2
         \end{align*}
     \end{proof}
 \end{proposition}
@@ -361,16 +361,16 @@ In practice, the expected risk cannot be computed as we do not know the true dis
 \begin{definition}[Empirical risk]
     The empirical risk of a predictor $a\in\R$ for some data $x_1,\ldots,x_n$ is
     \begin{equation}
-        \hat R(a) \coloneq \frac{1}{n}\sum_{i} (x_i - a)^2
+        \hat R(a) \coloneq \frac{1}{n}\sum_{i} {(x_i - a)}^2
     \end{equation}
 \end{definition}
 
 A first result on the empirical risk is that it is an {\it unbiased estimate of the expected risk}. Let us pause for a moment here. When evaluating the unbiasedness of the empirical risk, implicitamente stiamo dicendo che l'errore che un estimatore fa sui dati è aleatorio. Questa aleatorietà viene dalla aleatorietà dei dati (l'unica fonte, essendo per ora $a$ uno scalare). Infatti, il rischio empirico si può riformulare come
 \begin{equation}
-    \hat R (a) =\frac{1}{n}\sum_i (X_i - a) ^2 \qquad \text{v.s.}  \qquad R(a) = \expv[(X-a)^2]
+    \hat R (a) =\frac{1}{n}\sum_i {(X_i - a)}^2 \qquad \text{v.s.}  \qquad R(a) = \expv[{(X-a)}^2]
 \end{equation}
 Quindi, noi abbiamo una distribuzione di probabilità (popolazione) su cui l'errore di un estimatore è costante (e si può calcolare se è nota $p$, entropia 0); poi, abbiamo dei dati che sono campionati da questa distribuzione (ben recht assumption), che sono modellati come una collezione di variabili aleatorie, su cui l'errore dunque %è una variabile aleatoria (entropia $>0$). perché i dati non sono fissi ma sono distribuiti secondo quella distribuzione di probabilità. 
-Ma se l'errore sulla distribuzione è costante, come può non esserlo l'errore sui dati campionati da quella distribuzione? Qui che c'è un key point concettuale: potenzialmente, se io campionassi solo due dati $x_1, x_2$, uno scalare che ha expected risk altissimo potrebbe essere top in termini di empirical risk perché per {\it pura casualità} è un numero vicino ai miei dati $x_1, x_2$. Quindi il rischio atteso mi definisce il rischio che {\it mi aspetto} il mio estimatore abbia data quella distribuzione. di fatto, non solo non lo posso calcoalre, ma neanche mi interessa troppo calcolarlo, perché se avessi solo due osservazioni non mi interesserebbe nulla del rischio atteso, guarderei solo al rischio empirico. se invece ho tante osservazioni, allora il rischio atteso e quello empirico si allineano, perché i miei dati andranno a copiare la distribuzione (concetto di expectation / long run).  questo si formalizza nella seguente prop.
+Ma se l'errore sulla distribuzione è costante, come può non esserlo l'errore sui dati campionati da quella distribuzione? Qui che c'è un key point concettuale: potenzialmente, se io campionassi solo due dati $x_1, x_2$, uno scalare che ha expected risk altissimo potrebbe essere top in termini di empirical risk perché per {\it pura casualità\/} è un numero vicino ai miei dati $x_1, x_2$. Quindi il rischio atteso mi definisce il rischio che {\it mi aspetto\/} il mio estimatore abbia data quella distribuzione. Di fatto, non solo non lo posso calcoalre, ma neanche mi interessa troppo calcolarlo, perché se avessi solo due osservazioni non mi interesserebbe nulla del rischio atteso, guarderei solo al rischio empirico. Se invece ho tante osservazioni, allora il rischio atteso e quello empirico si allineano, perché i miei dati andranno a copiare la distribuzione (concetto di expectation / long run).  Questo si formalizza nella seguente prop.
 
 \begin{proposition}[Unbiasedeness of the empirical risk]\label{app: unbiased}
     For a scalar predictor $a \in \R$, the empirical risk is an unbiased estimate of the expected risk, i.e.
@@ -379,52 +379,52 @@ Ma se l'errore sulla distribuzione è costante, come può non esserlo l'errore s
     \end{equation}
     \begin{proof}
  \[
- \expv[\hat R(a)] = \expv [\frac{1}{n}\sum_i (X_i - a)^2] = \frac{1}{n} \sum_i \expv[(X_i - a)^2] = \frac{1}{n} n \cdot \expv[(X_i - a)^2] = \expv[(X_i - a)^2]= R(a) 
+ \expv[\hat R(a)] = \expv [\frac{1}{n}\sum_i {(X_i - a)}^2] = \frac{1}{n} \sum_i \expv[{(X_i - a)}^2] = \frac{1}{n} n \cdot \expv[{(X_i - a)}^2] = \expv[{(X_i - a)}^2]= R(a) 
  \]
- using proposition \ref{prop: results} $(i)$ and that $X_1, \ldots, X_n$ are i.i.d. this is the same motivation behind the empriical mean being an unbiased estimator of the true mean. 
+ using Proposition~\ref{prop: results} $(i)$ and that $X_1, \ldots, X_n$ are i.i.d.\ this is the same motivation behind the empriical mean being an unbiased estimator of the true mean. 
     \end{proof}
 \end{proposition}
 di base, la nozione di empirical risk viene dalla seguente intuizione:
 {\color{benred} siccome non posso conoscere le varie probabilità $p_j$, le stimo come il numero di volte che la mia variabile aleatoria (campione) prendere quel valore $s_j$  $\leftarrow$ legge dei grandi numeri}
 
 \begin{remark}
-    usiamo in tutte queste note (come in letteratura) la stessa notazione per una quantità aleatoria espressa in termini di $X_i$ e la sua realizzazione espressa in termini di $x_i$ (come per $\hat R(a)$ above). questo perché $X$ e $x$ possono essere essenzialmente lo stesso oggetto, cioè $X$ è una funzione la cui immagine è $x$
+    usiamo in tutte queste note (come in letteratura) la stessa notazione per una quantità aleatoria espressa in termini di $X_i$ e la sua realizzazione espressa in termini di $x_i$ (come per $\hat R(a)$ above). Questo perché $X$ e $x$ possono essere essenzialmente lo stesso oggetto, cioè $X$ è una funzione la cui immagine è $x$
     
 \end{remark}
 una volta consolidata questa teoria e il rapporto tra rischio atteso e rischio empirico, guardiamo al caso in cui $a$ non è uno scalare. 
 
-per esempio, assumiamo di voler stimare la media della nostra distribuzione. vogliamo farlo anche perché è chiaro che il valore costante che minimizza il rischio atteso è la media della distribuzione, e il valore costante che minimizza il rischio empirico è la media empirica dei dati (essenzialmente by definition, la media è il valore che minimizza la distanza!). 
+per esempio, assumiamo di voler stimare la media della nostra distribuzione. Vogliamo farlo anche perché è chiaro che il valore costante che minimizza il rischio atteso è la media della distribuzione, e il valore costante che minimizza il rischio empirico è la media empirica dei dati (essenzialmente by definition, la media è il valore che minimizza la distanza!). 
 
-soffermiamoci per un momento anche sull'idea che la media empirica minimizza il rischio empirico. come si relaziona questo al voler prevedere un nuovo dato $x_{n+1}$? la teoria mi starebbe dicendo che se io prevedo la media dei dati che ho, alla fine avrò la perdita minore possibile. in realtà però a me converrebbe prevedere il dato che vedo apparire più spesso, naivly, se il mio obiettivo è azzeccare il next sample. ma forse il mio obiettivo è avere un costo basso overall. 
+soffermiamoci per un momento anche sull'idea che la media empirica minimizza il rischio empirico. Come si relaziona questo al voler prevedere un nuovo dato $x_{n+1}$? la teoria mi starebbe dicendo che se io prevedo la media dei dati che ho, alla fine avrò la perdita minore possibile. In realtà però a me converrebbe prevedere il dato che vedo apparire più spesso, naivly, se il mio obiettivo è azzeccare il next sample. Ma forse il mio obiettivo è avere un costo basso overall. 
 
-ora, la teoria mi dice di prevedere la media, ma io voglio quantificare quanto è un buon stimatore questa media. perché so che minimizza il rischio empirico, ma what about il rischio atteso?
-ecco, nel caso della sample mean, il rischio empirico è un biased estimate del rischio atteso. vediamolo:
+ora, la teoria mi dice di prevedere la media, ma io voglio quantificare quanto è un buon stimatore questa media. Perché so che minimizza il rischio empirico, ma what about il rischio atteso?
+ecco, nel caso della sample mean, il rischio empirico è un biased estimate del rischio atteso. Vediamolo:
 
 \begin{proposition}[Biasedeness of the empirical risk for $\hat\mu$]
-    The empirical risk $\hat R$ is a {\it biased} estimate of the true expected risk $R$ for the empirical mean $\hat\mu = \frac{1}{n}\sum_i x_i$.
+    The empirical risk $\hat R$ is a {\it biased\/} estimate of the true expected risk $R$ for the empirical mean $\hat\mu = \frac{1}{n}\sum_i x_i$.
 
     \begin{proof}
         The object we are looking at is
         \[
-        \hat R (\hat \mu) \coloneq \frac{1}{n}\sum_{i=1}^n(X_i - \hat\mu)^2 = \frac{1}{n}\sum_{i=1}^n(X_i - \frac{1}{n}\sum_{j=1}^n X_j)^2        \] 
+        \hat R (\hat \mu) \coloneq \frac{1}{n}\sum_{i=1}^n{(X_i - \hat\mu)}^2 = \frac{1}{n}\sum_{i=1}^n{(X_i - \frac{1}{n}\sum_{j=1}^n X_j)}^2        \] 
         and
         \[
-        R(\hat\mu) \coloneq \expv[(X-\hat\mu)^2] = \expv[(X -\frac{1}{n}\sum_{i=1}^n X_i)^2]
+        R(\hat\mu) \coloneq \expv[{(X-\hat\mu)}^2] = \expv[{(X -\frac{1}{n}\sum_{i=1}^n X_i)}^2]
         \]
         and we recall that we should look at $\hat R$ as a ``score'' we give to the estimator for the mean, the lower the better, while $R$ is the true score of the estiimator. 
         We have
         \begin{align*}
-            \expv[\hat R(\hat \mu)] &= \expv[\frac{1}{n}\sum_{i=1}^n(X_i - \frac{1}{n}\sum_{j=1}^n X_j)^2] = \frac{1}{n} \sum_{i=1}^n \expv (X_i - \frac{1}{n}\sum_{j=1}^n X_j)^2 \\ 
+            \expv[\hat R(\hat \mu)] &= \expv[\frac{1}{n}\sum_{i=1}^n{(X_i - \frac{1}{n}\sum_{j=1}^n X_j)}^2] = \frac{1}{n} \sum_{i=1}^n \expv {(X_i - \frac{1}{n}\sum_{j=1}^n X_j)}^2 \\ 
             &= \frac{1}{n}\sum_{i=1}^n ({\expv X_i^2} + 
-            {\frac{1}{n^2}\expv(\sum_{j=1}^n X_j)^2} 
+            {\frac{1}{n^2}\expv{(\sum_{j=1}^n X_j)}^2} 
             - {\frac{2}{n}\expv (X_i \sum_{j=1}^n X_j)}) \\ &= {\color{darkorange}\frac{1}{n}\sum_{i=1}^n \expv X_i^2}  \,
-            {\color{bluette} + \frac{1}{n^2}\expv(\sum_{j=1}^n X_j)^2}\,
+            {\color{bluette} + \frac{1}{n^2}\expv{(\sum_{j=1}^n X_j)}^2}\,
             {\color{magenta} - \frac{1}{n}\sum_{i=1}^n \frac{2}{n}\expv (X_i \sum_{j=1}^n X_j)}
         \end{align*}
         and, similarly, 
         \[
         R(\hat\mu) = {\color{darkorange}\expv X^2}  \,
-            {\color{bluette} + \frac{1}{n^2}\expv(\sum_{i=1}^n X_i)^2} \,
+            {\color{bluette} + \frac{1}{n^2}\expv{(\sum_{i=1}^n X_i)}^2} \,
             {\color{pink} - \frac{2}{n}\expv (X\sum_{i=1}^n X_i)}
         \]
         The orange terms are equal by $X_i \sim X\,\, \forall i= 1,\ldots,n$, the blue terms are identical, hence we study the pink terms to evaluate the bias.
@@ -437,7 +437,7 @@ ecco, nel caso della sample mean, il rischio empirico è un biased estimate del 
         \begin{align*}
         &{\color{magenta}
         - \frac{1}{n}\sum_i \frac{2}{n}\expv (X_i \sum_j X_j)}\\ 
-        &{\color{magenta}= - \frac{2}{n^2}[\expv(X_1^2 + X_1X_2 + \ldots + X_1X_n) + \expv(X_2X_1 + X_2^2 + \ldots + X_2X_n) + \ldots + \expv(X_nX_1 + \ldots + X_n^2)] 
+        &{\color{magenta}= - \frac{2}{n^2}[\expv(X_1^2 + X_1X_2 + \cdots + X_1X_n) + \expv(X_2X_1 + X_2^2 + \cdots + X_2X_n) + \cdots + \expv(X_n X_1 + \cdots + X_n^2)] 
         }
         \\
         &{
@@ -447,7 +447,7 @@ ecco, nel caso della sample mean, il rischio empirico è un biased estimate del 
         \[
         \expv (X^2) \neq \expv^2 (X)
         \]
-because $\expv (X^2) - \expv^2 (X) = \sigma^2 \neq 0$. In fact, if $\sigma^2 = 0$, i.e. $X$ constant, the bias would be 0, which is proposition \ref{prop: unbiased}.
+because $\expv (X^2) - \expv^2 (X) = \sigma^2 \neq 0$. In fact, if $\sigma^2 = 0$, i.e. $X$ constant, the bias would be 0, which is Proposition~\ref{app: unbiased}.
 
 Subtracting the quantities, we obtain
 \begin{align*}
@@ -459,14 +459,15 @@ Subtracting the quantities, we obtain
 yielding $\expv[\hat R(\hat \mu)] < R(\hat\mu)$.
     \end{proof}
 \end{proposition}
-Thus, the error of an estimator computed with the empirical risk in the same dataset is lower than the true one, i.e. saremo più generosi nel valutare i nostri estimatori. Concretamente, il risultato ci sta dicendo che se vogliamo valutare l'estimator $\hat\mu$ per stimare la mean (che sappiamo essere il migliore, ma immaginiamo per un attimo ce ne fossero anche altri), se lo valutiamo sullo stesso sample con cui l'abbiamo calcolato, avremo un punteggio che in media è più generoso del punteggio vero. In particolare, se ripetiamo questo esperimento molte volte cioè con molti campioni diversi della stessa distribuzione, daremo un punteggio in media $2 \sigma^2 /n$ più alto del dovuto. Quindi, il bias che ottengo si comporta come segue: è più alto se i miei dati tendono a variare di più, e più basso all'aumentare della size del mio dataset. Entrambi i risultati sono intuitivi: se il mio dataset varia molto, allora il problema del fittare i dati di training è più grave, perché a parità di $n$ copriranno una varianza minore della distribuzione vera; dall'altro lato, se ho più dati copro una varianza maggiore sempre. 
-\\
+Thus, the error of an estimator computed with the empirical risk in the same dataset is lower than the true one, i.e.\ saremo più generosi nel valutare i nostri estimatori. Concretamente, il risultato ci sta dicendo che se vogliamo valutare l'estimator $\hat\mu$ per stimare la mean (che sappiamo essere il migliore, ma immaginiamo per un attimo ce ne fossero anche altri), se lo valutiamo sullo stesso sample con cui l'abbiamo calcolato, avremo un punteggio che in media è più generoso del punteggio vero. 
+In particolare, se ripetiamo questo esperimento molte volte cioè con molti campioni diversi della stessa distribuzione, daremo un punteggio in media $2 \sigma^2 /n$ più alto del dovuto. Quindi, il bias che ottengo si comporta come segue: è più alto se i miei dati tendono a variare di più, e più basso all'aumentare della size del mio dataset. Entrambi i risultati sono intuitivi: se il mio dataset varia molto, allora il problema del fittare i dati di training è più grave, perché a parità di $n$ copriranno una varianza minore della distribuzione vera; dall'altro lato, se ho più dati copro una varianza maggiore sempre. 
+
 
 \paragraph{Considerazioni}
 Ora, ammettiamo che questi risultati sul bias siano estendibili ad un estimatore più generico, cioè prendiamo un certo numero di reti neurali che vogliono predire una statistica $y$ dei miei dati, le quali hanno qualche specificazione che le differenzia (quindi sono estimatori diversi). Se io fitto le mie reti su un dataset e valuto l'estimator risultante sul dataset stesso, sarò più generosa.
 
  \begin{remark}[Aleatorietà della rete neurale]
-     Il rischio (o inverso del punteggio) di una rete neurale (con init e altri hyperparameters fissi) è una variabile aleatoria per la presenza del dataset, non per i parametri interni. i parametri, dato un dataset, sono fissi, una volta fissata una rete neurale e quindi la sua architettura, inizializzazione, step size, senza regolarizzazioni che danno aleatorietà (ci torna?). quindi, quando parliamo della sua varianza qui ci riferiamo alla varianza dei dati.
+     Il rischio (o inverso del punteggio) di una rete neurale (con init e altri hyperparameters fissi) è una variabile aleatoria per la presenza del dataset, non per i parametri interni. I parametri, dato un dataset, sono fissi, una volta fissata una rete neurale e quindi la sua architettura, inizializzazione, step size, senza regolarizzazioni che danno aleatorietà (ci torna?). Quindi, quando parliamo della sua varianza qui ci riferiamo alla varianza dei dati.
      \end{remark}
      
 In particolare, se io valuto tantissimi estimator diversi looking for un estimator con un rischio abbastanza basso, la probabilità che io lo trovi aumenta all'aumentare del numero di estimator che valuto, ma magari lo trovo non perché il suo rischio vero è basso, ma per aleatorietà della misura di rischio.
@@ -478,5 +479,5 @@ Comunque, ammettendo questo parallelismo, io starei dicendo: il tuo stimatore, s
 E' grande tanto quanto la varianza e piccolo tanto quanto la grandezza del tuo dataset. 
 
 Considerando la varianza come data, quello che posso fare è aumentare la misura del mio dataset. However, se stiamo facendo tutto questo per non avere bisogno del test set e ridurre i costi di fare machine learning, siamo punto a capo. 
-\\
+
 

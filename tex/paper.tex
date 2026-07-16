@@ -4,13 +4,13 @@ Consideriamo ora di non valutare la mia misura di errore sul train set, ma di us
 Quindi, il primo split dei dati è ammesso, è il secondo, in cui creiamo anche il validation set, che stiamo mettendo in dubbio. L'analogia della moneta funziona comunque: $\hat R$ è pari al punteggio vero del mio modello sul lungo periodo, ma misurazione per misurazione ha una deviazione dalla sua media che potrebbe darmi punteggi più generosi, e questo è più probabile che accada (o, comunque, presenta punteggi diversi e quindi probabilmnete più alti) su 1000 trials (1000 modelli) invece che 100. Analizziamo questo paper di Ben recht. 
 \\
 
-\noindent $\blacktriangleright$ appunti dal paper su ImageNet e CIFAR \cite{recht2019imagenet}:
+\noindent $\blacktriangleright$ appunti dal paper su ImageNet e CIFAR~\cite{recht2019imagenet}:
 
 loro provano a  creare un nuovo test set con lo stesso data cleaning process di quello classico, usato per anni, e vedono un peggioramento nella performance di vari modelli di classificazione su entrmabi i dataset. un peggioramento talvolta equivalente a 5 anni di ricerca. 
 
 a cosa è dovuto questo peggioramento? un'ipotesi è l'adattamento dei modelli a questo test set, in modo informale tipo con specifici benchmark da battere che influenzano anche inconsciamente il ricercatore, cioè non in modo matematico ma più comportamentale. however, loro vedono che l'ordine dei modelli in termin di accuracy è mantenuto, e che non ci sono diminishing returns: modelli anche più recenti, quindi con accuracies più alte, hanno un calo in accuracy più piccolo (il ritorno è $-$ il calo in accuracy, intuitively). se il problema fosse l'adattamento, i modelli più recenti vedrebbero un calo molto maggiore. quindi, anche se c'è un'overstima sulla performance dei modelli, ``exhaustive evaluations on the test set'' are sufficient to select models, perché comunque selezioni il migliore. 
 
-la loro spiegazione, invece, si basa sulla difficoltà dei due test set (dove quello vecchio è molto più semplice). infatti, togliendo dal nuovo set le immagini un po' piu difficili (come si quantifica tale difficoltà?), migliora l'accuracy e matcha quella sul vecchio set. 
+la loro spiegazione, invece, si basa sulla difficoltà dei due test set (dove quello vecchio è molto più semplice). Infatti, togliendo dal nuovo set le immagini un po' piu difficili (come si quantifica tale difficoltà?), migliora l'accuracy e matcha quella sul vecchio set. 
 
 {\it We adopt the standard classification setup and posit the
 existence of a “true” underlying data distribution D over
@@ -24,10 +24,10 @@ It is important here to treat $S'$ as our test set, and $D'$ as our distribution
 $D$ is the original distribution, which we try to resemble. Hence, $L_{D'}-L_D$ is a structural distribution gap, due to the practical impossibility (is it?) to perfectly copy a high dimensional distirbution. Lastly, $S$ is the previous test set on which some adaptation could have been done, it is characterized by models having being tested multiple times on it. Thus, $L_D - L_S$ is the adaptivity gap: ideally, it has the same distribution (notice how we consider identity in distribution, as we are treating {\it random variables}) as the generalization gap, but in practice, some adaptivity to the test set $S$ may have occured, which inflates this source of error. 
 
 \begin{remark}
-    Two remarks are in order, arising from the {\it adaptivity gap} paragraph:
+    Two remarks are in order, arising from the {\it adaptivity gap\/} paragraph:
     \begin{itemize}
         \item they deliberately mention a ``common practice'' of tuning the hyperparameters on the test set;
-        \item they treat the case of testing directly on the train set as the extreme case of having {\it some} adaptivity to the test set, which makes our analysis above not useless!
+        \item they treat the case of testing directly on the train set as the extreme case of having {\it some\/} adaptivity to the test set, which makes our analysis above not useless!
     \end{itemize}
 \end{remark}
 
@@ -36,13 +36,13 @@ they study the disentanglement between the different gaps looking at multiple mo
 this however does not happen! in fact, the authors believe the distribution gap is the main driver of the decrease in accuracy (the difficulty of reproducing the same dataset), and also posit two explanations of the lack of adaptivity. first, the fact that there is an implicit noise in the adaptivity to a test set, so i think this kind of says ``the adaptation assumption is in fact untrue''. second, and more interesting, there is a limited set of models that is actually tested, among all the models that caould be obtained (those that perform well in the train set). this limited cardinality may ensure that the test evaluation is still valid. 
 \\
 
-{\color{benred} ?} this line {\it since they are the result of more successive hyperparameter tuning on the same test set} makes me wonder whether it is still in an informal way, or they assume hyperpar tuning is being done on the test set 
+{\color{benred}?} this line {\it since they are the result of more successive hyperparameter tuning on the same test set\/} makes me wonder whether it is still in an informal way, or they assume hyperpar tuning is being done on the test set 
 \\
 
 {\color{benred} onestamente, loro presentano $L_S(\hat f)$ come una loss, e poi senza dire nulla la trattano come accuracy, che ok si comprende ma io le tratterò come loss} 
 \\
 
-{\color{benred} !! how to read figure 1:} the black dashed line is the slope 1 line, and you see all the accuracies lying below (i.e. y smaller than x). also, later models are univocamente characterized as models with higher accuracy, as they took a line of papers with improved accuracies. also, slope of the fit (red line) is constant and it fits well $\rightarrow$ constant returns, not diminishing, hence challenging the adaptivity assumption. 
+{\color{benred}!! how to read figure 1:} the black dashed line is the slope 1 line, and you see all the accuracies lying below (i.e. y smaller than x). also, later models are univocamente characterized as models with higher accuracy, as they took a line of papers with improved accuracies. also, slope of the fit (red line) is constant and it fits well $\rightarrow$ constant returns, not diminishing, hence challenging the adaptivity assumption. 
 \\
 
 {\color{benred} future directions:} {\it While our experiments rule out the most dangerous form of
