@@ -54,7 +54,7 @@ with joint law $p$, which is a cathegorical probability distribution over  $\X\t
 Since we want to obtain a collection of observations, we define an additional random variable.
 
 \begin{definition}[Dataset]
-    Given a size $n$, a probability space $(\Omega, \mathcal F, \mathbb P)$, and value spaces $\X,\Y$, a dataset $D$ is a random variable 
+    Given a size $n$, a sample space $\Omega$, and value spaces $\X,\Y$, a dataset $D$ is a random variable 
     \[
     \begin{gathered}
         D:\Omega^n \to \X^n\times\Y^n, \qquad D\coloneq (X_i, Y_i)_{i=1}^n, \\
@@ -243,10 +243,11 @@ Next, we prove the upper bound ($\expv \le 2 \sqrt...$). For any $f \in \cH$, $\
 \]
 We now want to apply Hoeffding's inequality (Proposition~\ref{app: hoeffding} in the appendix). To do so, we need to satisfy 3 conditions:
 \begin{enumerate}
-    \item $Z_1, \ldots, Z_n$ i.i.d.
-    \item $\expv[Z_1] = \cdots = \expv[Z_n]$
+    \item $Z_1, \ldots, Z_n$ i.i.d.;
+    \item $\expv[Z_1] = \cdots = \expv[Z_n]$;
     \item $b_i \le Z_i \le a_i$ for some $a_1, \ldots, a_n \in \R$ and $b_1,\ldots,b_n\in\R$. 
 \end{enumerate}
+
 We have that $(i)$ is satisfied by ${Z_i}s$ being i.i.d.\ by construction. Condition $(ii)$ is satisfied since all the $(x_i,y_i)$ have the same distribution. $(iii)$ is satisfied with $b_1=\cdots=b_n=0$ and $a_1 = \cdots = a_n = M$ by non-negativity of the loss function and Proposition~\ref{prop: suff assump 2.2} with our definition of $\cH$. 
 Now we can apply Hoeffding's. We obtain 
 \begin{equation*}
