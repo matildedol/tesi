@@ -9,7 +9,7 @@
 \usepackage{fullpage}
 \usepackage{dsfont}
 \linespread{1.2}
-\include{math}
+\input{math}
 \usepackage{xcolor}
 \definecolor{benred}{HTML}{8B0000}
 \definecolor{bluette}{RGB}{0, 123, 255} % bright bluish tone
@@ -18,7 +18,7 @@
 
 \usepackage{xcolor}
 
-\newcommand{\loz}[1]{\textcolor{orange}{[LOZ: #1]}}
+\newcommand{\loz}[1]{\textcolor{orange}{[LOZ:\ #1]}}
 
 \newcommand{\mati}[1]{\textcolor{magenta}{#1}}
 
@@ -28,8 +28,7 @@
 \begin{document}
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\linewidth]{image.png}
-    \label{fig:placeholder}
+    \includegraphics[width=0.8\linewidth]{image.png}\label{fig:placeholder}
 \end{figure}
 \maketitle
 \tableofcontents
@@ -37,8 +36,8 @@
 
 \section{Mathematical framework}\label{sec: math}
 
-We observe $x\in \X = \{\bar x_1, \ldots, \bar x_N\}\subset \R$, and $y\in \Y\subset \{-1,1\}$ and we would like to predict $y$ from $x$.
-To do so, we are given a collection of observations like $x$ and $y$, i.e. our data. This allows to observe the relationship between $x$ and $y$ multiple times and hope to estimate it well.
+We observe $x\in \X = \{\bar x_1, \ldots, \bar x_N\}\subset \R$, and $y\in \Y = \{-1,1\}$ and we would like to predict $y$ from $x$.
+To do so, we are given a collection of observations like $x$ and $y$, i.e.\ our data. This allows to observe the relationship between $x$ and $y$ multiple times and hope to estimate it well.
 % am i biased by causal inference nel parlare di relazione tra x e y? alla fine dobbiamo sempre trovare una relazione, però è forse misleading dato che è occulta in (most of) machine learning 
 
 \begin{assumption}\label{1ass: randomdata}
@@ -57,21 +56,21 @@ Since we want to obtain a collection of observations, we define an additional ra
     Given a size $n$, a sample space $\Omega$, and value spaces $\X,\Y$, a dataset $D$ is a random variable 
     \[
     \begin{gathered}
-        D:\Omega^n \to \X^n\times\Y^n, \qquad D\coloneq (X_i, Y_i)_{i=1}^n, \\
+        D:\Omega^n \to \X^n\times\Y^n, \qquad D\coloneq {(X_i, Y_i)}_{i=1}^n, \\
      (\omega_1,\ldots,\omega_n)\mapsto ((x_1,y_1),\ldots,(x_n,y_n))\\
      D\sim p^n
         % D((\omega_1,\ldots,\omega_n),(\eta_1,\ldots,\eta_n)):=((X_1(\omega_1),Y_1(\eta_1)),\ldots,(X_n(\omega_n),Y_n(\eta_n))),\quad D\sim p^n
     \end{gathered}
     \]
-    where the $X_i$s and $Y_i$s are i.i.d copies of $X,Y$, and $X,Y,p$ are as in Assumption \ref{1ass: randomdata}. We indicate with the lower-case $d$ realizations of $D$, $d=\{(x_i,y_i)\}_{i=1}^n$. Also, we use $\mathcal{D}$ to indicate the output space of $D$ in general, and treat $\mathcal D = \X^n\times\Y^n$ as a particular case. 
+    where the $X_i$s and $Y_i$s are i.i.d copies of $X,Y$, and $X,Y,p$ are as in Assumption~\ref{1ass: randomdata}. We indicate with the lower-case $d$ realizations of $D$, $d={\{(x_i,y_i)\}}_{i=1}^n$. Also, we use $\mathcal{D}$ to indicate the output space of $D$ in general, and treat $\mathcal D = \X^n\times\Y^n$ as a particular case. 
 \end{definition}
 
-Now, predicting $y$ from $x$ means we want to find the best function $f$ such that $f(x)$ is a good approximation of $y$. To do so, we consider an {\it hypotheses space} $\cH$, which is the set of all functions $f:\X\to\Y$ that satisfy some hypotheses we choose to make on the relationship between $x$ and $y$.
+Now, predicting $y$ from $x$ means we want to find the best function $f$ such that $f(x)$ is a good approximation of $y$. To do so, we consider an {\it\/hypotheses space} $\cH$, which is the set of all functions $f:\X\to\Y$ that satisfy some hypotheses we choose to make on the relationship between $x$ and $y$.
 \begin{fact}
     Functions in $\cH$ are deterministic objects.
 \end{fact}
 
-In order to find the best predictor $f$, we use a {\it learning algorithm}, in the idea of learning our predictor from the data. 
+In order to find the best predictor $f$, we use a {\it\/learning algorithm}, in the idea of learning our predictor from the data. 
 
 \begin{definition}[Learning algorithm]\label{1def: learningalg}
 A learning algorithm $A$ is a deterministic function
@@ -89,12 +88,12 @@ Now, we are ready to define our central object, the predictor.
 \begin{definition}[Predictor]
     A predictor $\hat f_D$ is a random variable 
     \[
-    \hat f_D : \Omega^n  \to \mathcal H, \qquad \hat f_D \coloneq A \circ D, \qquad (\omega_i)_{i=1}^n\mapsto d \mapsto \hat f_d
+    \hat f_D : \Omega^n  \to \mathcal H, \qquad \hat f_D \coloneq A \circ D, \qquad {(\omega_i)}_{i=1}^n\mapsto d \mapsto \hat f_d
     \]
     that depends on some data $D$ and on a learning algorithm $A$. The source of randomness is the dataset $D$.  
 \end{definition}
 
-Now, we would like to have a way to {\it\/ evaluate} our predictors, in order to select the best one. To do so, we use a metric called {\it expected risk}. First, we take a loss function $\ell:\Y\times\Y\to\R^+$ that takes the preidction $f(x)$ and the true value $y$ and outputs a number corresponding to the error in the prediction. 
+Now, we would like to have a way to {\it\/ evaluate} our predictors, in order to select the best one. To do so, we use a metric called {\it\/expected risk}. First, we take a loss function $\ell:\Y\times\Y\to\R^+$ that takes the preidction $f(x)$ and the true value $y$ and outputs a number corresponding to the error in the prediction. 
 
 \begin{definition}[Expected risk]
      Given a predictor $f$ and a loss function $\ell$, the expected risk is a deterministic function $R: (\X\times\Y) \times \cH \to \R$,
@@ -102,7 +101,7 @@ Now, we would like to have a way to {\it\/ evaluate} our predictors, in order to
         R(f) \coloneq \sum_{i=1}^m \sum_{y_i\in\{-1,1\}}\ell(f(\bar x_i),y_i)p(\bar x_i, y_i).
     \end{equation}
 \end{definition}
-The issue with using $R(f)$ as a metric, however, is that we do not know the true distribution $p$ in general. Hence, we approximate the expected risk with a new, emprical metric, the {\it empirical risk}, motivated by the law of large numbers. 
+The issue with using $R(f)$ as a metric, however, is that we do not know the true distribution $p$ in general. Hence, we approximate the expected risk with a new, emprical metric, the {\it\/empirical risk}, motivated by the law of large numbers. 
 
 \begin{definition}[Empirical risk]
 Given a dataset $D$, a predictor $f$, and a loss function $\ell$, the empirical risk is
@@ -133,9 +132,9 @@ With the technology defined above, we define an estimator given a dataset $D$ an
 \begin{equation}\label{1eq: argmin}
     \hat f_D \coloneq \argmin_{f\in\cH} \hat R_D(f).
 \end{equation}
-This means that among all candidates in $\cH$, we select the one that minimizes the empirical risk. Solving problem (\ref{1eq: argmin}) corresponds to {\it fitting} the estimator to the data $D$ or {\it training} the estimator on $D$. 
+This means that among all candidates in $\cH$, we select the one that minimizes the empirical risk. Solving problem (\ref{1eq: argmin}) corresponds to {\it\/fitting} the estimator to the data $D$ or {\it\/training} the estimator on $D$. 
 
-Subsequently, it is natural to look for a measure of performance of $\hat f_D$, for instance to choose the best one among a set of different hypotheses (e.g. different architectures of a neural network), or to provide a measure of reliability of our prediction. However, our estimator is now a random variable of the data. This makes the result in Proposition \ref{1prop: unbiased} not valid anymore: the empirical risk computed on a dataset $D$ is a biased estimate of the true, expected risk of an estimator trained on $D$. This intuitively comes from the correlation between datapoints, as seen in Example \ref{app: toy}. 
+Subsequently, it is natural to look for a measure of performance of $\hat f_D$, for instance to choose the best one among a set of different hypotheses (e.g.\ different architectures of a neural network), or to provide a measure of reliability of our prediction. However, our estimator is now a random variable of the data. This makes the result in Proposition~\ref{1prop: unbiased} not valid anymore: the empirical risk computed on a dataset $D$ is a biased estimate of the true, expected risk of an estimator trained on $D$. This intuitively comes from the correlation between datapoints, as seen in Example~\ref{app: toy}. 
 As a solution, classical statistical theory provides splitting the dataset into two parts $(D_{train},D_{test})=D$ to preserve unbiasedness. Usually, we fit the estimator to $D_{train}$ and compute $\hat R$ on $D_{test}$, to obtain $\hat R_{D_{test}}$ as an unbiased estimate of the risk of $\hat f_{D_{train}}$. 
 
 We begin by asking the following question: how many splits of the dataset are really necessary in practice? To answer this, we want to study the bias arising from using the same dataset for training and evaluating a model. 
@@ -208,7 +207,7 @@ Consider data $D: \Omega^n \to \X^n \times \Y^n$, a predictor $\hat f_D \in \cH$
     0 \le \expv_D[ R(\hat f_D) - \hat R_D(\hat f_D)] \le 2M\sqrt{\frac{\log \vert \cH \vert}{2n}}.
 \end{equation}
 \begin{proof}
-We prove the lower bound ($0\le\expv_D...$) first. All the expectations are over the randomness of the data $D$, we drop the subscript to light notation. We have
+We prove the lower bound ($0\le\expv_D\ldots$) first. All the expectations are over the randomness of the data $D$, we drop the subscript to light notation. We have
 \begin{equation}\label{ineq: minimizer1}
 \hat R_D(\hat f_D) \le\hat R_D(f) \quad \forall f\in \cH,
 \end{equation}
@@ -237,7 +236,7 @@ and, finally, taking expectations
 \begin{equation}
         \expv[\hat R_D(\hat f_D)] \le \expv[R(\hat f_D)] \quad \text{a.s.}
 \end{equation}
-Next, we prove the upper bound ($\expv \le 2 \sqrt...$). For any $f \in \cH$, $\expv [\hat R_D (f)]=R(f)$. Let $Z_i \coloneq \ell(f(x_i),y_i)$ and have
+Next, we prove the upper bound ($\expv \le 2 \sqrt{}\ldots$). For any $f \in \cH$, $\expv [\hat R_D (f)]=R(f)$. Let $Z_i \coloneq \ell(f(x_i),y_i)$ and have
 \[
 \hat R_D(f) =\frac{1}{n}\sum_i Z_i 
 \]
@@ -275,7 +274,7 @@ To obtain our initial inequality from this result on a probability, we use a tec
 \begin{equation}\label{eq: keying}
     \expv[X] = \int_0^\infty \Pr(X\ge \varepsilon) \de \varepsilon
 \end{equation}
-which is true for any non-negative random variable $X$, see Proposition \ref{app: expvcmf} in the appendix. Then, we want to use our bound (\ref{eq: upper bound}) for the integrand. Let $a\coloneq \vert\cH\vert$ and $c\coloneq 2n/M^2$, so that
+which is true for any non-negative random variable $X$, see Proposition~\ref{app: expvcmf} in the appendix. Then, we want to use our bound (\ref{eq: upper bound}) for the integrand. Let $a\coloneq \vert\cH\vert$ and $c\coloneq 2n/M^2$, so that
 \[
 \Pr (X\ge \varepsilon) \le a e^{-c\varepsilon^2}.
 \] 
@@ -288,7 +287,7 @@ Therefore, it makes sense to split the integral in (\ref{eq: keying}) in two par
 \expv[X] &= \int_0^\infty \Pr(X\ge \varepsilon) \de \varepsilon \le \int_0^{\sqrt\frac{\log a}{c}} 1 \de \varepsilon + \int_{\sqrt\frac{\log a}{c}}^\infty ae^{-c\varepsilon^2}\de \varepsilon\\
 &=\sqrt\frac{\log a}{c} + a\frac{1}{2\sqrt{c\log a}}e^{-c\varepsilon^2} = \sqrt\frac{\log a}{c} + \frac{1}{2\sqrt{c\log a}}
 \end{align*}
-where the second integral is solved with a standard Gaussian tail bound (see Proposition \ref{app: gtailbound}), and in the last equality we substituted $a = 1/e^{-c\varepsilon^2}$. Finally, we can use a looser but simpler bound assuming  $a\ge e^{1/2}$, which is sensible since $a=\vert\cH\vert $ and $e^{1/2}<2$,
+where the second integral is solved with a standard Gaussian tail bound (see Proposition~\ref{app: gtailbound}), and in the last equality we substituted $a = 1/e^{-c\varepsilon^2}$. Finally, we can use a looser but simpler bound assuming  $a\ge e^{1/2}$, which is sensible since $a=\vert\cH\vert $ and $e^{1/2}<2$,
 \begin{equation}\label{eq}
     \expv[X] \le 2\sqrt\frac{\log a}{c}
 \end{equation}
@@ -303,6 +302,68 @@ Let us see how this bound looks like for a logistic loss function. By our defini
 \end{equation}
 \end{example}
 
+\subsection{Rademacher Complexity and Symmetrization Trick}
+
+In this section, we present a different bound from the one in Proposition~\ref{prop: main bound}, based on the so-called {\it\/Rademacher complexity} and on a {\it\/symmetrization trick}. We follow~\cite{bach2024learning}.
+
+\begin{definition}[Rademacher complexity]\label{def: rademacher}
+    Given a data size $n$, a dataset $D = {(X_i, Y_i)}_{i=1}^n$, a loss function $\ell:\Y\to\Y$, and an hypotheses space $\cH=\{f \vert f:\X\to\Y\}$, let $\varepsilon$ be a $n$-dimensional vector of i.i.d. Rademacher random variables (i.e.\ taking values $1$ and $-1$ with equal probability). The Rademacher complexity measure $\rho_n$ is
+    \begin{equation}
+        \rho_n(\cH) \coloneq \expv_{\varepsilon,D} [\sup_{f\in\cH} \frac{1}{n}\sum_{i=1}^n \varepsilon_i\ell(Y_i, f(X_i))] = \expv_{\varepsilon,D} \sup_{f\in\cH} \langle \varepsilon, \ell(f(X),Y)\rangle
+    \end{equation}
+    and it is a deterministic object depending on $n, \cH$, and the distribution of $\varepsilon$. 
+\end{definition}
+
+% \begin{remark}
+%     In our setting, where $\mathrm{Im}(f) = \{-1,1\}$, using $\mathbf{1}_{y_i f(x_i)}$ or directly $y_i f(x_i)$ is equivalent. 
+% \end{remark}
+
+\begin{remark}
+    The Rademacher complexity measures the highest possible alignment between the function $(x,y)\mapsto \ell(f(x),y)$ and the Rademacher random variable $\varepsilon$. Since the loss function is given, it is a measure of the ``flexibility'' of $\cH$, hence its complexity.
+\end{remark}
+
+The Rademacher complexity controls the bias in the empirical risk $\hat R(f)$ through a symmetrization property (this is Proposition $4.2$ in~\cite{bach2024learning}). 
+
+\begin{proposition}[Bound with symmetrization]
+    Consider data $D: \Omega^n \to \X^n \times \Y^n$ and an hypotheses set $\cH$. Given the Rademacher complexity $\rho_n$ as in Definition~\ref{def: rademacher}, the empirical and the expected risk of the estimators $f\in\cH$ satisfy the following bound
+    \begin{equation}
+        \expv_D[\sup_{f\in\cH} (R-\hat R) (f)] \le 2 \rho_n(\cH).
+    \end{equation}
+    \begin{proof}
+        Let $h:(x,y)\mapsto(\ell(f(x),y))$ and $Z\coloneqq(X,Y)$, so that
+        \begin{equation*}
+            R(f) =  \expv_D[h(Z)] \qquad \text{and} \qquad
+            \hat R_D(f) = \frac{1}{n}\sum_{i} h(Z_i).
+        \end{equation*}
+        The key ingredient of the proof is a {\it\/symmetrization trick}, which consists in introducing a new, independent dataset $D^\prime$ identically distributed as $D$ and using that the random variable $h(Z') - h(Z)$ has a symmetric distribution. So, we can multiply by $\varepsilon$ and obtain a random variable with the same distribution. We proceed as follows. 
+
+        Introduce $D^\prime = {(Z_i')}_{i=1}^n$ identical copies of $Z'$ and rewrite
+        \begin{equation}
+            \expv_D[h(Z)] = \expv_{D^\prime\vert D} [h(Z')\vert D].
+        \end{equation}
+        Then,
+        \begin{align}
+            \expv_D[\sup_{f\in\cH} (R-\hat R) (f)] &= \expv_D\bigg[\sup_{h} \expv_{D^\prime\vert D} \Big[h(Z')\Big\vert D\Big] - \frac{1}{n}\sum_i h(Z_i)\bigg] \notag\\\notag
+            &= \expv_D\bigg[\sup_{h} \frac{1}{n} \sum_i \expv_{D^\prime\vert D} \Big[h(Z_i')\Big\vert D\Big]-  h(Z_i) \bigg]\\
+            &= \expv_D\bigg[\sup_{h}  \expv_{D^\prime\vert D} \Big[ \frac{1}{n} \sum_i h(Z_i')-  h(Z_i)\Big\vert D\Big] \bigg]
+        \end{align}
+        by simply rearranging. 
+        Using that $f(X)\le \sup f(X) \Rightarrow \expv[f(X)]\le \expv[\sup f(X)] \Rightarrow \sup \expv[f(X)]\le \expv[\sup f(X)]$ and the law of total expectations, we obtain
+        \begin{align}
+            \expv_D[\sup_{f\in\cH} (R-\hat R) (f)] &\le \expv_D\bigg[ \expv_{D^\prime\vert D}\Big[ \sup_h \frac{1}{n} \sum_i h(Z_i')-  h(Z_i) \Big\vert D\Big]\bigg] \notag\\
+            &=\expv_{D,D^\prime}\bigg[  \sup_h \frac{1}{n} \sum_i h(Z_i')-  h(Z_i) \bigg].
+        \end{align}
+        Finally, we apply the symmetrization trick 
+        \begin{align*}
+            \expv_D[\sup_{f\in\cH} (R-\hat R) (f)] &\le \expv_{D,D^\prime,\varepsilon}\bigg[  \sup_h \frac{1}{n} \sum_i \varepsilon_i(h(Z_i')-  h(Z_i)) \bigg]\\
+            &= \expv_{D^\prime,\varepsilon}\bigg[  \sup_h \frac{1}{n} \sum_i \varepsilon_i h(Z_i') \bigg] + \expv_{D,\varepsilon}\bigg[ \sup_h \frac{1}{n} \sum_i - \varepsilon_i h(Z_i) \bigg]\\
+            &= \expv_{D^\prime,\varepsilon}\bigg[  \sup_h \frac{1}{n} \sum_i \varepsilon_i h(Z_i') \bigg] + \expv_{D,\varepsilon}\bigg[ \sup_h \frac{1}{n} \sum_i \varepsilon_i h(Z_i) \bigg]\\
+            &= 2 \rho_n(\cH)
+        \end{align*}
+        because clearly $\varepsilon h(Z) \sim -\varepsilon h(Z)$. 
+
+    \end{proof}
+\end{proposition}
 
 
 \newpage
@@ -323,10 +384,10 @@ Let us see how this bound looks like for a logistic loss function. By our defini
 
 % in generale poi, ci siamo detti che poi andremo a discretizzare il dominio anche nella simulazione, e vediamo se c'è ancora la curva del double descent (``dimensione'' non infinita). poi, faremo la stessa cosa con gli alberi di decisione: qui osserveremo se l'errore va giù e quindi conferma la teoria, allora giocheremo con l'esperimento; oppure se l'errore va su e giù, allora cerchermo di sviluppare la teoria per descriverlo. 
 
-% [extra] inoltre, lui prevedere che nell'esperimento con il dominio discretizzato, l'algoritmo si comporterà diversamente se i punti sono molto vicini tra loro (necessario polinomio grado molto alto per fittare perfettamente il rumore) oppure se sono lontani. in dimensione alta sono sempre molto lontani. altra cosa interessante è che se non usassimo dominio finito, dunque non potessimo {\it contare} quanti modelli abbiamo a disposizione, dovremmo contarli in un modo diverso più geometrico che si chiama covering, tipo riempiendo il cubo con delle sfere. eventualmente poi ci giocheremo.
+% [extra] inoltre, lui prevedere che nell'esperimento con il dominio discretizzato, l'algoritmo si comporterà diversamente se i punti sono molto vicini tra loro (necessario polinomio grado molto alto per fittare perfettamente il rumore) oppure se sono lontani. in dimensione alta sono sempre molto lontani. altra cosa interessante è che se non usassimo dominio finito, dunque non potessimo {\it\/contare} quanti modelli abbiamo a disposizione, dovremmo contarli in un modo diverso più geometrico che si chiama covering, tipo riempiendo il cubo con delle sfere. eventualmente poi ci giocheremo.
 % \\
 
-% In Section \ref{sec: bias} we develop point $(i)$. 
+% In Section~\ref{sec: bias} we develop point $(i)$. 
 
 
 \newpage
