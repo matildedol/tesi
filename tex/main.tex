@@ -324,7 +324,7 @@ In this section, we present a different bound from the one in Proposition~\ref{p
 
 The Rademacher complexity controls the bias in the empirical risk $\hat R(f)$ through a symmetrization property (this is Proposition $4.2$ in~\cite{bach2024learning}). 
 
-\begin{proposition}[Bound with symmetrization]
+\begin{proposition}[Bound with Rademacher complexity]
     Consider data $D: \Omega^n \to \X^n \times \Y^n$ and an hypotheses set $\cH$. Given the Rademacher complexity $\rho_n$ as in Definition~\ref{def: rademacher}, the empirical and the expected risk of the estimators $f\in\cH$ satisfy the following bound
     \begin{equation}
         \expv_D[\sup_{f\in\cH} (R-\hat R) (f)] \le 2 \rho_n(\cH).
