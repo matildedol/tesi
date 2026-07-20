@@ -335,32 +335,32 @@ The Rademacher complexity controls the bias in the empirical risk $\hat R(f)$ th
             R(f) =  \expv_D[h(Z)] \qquad \text{and} \qquad
             \hat R_D(f) = \frac{1}{n}\sum_{i} h(Z_i).
         \end{equation*}
-        The key ingredient of the proof is a {\it\/symmetrization trick}, which consists in introducing a new, independent dataset $D^\prime$ identically distributed as $D$ and using that the random variable $h(Z') - h(Z)$ has a symmetric distribution. So, we can multiply by $\varepsilon$ and obtain a random variable with the same distribution. We proceed as follows. 
+        The key ingredient of the proof is to introduce an independent copy of our dataset $D$, $D'$, and study the random variable $h(Z') - h(Z)$, which has a symmetric distribution and hence is easier to analyze ({\it\/ symmetrization trick}). 
+        We proceed as follows. 
 
         Introduce $D^\prime = {(Z_i')}_{i=1}^n$ identical copies of $Z'$ and rewrite
         \begin{equation}
-            \expv_D[h(Z)] = \expv_{D^\prime\vert D} [h(Z')\vert D].
+            \expv_D[h(Z)] = \expv_{D^\prime\vert D} [h(Z_i')\vert D].
         \end{equation}
         Then,
         \begin{align}
-            \expv_D[\sup_{f\in\cH} (R-\hat R) (f)] &= \expv_D\bigg[\sup_{h} \expv_{D^\prime\vert D} \Big[h(Z')\Big\vert D\Big] - \frac{1}{n}\sum_i h(Z_i)\bigg] \notag\\\notag
+            \expv_D[\sup_{f\in\cH} (R-\hat R) (f)] &= \expv_D\bigg[\sup_{h} \expv_{D^\prime\vert D} \Big[h(Z_i')\Big\vert D\Big] - \frac{1}{n}\sum_i h(Z_i)\bigg] \notag\\\notag
             &= \expv_D\bigg[\sup_{h} \frac{1}{n} \sum_i \expv_{D^\prime\vert D} \Big[h(Z_i')\Big\vert D\Big]-  h(Z_i) \bigg]\\
-            &= \expv_D\bigg[\sup_{h}  \expv_{D^\prime\vert D} \Big[ \frac{1}{n} \sum_i h(Z_i')-  h(Z_i)\Big\vert D\Big] \bigg]
-        \end{align}
-        by simply rearranging. 
+            &= \expv_D\bigg[\sup_{h}  \expv_{D^\prime\vert D} \Big[ \frac{1}{n} \sum_i h(Z_i')-  h(Z_i)\Big\vert D\Big] \bigg].
+        \end{align} 
         Using that $f(X)\le \sup f(X) \Rightarrow \expv[f(X)]\le \expv[\sup f(X)] \Rightarrow \sup \expv[f(X)]\le \expv[\sup f(X)]$ and the law of total expectations, we obtain
         \begin{align}
             \expv_D[\sup_{f\in\cH} (R-\hat R) (f)] &\le \expv_D\bigg[ \expv_{D^\prime\vert D}\Big[ \sup_h \frac{1}{n} \sum_i h(Z_i')-  h(Z_i) \Big\vert D\Big]\bigg] \notag\\
             &=\expv_{D,D^\prime}\bigg[  \sup_h \frac{1}{n} \sum_i h(Z_i')-  h(Z_i) \bigg].
         \end{align}
-        Finally, we apply the symmetrization trick 
+        Finally, we use that $h(Z^\prime)-h(Z)\overset{d}{=}\varepsilon (h(Z^\prime)-h(Z))$
         \begin{align*}
             \expv_D[\sup_{f\in\cH} (R-\hat R) (f)] &\le \expv_{D,D^\prime,\varepsilon}\bigg[  \sup_h \frac{1}{n} \sum_i \varepsilon_i(h(Z_i')-  h(Z_i)) \bigg]\\
             &= \expv_{D^\prime,\varepsilon}\bigg[  \sup_h \frac{1}{n} \sum_i \varepsilon_i h(Z_i') \bigg] + \expv_{D,\varepsilon}\bigg[ \sup_h \frac{1}{n} \sum_i - \varepsilon_i h(Z_i) \bigg]\\
             &= \expv_{D^\prime,\varepsilon}\bigg[  \sup_h \frac{1}{n} \sum_i \varepsilon_i h(Z_i') \bigg] + \expv_{D,\varepsilon}\bigg[ \sup_h \frac{1}{n} \sum_i \varepsilon_i h(Z_i) \bigg]\\
             &= 2 \rho_n(\cH)
         \end{align*}
-        because clearly $\varepsilon h(Z) \sim -\varepsilon h(Z)$. 
+        because clearly $\varepsilon h(Z) \overset{d}{=} -\varepsilon h(Z)$.
 
     \end{proof}
 \end{proposition}
