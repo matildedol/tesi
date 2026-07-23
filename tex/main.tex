@@ -304,7 +304,8 @@ Let us see how this bound looks like for a logistic loss function. By our defini
 
 \subsection{Rademacher Complexity and Symmetrization Trick}
 
-In this section, we present a different bound from the one in Proposition~\ref{prop: main bound}, based on the so-called {\it\/Rademacher complexity} and on a {\it\/symmetrization trick}. We follow~\cite{bach2024learning}.
+In this section, we present a different bound from the one in Proposition~\ref{prop: main bound}, based on the so-called {\it\/Rademacher complexity} and on a {\it\/symmetrization trick}.
+% We follow~\cite{bach2024learning}.
 
 \begin{definition}[Rademacher complexity]\label{def: rademacher}
     Given a data size $n$, a dataset $D = {(X_i, Y_i)}_{i=1}^n$, a loss function $\ell:\Y\to\Y$, and an hypotheses space $\cH=\{f \vert f:\X\to\Y\}$, let $\varepsilon$ be a $n$-dimensional vector of i.i.d. Rademacher random variables (i.e.\ taking values $1$ and $-1$ with equal probability). The Rademacher complexity measure $\mathfrak R_n$ is
@@ -375,7 +376,7 @@ The Rademacher complexity controls the bias in the empirical risk $\hat R(f)$ th
         \begin{equation}
             \sup_{h \in(\ell \circ\cH)} \frac{1}{n}\sum_i h({Z_i}^\prime) -h(Z_i) \overset{d}{=}\sup_{h \in(\ell\circ\cH)} \frac{1}{n}\sum_i e_i(h({Z_i}^\prime) -h(Z_i)),
         \end{equation}
-        because $\sup_{h\in H} X_h$ is a functional of the stochastic process ${(X_h)}_{h\in H}$, hence its distribution depends on the joint distribution of the process. 
+        where since the supremum is a functional of the stochastic process, equality in distribution of the supremum follows from equality in distribution of the process.
         Hence, we obtain
         \begin{align}
             \expv_{D,D^\prime} \bigg[\sup_{h\in(\ell\circ\mathcal H)}\frac{1}{n} \sum_i h({Z_i}^\prime)-h(Z_i)\bigg] &= \expv_{D,D^\prime} \bigg[\sup_{h\in(\ell\circ\mathcal H)}\frac{1}{n}\sum_i e_i(h({Z_i}^\prime)-h(Z_i))\bigg]\\
