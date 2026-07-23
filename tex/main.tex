@@ -307,11 +307,11 @@ Let us see how this bound looks like for a logistic loss function. By our defini
 In this section, we present a different bound from the one in Proposition~\ref{prop: main bound}, based on the so-called {\it\/Rademacher complexity} and on a {\it\/symmetrization trick}. We follow~\cite{bach2024learning}.
 
 \begin{definition}[Rademacher complexity]\label{def: rademacher}
-    Given a data size $n$, a dataset $D = {(X_i, Y_i)}_{i=1}^n$, a loss function $\ell:\Y\to\Y$, and an hypotheses space $\cH=\{f \vert f:\X\to\Y\}$, let $\varepsilon$ be a $n$-dimensional vector of i.i.d. Rademacher random variables (i.e.\ taking values $1$ and $-1$ with equal probability). The Rademacher complexity measure $\rho_n$ is
+    Given a data size $n$, a dataset $D = {(X_i, Y_i)}_{i=1}^n$, a loss function $\ell:\Y\to\Y$, and an hypotheses space $\cH=\{f \vert f:\X\to\Y\}$, let $\varepsilon$ be a $n$-dimensional vector of i.i.d. Rademacher random variables (i.e.\ taking values $1$ and $-1$ with equal probability). The Rademacher complexity measure $\mathfrak R_n$ is
     \begin{equation}
-        \rho_n(\cH) \coloneq \expv_{\varepsilon,D} [\sup_{f\in\cH} \frac{1}{n}\sum_{i=1}^n \varepsilon_i\ell(Y_i, f(X_i))] = \expv_{\varepsilon,D} \sup_{f\in\cH} \langle \varepsilon, \ell(f(X),Y)\rangle
+        \mathfrak R_n(\cH) \coloneq \expv_{\varepsilon,D} [\sup_{f\in\cH} \frac{1}{n}\sum_{i=1}^n \varepsilon_i\ell(Y_i, f(X_i))] = \expv_{\varepsilon,D} \sup_{f\in\cH} \langle \varepsilon, \ell(f(X),Y)\rangle
     \end{equation}
-    and it is a deterministic object depending on $n, \cH$, and the distribution of $\varepsilon$. 
+    and it is a deterministic object depending on $n, \cH$, and the distributions of $\varepsilon$ and $D$. 
 \end{definition}
 
 % \begin{remark}
@@ -325,12 +325,12 @@ In this section, we present a different bound from the one in Proposition~\ref{p
 The Rademacher complexity controls the bias in the empirical risk $\hat R(f)$ through a symmetrization property (this is Proposition $4.2$ in~\cite{bach2024learning}). 
 
 \begin{proposition}[Bound with Rademacher complexity]
-    Consider data $D: \Omega^n \to \X^n \times \Y^n$ and an hypotheses set $\cH$. Given the Rademacher complexity $\rho_n$ as in Definition~\ref{def: rademacher}, the empirical and the expected risk of the estimators $f\in\cH$ satisfy the following bound
+    Consider data $D: \Omega^n \to \X^n \times \Y^n$ and an hypotheses set $\cH$. Given the Rademacher complexity $\mathfrak R_n$ as in Definition~\ref{def: rademacher}, the empirical and the expected risk of the estimators $f\in\cH$ satisfy the following bound
     \begin{equation}
-        \expv_D[\sup_{f\in\cH} (R-\hat R) (f)] \le 2 \rho_n(\cH).
+        \expv_D[\sup_{f\in\cH} (R-\hat R_D) (f)] \le 2 \mathfrak R_n(\cH).
     \end{equation}
     \begin{proof}
-        Let $h:(x,y)\mapsto(\ell(f(x),y))$ and $Z\coloneqq(X,Y)$, so that
+        Let $h:(x,y)\mapsto(\ell(f(x),y))$ living in $\ell \circ \mathcal H$ and $Z\coloneqq(X,Y)$, so that
         \begin{equation*}
             R(f) =  \expv_D[h(Z)] \qquad \text{and} \qquad
             \hat R_D(f) = \frac{1}{n}\sum_{i} h(Z_i).
@@ -344,51 +344,123 @@ The Rademacher complexity controls the bias in the empirical risk $\hat R(f)$ th
         \end{equation}
         Then,
         \begin{align}
-            \expv_D[\sup_{f\in\cH} (R-\hat R) (f)] &= \expv_D\bigg[\sup_{h} \expv_{D^\prime\vert D} \Big[h(Z_i')\Big\vert D\Big] - \frac{1}{n}\sum_i h(Z_i)\bigg] \notag\\\notag
-            &= \expv_D\bigg[\sup_{h} \frac{1}{n} \sum_i \expv_{D^\prime\vert D} \Big[h(Z_i')\Big\vert D\Big]-  h(Z_i) \bigg]\\
-            &= \expv_D\bigg[\sup_{h}  \expv_{D^\prime\vert D} \Big[ \frac{1}{n} \sum_i h(Z_i')-  h(Z_i)\Big\vert D\Big] \bigg].
+            \expv_D[\sup_{f\in\cH} (R-\hat R) (f)] &= \expv_D\bigg[\sup_{h\in(\ell\circ\mathcal H)} \expv_{D^\prime\vert D} \Big[h(Z_i')\Big\vert D\Big] - \frac{1}{n}\sum_i h(Z_i)\bigg] \notag\\\notag
+            &= \expv_D\bigg[\sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i \expv_{D^\prime\vert D} \Big[h(Z_i')\Big\vert D\Big]-  h(Z_i) \bigg]\\
+            &= \expv_D\bigg[\sup_{h\in(\ell\circ\mathcal H)}  \expv_{D^\prime\vert D} \Big[ \frac{1}{n} \sum_i h(Z_i')-  h(Z_i)\Big\vert D\Big] \bigg].
         \end{align} 
         Using that $f(X)\le \sup f(X) \Rightarrow \expv[f(X)]\le \expv[\sup f(X)] \Rightarrow \sup \expv[f(X)]\le \expv[\sup f(X)]$ and the law of total expectations, we obtain
         \begin{align}
-            \expv_D[\sup_{f\in\cH} (R-\hat R) (f)] &\le \expv_D\bigg[ \expv_{D^\prime\vert D}\Big[ \sup_h \frac{1}{n} \sum_i h(Z_i')-  h(Z_i) \Big\vert D\Big]\bigg] \notag\\
-            &=\expv_{D,D^\prime}\bigg[  \sup_h \frac{1}{n} \sum_i h(Z_i')-  h(Z_i) \bigg].
+            \expv_D[\sup_{f\in\cH} (R-\hat R) (f)] &\le \expv_D\bigg[ \expv_{D^\prime\vert D}\Big[ \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i h(Z_i')-  h(Z_i) \Big\vert D\Big]\bigg] \notag\\
+            &=\expv_{D,D^\prime}\bigg[  \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i h(Z_i')-  h(Z_i) \bigg].\label{eq: 26}
         \end{align}
-        Finally, we use that $h(Z^\prime)-h(Z)\overset{d}{=}\varepsilon (h(Z^\prime)-h(Z))$
+        Now we want to apply the symmetrization trick. 
+        % parliamo direttamente di joint symmetry perché è questa che ci serve per concludere la cosa sul sup
+        % la cit per questa parte è chat :((
+        % quetsa proof si estende facilmente al caso H infinito perche si dimostra uguaglianza delle leggi per ogni collezione finita h1,...,hm e quindi si puo concludere (up to measurability or something) uguaglianza in legge dei due processi indexed by h\in\cH
+        Let $m \coloneqq \vert\cH\vert$. For $i=1,\ldots,n$, the random variables $(h_1({Z_i}^\prime)-h_1(Z_i),\ldots, h_m({Z_i}^\prime)-h_m(Z_i))$ are jointly symmetric. 
+        This is because $Z_i$ and ${Z_i}^\prime$ are identically distributed, hence 
+        \begin{equation}
+            {\big(h_j({Z_i}^\prime) -h_j(Z_i)\big)}_{j=1}^m \overset{d}{=} {\big(h_j(Z_i) - h_j({Z_i^\prime})\big)}_{j=1}^m.
+        \end{equation}
+        This means that for $e_i\in\{-1,1\}$,
+        \begin{equation}
+            {\big(h_j({Z_i}^\prime) -h_j(Z_i)\big)}_{j=1}^m \overset{d}{=} {\big(e_i (h_j({Z_i}^\prime) - h_j(Z_i))\big)}_{j=1}^m.
+            %\qquad \forall i=1,\ldots,n, \forall h\in\ell\circ\cH
+        \end{equation}
+        Using independence over the $i$s we have 
+        \begin{equation}
+             {\bigg(\frac{1}{n}\sum_i h_j({Z_i}^\prime) -h_j(Z_i)\bigg)}_{j=1}^m \overset{d}{=} {\bigg(\frac{1}{n}\sum_i e_i(h_j({Z_i}^\prime) -h_j(Z_i))\bigg)}_{j=1}^m,
+        \end{equation}
+        and thus 
+        \begin{equation}
+            \sup_{h \in(\ell \circ\cH)} \frac{1}{n}\sum_i h({Z_i}^\prime) -h(Z_i) \overset{d}{=}\sup_{h \in(\ell\circ\cH)} \frac{1}{n}\sum_i e_i(h({Z_i}^\prime) -h(Z_i)),
+        \end{equation}
+        because $\sup_{h\in H} X_h$ is a functional of the stochastic process ${(X_h)}_{h\in H}$, hence its distribution depends on the joint distribution of the process. 
+        Hence, we obtain
+        \begin{align}
+            \expv_{D,D^\prime} \bigg[\sup_{h\in(\ell\circ\mathcal H)}\frac{1}{n} \sum_i h({Z_i}^\prime)-h(Z_i)\bigg] &= \expv_{D,D^\prime} \bigg[\sup_{h\in(\ell\circ\mathcal H)}\frac{1}{n}\sum_i e_i(h({Z_i}^\prime)-h(Z_i))\bigg]\\
+            &= \expv_{D,D^\prime\vert\varepsilon} \bigg[\sup_{h\in(\ell\circ\mathcal H)}\frac{1}{n}\sum_i \varepsilon_i(h({Z_i}^\prime)-h(Z_i))\big\vert \varepsilon = e\bigg]\\
+            &= \expv_{D,D^\prime,\varepsilon}\bigg[  \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i \varepsilon_i(h(Z_i')-  h(Z_i)) \bigg].
+        \end{align}
+        where in the last row we take the expected value over the disorder of $\varepsilon$ and use the tower law.
+        Finally, inequality (\ref{eq: 26}) becomes
         \begin{align*}
-            \expv_D[\sup_{f\in\cH} (R-\hat R) (f)] &\le \expv_{D,D^\prime,\varepsilon}\bigg[  \sup_h \frac{1}{n} \sum_i \varepsilon_i(h(Z_i')-  h(Z_i)) \bigg]\\
-            &= \expv_{D^\prime,\varepsilon}\bigg[  \sup_h \frac{1}{n} \sum_i \varepsilon_i h(Z_i') \bigg] + \expv_{D,\varepsilon}\bigg[ \sup_h \frac{1}{n} \sum_i - \varepsilon_i h(Z_i) \bigg]\\
-            &= \expv_{D^\prime,\varepsilon}\bigg[  \sup_h \frac{1}{n} \sum_i \varepsilon_i h(Z_i') \bigg] + \expv_{D,\varepsilon}\bigg[ \sup_h \frac{1}{n} \sum_i \varepsilon_i h(Z_i) \bigg]\\
-            &= 2 \rho_n(\cH)
+            \expv_D[\sup_{f\in\cH} (R-\hat R) (f)] &\le \expv_{D,D^\prime,\varepsilon}\bigg[  \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i \varepsilon_i(h(Z_i')-  h(Z_i)) \bigg]\\
+            &\le \expv_{D^\prime,\varepsilon}\bigg[  \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i \varepsilon_i h(Z_i') \bigg] + \expv_{D,\varepsilon}\bigg[ \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i - \varepsilon_i h(Z_i) \bigg]\\
+            &= \expv_{D^\prime,\varepsilon}\bigg[  \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i \varepsilon_i h(Z_i') \bigg] + \expv_{D,\varepsilon}\bigg[ \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i \varepsilon_i h(Z_i) \bigg]\\
+            &= 2 \mathfrak R_n(\cH)
         \end{align*}
-        because clearly $\varepsilon h(Z) \overset{d}{=} -\varepsilon h(Z)$.
-
+        because $\varepsilon h(Z) \overset{d}{=} -\varepsilon h(Z)$.
     \end{proof}
 \end{proposition}
 
+\subsection{Pensieri notturni}
+Let
+\[
+D=((X_1,Y_1),\ldots,(X_n,Y_n))
+\]
+be the training sample. In the noiseless setting,
+\[
+Y_i=t(X_i),
+\qquad
+t:\mathcal X\to\{0,1\}.
+\]
 
-\newpage
-% \section*{chiamata 28 aprile}
+Let $\mathcal H_d$ denote the class of one-dimensional decision trees of depth at most $d$, and let
+\[
+\ell:\{0,1\}\times\{0,1\}\to\{0,1\},
+\qquad
+\ell(\hat y,y)=\mathbf 1\{\hat y\neq y\},
+\]
+be the misclassification loss.
 
-% Next steps:
-% \begin{enumerate}
-%     \item theoretical side - provo a rifare i conti sulle note ML Ideas usando un'altra loss, non con indicatore, ma logistica oppure LS. Nota che sarà utile usare due variabili diverse, $f$ per le funzioni a valori binari, e $g$ per le funzioni (argomento di $f$) a valori reali (che in realtà hanno un dominio discretizzato, non $\R$ propriamente); 
-%     \item applied side - fare una shallo network in 1 dimensione con
-%     \begin{itemize}
-%         \item dati che vivono in $[0,1]$ oppure $[0,10]$ per questioni numeriche, campionati con una misura uniforme 
-%         \item prendiamo una funzione $f$ generica (mantieni possibiltà di usarne altre), convessa (per non preoccuparsi di convergenza)
-%         \item generi le $y$ come $y = \mathrm{sgn}(f(x)) + \varepsilon$
-%         \item usa weights randomici
-%     \end{itemize}
-%     poi si plotta sulle ascisse la complessità della rete (larghezza, essendo 1 dim), e sulle ordinate l'errore che conta e un altro errore (CE, LS)
-% \end{enumerate}
+The empirical Rademacher complexity of the loss class is
+\[
+\widehat{\mathfrak R}_{D}(\ell\circ\mathcal H_d)
+=
+\frac1n
+\mathbb E_\sigma
+\left[
+\sup_{h\in\mathcal H_d}
+\sum_{i=1}^n
+\sigma_i\,
+\ell(h(X_i),Y_i)
+\right].
+\]
 
-% in generale poi, ci siamo detti che poi andremo a discretizzare il dominio anche nella simulazione, e vediamo se c'è ancora la curva del double descent (``dimensione'' non infinita). poi, faremo la stessa cosa con gli alberi di decisione: qui osserveremo se l'errore va giù e quindi conferma la teoria, allora giocheremo con l'esperimento; oppure se l'errore va su e giù, allora cerchermo di sviluppare la teoria per descriverlo. 
+Since $Y_i=t(X_i)$, this can be written as
+\[
+\widehat{\mathfrak R}_{D}(\ell\circ\mathcal H_d)
+=
+\frac1n
+\mathbb E_\sigma
+\left[
+\sup_{h\in\mathcal H_d}
+\sum_{i=1}^n
+\sigma_i\,
+\ell(h(X_i),t(X_i))
+\right].
+\]
 
-% [extra] inoltre, lui prevedere che nell'esperimento con il dominio discretizzato, l'algoritmo si comporterà diversamente se i punti sono molto vicini tra loro (necessario polinomio grado molto alto per fittare perfettamente il rumore) oppure se sono lontani. in dimensione alta sono sempre molto lontani. altra cosa interessante è che se non usassimo dominio finito, dunque non potessimo {\it\/contare} quanti modelli abbiamo a disposizione, dovremmo contarli in un modo diverso più geometrico che si chiama covering, tipo riempiendo il cubo con delle sfere. eventualmente poi ci giocheremo.
-% \\
+The empirical localized loss class is
+\[
+{(\ell\circ\mathcal H_d)}_D(r)
+=
+\left\{
+(x,y)\mapsto \ell(h(x),y)
+:
+h\in\mathcal H_d,\;
+\frac1n
+\sum_{i=1}^n
+\ell(h(X_i),Y_i)
+\le r
+\right\}.
+\]
 
-% In Section~\ref{sec: bias} we develop point $(i)$. 
-
+% we create a class of functions that are the prediction function composed with the loss such that the loss for each datapoint is bounded 
+% empirical because it depends on the data 
+% localized because they lie within a certain radius 
+% we gain a bound on the loss
 
 \newpage
 \bibliography{refs}
