@@ -86,6 +86,56 @@
     \end{proof}
 \end{proposition}
 
+\begin{theorem}[Hoeffding's Lemma (symmetric interval)]\label{app: hoeffdinglemma}
+    Let $X$ be a centered random variable such that $\vert X\vert \le a$ for some $a\in\R$. Then
+    \begin{equation}
+        \expv[e^{\lambda X}] \le e^{\frac{\lambda^2 a^2}{2}}
+    \end{equation}
+    $\forall \lambda \in \R$.
+    \begin{proof}
+    Since $X\mapsto e^{\lambda X}$ is a convex function, in the domain $[-a,a]$ one has
+    \begin{equation}
+        e^{\lambda X} \le \frac{a+X}{2a} e^{\lambda a} + \frac{a-X}{2a}e^{-\lambda a}.
+    \end{equation}
+    Taking expectations over $X$, we obtain
+    \begin{align}
+        \expv[e^{\lambda X}] &\le \expv\bigg[\frac{a+X}{2a} e^{\lambda a} + \frac{a-X}{2a}e^{-\lambda a}\bigg]\notag \\
+        &= \frac{a+\expv[X]}{2a} e^{\lambda a} + \frac{a-\expv[X]}{2a}e^{-\lambda a} \notag\\
+        &= \frac{ae^{\lambda a} + ae^{-\lambda a}}{2a}\notag \\
+        &= \frac{e^{\lambda a}+e^{-\lambda a}}{2}\notag\\
+        &= \cosh (\lambda a).
+    \end{align}
+    Now, recall the Taylor series expansions
+    \begin{equation}
+        e^{u} = \sum_{k = 0}^\infty \frac{u^k}{k!} \quad \Rightarrow \quad e^{u^2/2} = \sum_{k = 0}^\infty \frac{{(u^2/2)}^k}{k!} = \sum_{k = 0}^\infty \frac{u^{2k}}{2^k k!}
+    \end{equation}
+    and
+    \begin{equation}
+        \cosh(u) = \sum_{k=0}^\infty \frac{u^{2k}}{(2k)!}.
+    \end{equation}
+    Thus, to prove the result we just need to comapre $(2k)!$ and $2^k k! $. We have
+    \begin{align*}
+        (2k)! &= (1\cdot 3\cdot 5\cdots (2k-1)) \cdot (2\cdot 4 \cdots 2k)\\
+        &= (1\cdot 3\cdot 5\cdots (2k-1)) \cdot ((2 \cdot 1)\cdot(2\cdot 2)\cdot (2\cdot 3)\cdots (2\cdot k))\\
+        &= (1\cdot 3\cdot 5\cdots (2k-1)) \cdot (2^k \cdot k!) \\
+        &\ge (2^k \cdot k!)
+    \end{align*}
+    Hence, we obtain
+    \begin{equation}
+        \expv[e^{\lambda X}] \le \cosh (\lambda a)\le e^{\lambda^2a^2 / 2}.
+    \end{equation}
+\end{proof}
+\end{theorem}
+
+\begin{remark}
+    Hoeffding's lemma just says that any centered random variable bounded as $a\le X\le b$ is subgaussian with parameter $\frac{b-a}{2}$. Recall that a centered random variable is said subgaussian with parameter $\gamma$ if
+    \begin{equation}
+        \expv[e^{\lambda X}] \le e^{\frac{\lambda^2\gamma^2}{2}},
+    \end{equation}
+    for any $\lambda \in \R$. The definition comes from the fact that for a centered, gaussian random variable, the inequality is sharp with $\gamma = \sigma$ standard deviation of $X$. 
+\end{remark}
+
+
 \section{Toy example}
 
 \begin{example}[Least squares with toy dataset]\label{app: toy}
