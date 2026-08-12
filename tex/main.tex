@@ -318,12 +318,14 @@ In this section, we present a different bound from the one in Proposition~\ref{p
 % \begin{remark}
 %     In our setting, where $\mathrm{Im}(f) = \{-1,1\}$, using $\mathbf{1}_{y_i f(x_i)}$ or directly $y_i f(x_i)$ is equivalent. 
 % \end{remark}
+Notice that to be precise we should call this quantity $\mathfrak{R}_n(\ell\circ\cH)$ (for instance following~\cite{boucheron2005theory}), but once we fix a loss function $\ell$, our quantity depends only on the elements of $\cH$ and indeed also the supremum runs over $\cH$. 
+
 
 \begin{remark}
     The Rademacher complexity measures the highest possible alignment between the function $(x,y)\mapsto \ell(f(x),y)$ and the Rademacher random variable $\varepsilon$. Since the loss function is given, it is a measure of the ``flexibility'' of $\cH$, hence its complexity.
 \end{remark}
 
-The Rademacher complexity controls the bias in the empirical risk $\hat R(f)$ through a symmetrization property (this is Proposition $4.2$ in~\cite{bach2024learning}). 
+The Rademacher complexity controls the maximal deviation of the empirical risk $\hat R(f)$ from the true risk $R(f)$ through a symmetrization property (this is Proposition $4.2$ in~\cite{bach2024learning}). 
 
 \begin{proposition}[Symmetrization]
     Consider data $D: \Omega^n \to \X^n \times \Y^n$ and an hypotheses set $\cH$. Given the Rademacher complexity $\mathfrak R_n$ as in Definition~\ref{def: rademacher}, the empirical and the expected risk of the estimators $f\in\cH$ satisfy the following bound
@@ -415,7 +417,7 @@ The following result gives us an explicit bound on the Rademacher complexity. Th
         \end{align}
         where we use Jensen's inequality on the convex function $\exp$ in the first inequality, we trivially bound the supremum with the sum, and we use the independence of the $\varepsilon_i$'s across $i=1,\ldots,n$ in the last equality. 
 
-        Now, we want to apply Hoeffding's lemma (Theorem~\ref{app: hoeffdinglemma} in the appendix) to each factor. Notice that we can do so, because $\varepsilon_i \ell(Y_i,f(X_i))$ is a centered random variable ($\expv[\varepsilon_i]=0$ and $\varepsilon_i$ is independent of $\ell(Y_i,f(X_i))$) and it satisfies $\vert \varepsilon_i \ell(Y_i,f(X_i)) \vert \le M$ by assumption. We obtain
+        Now, we want to apply Hoeffding's lemma (Theorem~\ref{app: hoeffdinglemma} in the appendix) to each factor. Notice that we can do so because each $\varepsilon_i \ell(Y_i,f(X_i))$ is a centered random variable, since $\expv[\varepsilon_i]=0$ and $\varepsilon_i$ is independent of $\ell(Y_i,f(X_i))$, and it satisfies $\vert \varepsilon_i \ell(Y_i,f(X_i)) \vert \le M$ by assumption. We obtain
         \begin{equation}
             \expv_{\varepsilon_i}\Big[\exp\big(t\varepsilon_i \ell(Y_i,f(X_i))\big)\Big] \le e^{t^2M^2/2}
         \end{equation}
@@ -439,7 +441,7 @@ The following result gives us an explicit bound on the Rademacher complexity. Th
         \begin{equation}
             2\frac{\log\vert\cH\vert}{t^3 n} \ge 0
         \end{equation}
-        hence $t^*$ is a minimizer since the RHS of (\ref{eq: massart-opt}). Plugging $t^\star$ back into (\ref{eq: massart-opt}) yields
+        hence $t^*$ is a minimizer. Plugging it back into (\ref{eq: massart-opt}) yields
         \begin{equation}
             \mathfrak R_n(\cH) \le M\sqrt{\frac{2\log\vert\cH\vert}{n}}.
         \end{equation}
@@ -515,6 +517,7 @@ h\in\mathcal H_d,\;
 % empirical because it depends on the data 
 % localized because they lie within a certain radius 
 % we gain a bound on the loss
+
 
 \newpage
 \bibliography{refs}

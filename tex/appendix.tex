@@ -86,7 +86,7 @@
     \end{proof}
 \end{proposition}
 
-\begin{theorem}[Hoeffding's Lemma (symmetric interval)]\label{app: hoeffdinglemma}
+\begin{theorem}[Hoeffding's Lemma -- symmetric interval]\label{app: hoeffdinglemma}
     Let $X$ be a centered random variable such that $\vert X\vert \le a$ for some $a\in\R$. Then
     \begin{equation}
         \expv[e^{\lambda X}] \le e^{\frac{\lambda^2 a^2}{2}}
@@ -105,6 +105,7 @@
         &= \frac{e^{\lambda a}+e^{-\lambda a}}{2}\notag\\
         &= \cosh (\lambda a).
     \end{align}
+    Notice that the bound on $\expv[e^{\lambda X}]$ is exactly its value when $X$ is a Rademacher random variable, that is when it has all the mass in the tails. 
     Now, recall the Taylor series expansions
     \begin{equation}
         e^{u} = \sum_{k = 0}^\infty \frac{u^k}{k!} \quad \Rightarrow \quad e^{u^2/2} = \sum_{k = 0}^\infty \frac{{(u^2/2)}^k}{k!} = \sum_{k = 0}^\infty \frac{u^{2k}}{2^k k!}
@@ -127,12 +128,13 @@
 \end{proof}
 \end{theorem}
 
-\begin{remark}
-    Hoeffding's lemma just says that any centered random variable bounded as $a\le X\le b$ is subgaussian with parameter $\frac{b-a}{2}$. Recall that a centered random variable is said subgaussian with parameter $\gamma$ if
+\begin{remark}[Hoeffding's lemma and subgaussian random variables]
+    A centered random variable is said subgaussian with parameter $\gamma$ if
     \begin{equation}
         \expv[e^{\lambda X}] \le e^{\frac{\lambda^2\gamma^2}{2}},
     \end{equation}
     for any $\lambda \in \R$. The definition comes from the fact that for a centered, gaussian random variable, the inequality is sharp with $\gamma = \sigma$ standard deviation of $X$. 
+    Hoeffding's lemma just says that any centered random variable bounded as $\vert X\vert\le a$ is subgaussian with parameter $a$. Also, its generic version says that if $a\le X\le b$, then $X$ is subgaussian with parameter $\frac{b-a}{2}$.
 \end{remark}
 
 
