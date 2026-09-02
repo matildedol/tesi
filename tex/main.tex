@@ -240,7 +240,7 @@ Next, we prove the upper bound ($\expv \le 2 \sqrt{}\ldots$). For any $f \in \cH
 \[
 \hat R_D(f) =\frac{1}{n}\sum_i Z_i 
 \]
-We now want to apply Hoeffding's inequality (Proposition~\ref{app: hoeffding} in the appendix). To do so, we need to satisfy 3 conditions:
+We now want to apply Hoeffding's inequality (Theorem~\ref{app: hoeffding} in the appendix). To do so, we need to satisfy 3 conditions:
 \begin{enumerate}
     \item $Z_1, \ldots, Z_n$ i.i.d.;
     \item $\expv[Z_1] = \cdots = \expv[Z_n]$;
@@ -327,7 +327,7 @@ Notice that to be precise we should call this quantity $\mathfrak{R}_n(\ell\circ
 
 The Rademacher complexity controls the maximal deviation of the empirical risk $\hat R(f)$ from the true risk $R(f)$ through a symmetrization property (this is Proposition $4.2$ in~\cite{bach2024learning}). 
 
-\begin{proposition}[Symmetrization]
+\begin{proposition}[Symmetrization]\label{prop: symmetriz}
     Consider data $D: \Omega^n \to \X^n \times \Y^n$ and an hypotheses set $\cH$. Given the Rademacher complexity $\mathfrak R_n$ as in Definition~\ref{def: rademacher}, the empirical and the expected risk of the estimators $f\in\cH$ satisfy the following bound
     \begin{equation}
         \expv_D[\sup_{f\in\cH} (R-\hat R_D) (f)] \le 2 \mathfrak R_n(\cH).
@@ -399,7 +399,7 @@ The Rademacher complexity controls the maximal deviation of the empirical risk $
 
 The following result gives us an explicit bound on the Rademacher complexity. This is Theorem $3.3$ in~\cite{mohri2018foundations}. 
 
-\begin{proposition}[Massart's lemma]
+\begin{proposition}[Massart's lemma]\label{prop: massart's lemma}
     Let $\ell:\Y\to\Y$ be as in Assumption~\ref{ass: lipsch loss}, so that $\ell(\cdot) \le M$ by Proposition~\ref{prop: suff assump 2.2}. Then, the Rademacher complexity of $\cH$ satisfies
 
     \begin{equation}
@@ -448,7 +448,19 @@ The following result gives us an explicit bound on the Rademacher complexity. Th
   
     \end{proof}
 \end{proposition}
+Hence, putting together Propositions~\ref{prop: symmetriz} and~\ref{prop: massart's lemma}, we obtain the following bound on the deviation of the empirical risk from the true risk
+\begin{equation}\label{bound: rademacher}
+    \expv_D[\sup_{f\in\cH} (R-\hat R_D) (f)] \le 2 M\sqrt{\frac{2\log\vert\cH\vert}{n}}.
+\end{equation}
+\subsection{Adding the variance}
 
+We study section $5$ from~\cite{boucheron2005theory}. The first interesting statement is that, given a bound like that in~\ref{bound: rademacher}, Bernstein's inequality allows to extend it using the variance obtaining 
+\begin{equation}
+    (R - \hat R_D)f \le \sqrt{\frac{2 \mathrm{Var}(f)\log \frac{1}{\delta}}{n}} + \frac{2\log\frac{1}{\delta}}{3n}
+\end{equation}
+with probability at least $1-\delta$. 
+
+First, recall Bernstein's inequality in Proposition in the Appendix. 
 
 \subsection{Pensieri notturni}
 Let

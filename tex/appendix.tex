@@ -1,5 +1,5 @@
 \appendix
-\section{Mathematical tools}
+\section{Mathematical tools (concentration inequalities basics)}
 \begin{proposition}[Linear, continuous functional commute with the Bochner integral]\label{app: trick}
     Given a function $f:V\to\W$, $V,W \subseteq \R^d$ and a continuous functional $\ell : V \to \R$, we have
     \begin{equation}\ell \bigg(\int f(x) \de x\bigg) = \int \ell \circ f \de x \end{equation}
@@ -32,10 +32,26 @@
             &= \int \Pr[Z \ge \varepsilon] \de \varepsilon
         \end{align*}
         where in the third line we used Fubini-Tonelli, since the integrand is non-negative, and in the last line we observe that the expected value of an indicator function is the probability that the event is true. 
+        {\it Intuition:\/} this formula is passing through the $x$-axis (with values of the support) and summing the probability that $X$ is greater than $x$ each time (weighted by the infinitesimal width of the interval $\de x$). Consider first that if our sample contains a lot of realizations of a large value of $X$, this value will contribute to each addend with a lot of probability, hence yielding a larger result (the expected value of $X$). If instead the opposite is true, a lot of probability will be used up by the first addends, obtaining a smaller result.\ \mati{Then, there's an explanation that goes like dividing the area into horizontal stripes instead of vertical, but it is not clear to me}.
     \end{proof}
 \end{proposition}
 
-
+\begin{theorem}[Markov inequality]
+    Given a non-negative random variable $X$ and $t>0$, it holds
+    \begin{equation}
+        \Pr[X\ge t] \le \frac{\expv[X]}{t}.
+    \end{equation}
+    \begin{proof}
+        The proof is a simple derivation, namely
+        \begin{align}
+            \expv[X] &= \int_0^\infty xp(x) \de x\\
+            &\le \int_t^\infty xp(x) \de x\\
+            &\le \int_t^\infty tp(x) \de x\\
+            &= t \Pr[X\ge t].
+        \end{align}
+        The first step is just that $\expv[X]\le \expv[X\vert X\ge t]$ for any $t\ge0$, and the second is algebraic manipulation. I didn't find an intuitive explanation of the result that I like. 
+    \end{proof}
+\end{theorem}
 \begin{proposition}[Gaussian tail bound]\label{app: gtailbound}
     The Gaussian tail bound used above to obtain (\ref{eq: mainbounds}) comes from the following result. Consider a generic Gaussian integral over the rightmost tail, then
     \[
@@ -53,36 +69,6 @@
     \deriv{}{x} (-\frac{1}{c x^2}) \ge 0
     \]
     and hence the integral being non-negative. 
-    \end{proof}
-\end{proposition}
-
-\begin{proposition}[Hoeffding's inequality]\label{app: hoeffding}
-    Let $Z_1,\ldots,Z_n$ be independent random variables such that $Z_i \in [b_i,a_i]$ almost surely for constants $a_i,b_i\in\R$, and let $\mu \coloneq \expv\big[\frac1n\sum_i Z_i\big] = \frac1n \sum_i \expv[Z_i]$. Then, for every $\varepsilon>0$,
-    \[
-    \Pr\bigg[\frac1n\sum_{i=1}^n Z_i - \mu \ge \varepsilon\bigg] \le \exp\bigg(-\frac{2n^2\varepsilon^2}{\sum_{i=1}^n {(a_i-b_i)}^2}\bigg).
-    \]
-    In particular, if all the $Z_i$ take values in an interval of the same length $M\coloneq a_i - b_i$, this simplifies to
-    \[
-    \Pr\bigg[\frac1n\sum_{i=1}^n Z_i - \mu \ge \varepsilon\bigg] \le \exp\bigg(-\frac{2n\varepsilon^2}{M^2}\bigg).
-    \]
-    \begin{proof}
-    Fix $t>0$. By Markov's inequality applied to $e^{t\sum_i Z_i}$ and independence of the $Z_i$,
-    \[
-    \Pr\bigg[\sum_i Z_i - n\mu \ge n\varepsilon\bigg] = \Pr\big[e^{t\sum_i(Z_i-\expv[Z_i])} \ge e^{tn\varepsilon}\big] \le e^{-tn\varepsilon}\, \expv\Big[e^{t\sum_i (Z_i - \expv[Z_i])}\Big] = e^{-tn\varepsilon}\prod_{i=1}^n \expv\big[e^{t(Z_i-\expv[Z_i])}\big].
-    \]
-    By Hoeffding's lemma, since $Z_i - \expv[Z_i]$ has zero mean and takes values in an interval of length $a_i - b_i$, we have
-    \[
-    \expv\big[e^{t(Z_i - \expv[Z_i])}\big] \le \exp\bigg(\frac{t^2 {(a_i-b_i)}^2}{8}\bigg),
-    \]
-    so that
-    \[
-    \Pr\bigg[\sum_i Z_i - n\mu \ge n\varepsilon\bigg] \le \exp\bigg(-tn\varepsilon + \frac{t^2}{8}\sum_i {(a_i-b_i)}^2\bigg).
-    \]
-    The right-hand side is minimized at $t = 4n\varepsilon / \sum_i {(a_i-b_i)}^2$, which gives
-    \[
-    \Pr\bigg[\sum_i Z_i - n\mu \ge n\varepsilon\bigg] \le \exp\bigg(-\frac{2n^2\varepsilon^2}{\sum_i {(a_i-b_i)}^2}\bigg),
-    \]
-    and dividing the event by $n$ yields the claim.
     \end{proof}
 \end{proposition}
 
@@ -105,7 +91,7 @@
         &= \frac{e^{\lambda a}+e^{-\lambda a}}{2}\notag\\
         &= \cosh (\lambda a).
     \end{align}
-    Notice that the bound on $\expv[e^{\lambda X}]$ is exactly its value when $X$ is a Rademacher random variable, that is when it has all the mass in the tails. 
+    Notice that the bound on $\expv[e^{\lambda X}]$ is exactly this value when $X$ is a Rademacher random variable, that is when it has all the mass in the tails. 
     Now, recall the Taylor series expansions
     \begin{equation}
         e^{u} = \sum_{k = 0}^\infty \frac{u^k}{k!} \quad \Rightarrow \quad e^{u^2/2} = \sum_{k = 0}^\infty \frac{{(u^2/2)}^k}{k!} = \sum_{k = 0}^\infty \frac{u^{2k}}{2^k k!}
@@ -127,7 +113,14 @@
     \end{equation}
 \end{proof}
 \end{theorem}
-
+Let us state, for the sake of completeness, the generic version of Hoeffding's lemma. 
+\begin{theorem}[Hoeffding's Lemma]\label{app: hoeffdinglemmageneric}
+    Let $X$ be any random variable such that $a\le  X \le b$ for some $a,b\in\R$. Then
+    \begin{equation}
+        \expv[e^{\lambda X}] \le e^{\lambda \expv[X] + \frac{\lambda^2 {(b-a)}^2}{8}}
+    \end{equation}
+    $\forall \lambda \in \R$.
+\end{theorem}
 \begin{remark}[Hoeffding's lemma and subgaussian random variables]
     A centered random variable is said subgaussian with parameter $\gamma$ if
     \begin{equation}
@@ -138,6 +131,35 @@
 \end{remark}
 
 
+\begin{theorem}[Hoeffding's inequality]\label{app: hoeffding}
+    Let $Z_1,\ldots,Z_n$ be independent random variables such that $Z_i \in [b_i,a_i]$ almost surely for constants $a_i,b_i\in\R$, and let $\mu \coloneq \expv\big[\frac1n\sum_i Z_i\big] = \frac1n \sum_i \expv[Z_i]$. Then, for every $\varepsilon>0$,
+    \[
+    \Pr\bigg[\frac1n\sum_{i=1}^n Z_i - \mu \ge \varepsilon\bigg] \le \exp\bigg(-\frac{2n^2\varepsilon^2}{\sum_{i=1}^n {(a_i-b_i)}^2}\bigg).
+    \]
+    \begin{proof}
+    Fix $t>0$. By Markov's inequality applied to $e^{t\sum_i Z_i}$ and independence of the $Z_i$,
+    \[
+    \Pr\bigg[\sum_i Z_i - n\mu \ge n\varepsilon\bigg] = \Pr\big[e^{t\sum_i(Z_i-\expv[Z_i])} \ge e^{tn\varepsilon}\big] \le e^{-tn\varepsilon}\, \expv\Big[e^{t\sum_i (Z_i - \expv[Z_i])}\Big] = e^{-tn\varepsilon}\prod_{i=1}^n \expv\big[e^{t(Z_i-\expv[Z_i])}\big].
+    \]
+    By Hoeffding's lemma, since $Z_i - \expv[Z_i]$ has zero mean and takes values in an interval of length $a_i - b_i$, we have
+    \[
+    \expv\big[e^{t(Z_i - \expv[Z_i])}\big] \le \exp\bigg(\frac{t^2 {(a_i-b_i)}^2}{8}\bigg),
+    \]
+    so that
+    \[
+    \Pr\bigg[\sum_i Z_i - n\mu \ge n\varepsilon\bigg] \le \exp\bigg(-tn\varepsilon + \frac{t^2}{8}\sum_i {(a_i-b_i)}^2\bigg).
+    \]
+    The right-hand side is minimized at $t = 4n\varepsilon / \sum_i {(a_i-b_i)}^2$, which gives
+    \[
+    \Pr\bigg[\sum_i Z_i - n\mu \ge n\varepsilon\bigg] \le \exp\bigg(-\frac{2n^2\varepsilon^2}{\sum_i {(a_i-b_i)}^2}\bigg),
+    \]
+    and dividing the event by $n$ yields the claim.
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[Bernstein's inequality]
+
+\end{theorem}
 \section{Toy example}
 
 \begin{example}[Least squares with toy dataset]\label{app: toy}
