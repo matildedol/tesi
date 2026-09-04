@@ -111,7 +111,7 @@
 \end{theorem}
 
 Let us state, for the sake of completeness, a more general version of Hoeffding's lemma. 
-\begin{theorem}[Hoeffding's Lemma]\label{app: hoeffdinglemmageneric}
+\begin{theorem}[Hoeffding's lemma]\label{app: hoeffdinglemmageneric}
     Let $X$ be any random variable such that $a\le  X \le b$ for some $a,b\in\R$. Then
     \begin{equation}
         \expv[e^{\lambda X}] \le e^{\lambda \expv[X] + \frac{\lambda^2 {(b-a)}^2}{8}}
@@ -151,7 +151,7 @@ Let us state, for the sake of completeness, a more general version of Hoeffding'
 The next two results are the most {\it operational\/} ones, which aim at bounding the deviation of a sum of random variables from their mean. They follow directly from Theorems~\ref{thm: markov} and~\ref{app: hoeffdinglemma}.
 
 \begin{theorem}[Hoeffding's inequality]\label{app: hoeffding}
-    Let $Z_1,\ldots,Z_n$ be independent random variables such that $Z_i \in [a_i,b_i]$ almost surely for constants $a_i,b_i\in\R$, and let $\mu \coloneq \expv\big[\frac1n\sum_i Z_i\big] = \frac1n \sum_i \expv[Z_i]$. Then, for every $\varepsilon>0$,
+    Let $Z_1,\ldots,Z_n$ be independent real-valued random variables such that $\forall i$, $Z_i \in [a_i,b_i]$ almost surely for some $a_i,b_i\in\R$, and let $\mu \coloneq \expv\big[\frac1n\sum_i Z_i\big] = \frac1n \sum_i \expv[Z_i]$. Then, for every $\varepsilon>0$,
     \begin{equation}
     \Pr\bigg[\frac1n\sum_{i=1}^n Z_i - \mu \ge \varepsilon\bigg] \le \exp\bigg(-\frac{2n^2\varepsilon^2}{\sum_{i=1}^n {(b_i-a_i)}^2}\bigg).
     \end{equation}
@@ -179,8 +179,49 @@ The next two results are the most {\it operational\/} ones, which aim at boundin
     \end{proof}
 \end{theorem}
 
-\begin{theorem}[Bernstein's inequality]
-\mati{I leave this on hold for now because I don't know which version of it suits my purpose. The proof, however, is similar to Hoeffding's one, but instead of bounding with the range, we expand the MGF and bound higher order moments with the second one $\rightarrow$ the variance comes up.}
+\begin{theorem}[Bernstein's inequality]\label{app: bernstein}
+Let $X_1,\ldots,X_n$ be independent real-valued random variables such that $\forall i$, $\expv[X_i]=0$ and $X_i\le M$ almost surely for some $M\in\R$. Let $\sigma^2 = \frac{1}{n}\sum_i \mathrm{Var}(X_i)$. Then, for every $\varepsilon>0$,
+\begin{equation}
+\Pr\bigg[\frac{1}{n}\sum_{i=1}^n X_i > \varepsilon \bigg] \le e^{-\frac{n\varepsilon^2}{2(\sigma^2 + M\varepsilon/3)}}.
+\end{equation}
+\begin{proof}
+    Consider the MGF $e^{\lambda X_i}$. We have
+    \begin{equation}
+        e^{\lambda X_i} = 1 + \lambda e^{\lambda X_i} + \frac{1}{2}\lambda^2 X_i^2 + \frac{1}{3!}\lambda^3 X_i^3 + \frac{1}{4!}\lambda^4 X_i^4 + \cdots.
+    \end{equation}
+    Taking expectations
+        \begin{equation}\label{eq: bernsteintaylorexpect}
+        \expv[e^{\lambda X_i}] = 1 + \frac{1}{2}\lambda^2 \expv[X_i^2] + \frac{1}{3!}\lambda^3 \expv[X_i^3]+ \frac{1}{4!}\lambda^4 \expv[X_i^4] + \cdots.
+    \end{equation}
+    Then, since $X_i\le M$,
+    \begin{equation}
+        \frac{X_i}{M} \le 1 \qquad \Rightarrow \qquad {\bigg(\frac{X_i}{M}\bigg)}^r \le {\bigg(\frac{X_i}{M}\bigg)}^2 \quad \forall r\ge 2 \qquad \Rightarrow \qquad X_i^r \le X_i^2 M^{r-2}.
+    \end{equation}
+    Hence from equation (\ref{eq: bernsteintaylorexpect}), 
+    \begin{align}
+        \expv[e^{\lambda X_i}] &= 1 + \frac{1}{2}\lambda^2 \expv[X_i^2] + \frac{1}{3!}\lambda^3 \expv[X_i^3]+ \frac{1}{4!}\lambda^4 \expv[X_i^4] + \cdots \\
+        &\le 1 + \frac{\expv[X_i^2]}{M^2}\bigg(\frac{1}{2}\lambda^2  M^2 + \frac{1}{3!}\lambda^3 M^3 + \frac{1}{4!}\lambda^4 M^4 + \cdots \bigg)\\
+        &= 1 + \frac{\expv[X_i^2]}{M^2} (e^{\lambda M}-1- \lambda M)\\
+        &= 1 + \frac{\mathrm{Var}[X_i]}{M^2} (e^{\lambda M}-1- \lambda M)
+    \end{align}
+    Let us define $e^x - 1 - x \eqcolon \psi(x)$. Using that $1+x\le e^x$, one obtains
+    \begin{equation}
+        \expv[e^{\lambda X_i}] \le 1 + \frac{\psi(\lambda M)}{M^2}\mathrm{Var}[X_i] \le \exp\bigg(\frac{\psi(\lambda M)}{M^2}\mathrm{Var}[X_i]\bigg).
+    \end{equation}
+
+    - chernoff 
+
+    - optimizing over $\lambda$
+
+    - elementary inequality
+\end{proof}
+\begin{intuition}
+    The main ingredients of these proof are two:\begin{itemize}
+        \item first, we Taylor expand the MGF and set to $0$ the first moment, since our random variable is centered;
+        \item then, since our random variable is bounded, we upper bound higher-order moments with the second-order one, since if $0\le p\le 1, p^r \le p^2 \forall r\ge 2$, and we add a correction term for our upper bound $M$ possibly greater than $1$.
+    \end{itemize}
+    These two ingredients, together, allow to bound the MGF of $X$ with its variance, adding more of the structure of the problem to our bounds. 
+\end{intuition}
 \end{theorem}
 \section{Toy example}
 
@@ -327,7 +368,7 @@ which yields the result for $X = R(\hat f_D)-\hat R(\hat f_D)$, $a = \vert \cH\v
 \end{proof}
 \end{proposition}
 \begin{remark}[Logic of the proof]
-    Intuitively, the key step in the proof of the lower bound is that equation (\ref{1eq: keyboundapp}) is an inequality between {\it numbers}. The expected value of $\hat R_D(\hat f_D)$ is a {\it number}, say 3, and we are showing that this is lower than all the numbers $R(f), f\in\cH$. Instead, in equation (\ref{ineq: applyhoeffdingapp}) we use a probabilistic bound and work with random variables.
+    Intuitively, the key step in the proof of the lower bound is that inequality (\ref{1eq: keyboundapp}) is an inequality between {\it numbers}. The expected value of $\hat R_D(\hat f_D)$ is a {\it number}, say 3, and we are showing that this is lower than all the numbers $R(f), f\in\cH$. Instead, in inequality (\ref{ineq: applyhoeffdingapp}) we use a probabilistic bound and work with random variables.
 \end{remark}
 
 \paragraph{Real-valued prediction function and logistic loss}

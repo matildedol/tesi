@@ -453,14 +453,20 @@ Hence, putting together Propositions~\ref{prop: symmetriz} and~\ref{prop: massar
     \expv_D[\sup_{f\in\cH} (R-\hat R_D) (f)] \le 2 M\sqrt{\frac{2\log\vert\cH\vert}{n}}.
 \end{equation}
 \subsection{Adding the variance}
-
-We study section $5$ from~\cite{boucheron2005theory}. The first interesting statement is that, given a bound like that in~\ref{bound: rademacher}, we can improve it by considering the variance of the process. Indeed, Bernstein's inequality gives 
+Following~\cite{boucheron2005theory}, Section $5$, assume now that estimators $f$ are deterministic or ``fixed'' and we shift back our perspective to results in high probability \mati{cioè dico i risultati come la prob che X $\ge \varepsilon$ oppure risultati in high probability, che mi permette di vedere il rate. poi trasformerò in expected value usando la A.2 quelli interessanti}. In this case, as a consequence of~(\ref{eq: mainbound}), it holds
 \begin{equation}
-    (R - \hat R_D)f \le \sqrt{\frac{2 \mathrm{Var}(f)\log \frac{1}{\delta}}{n}} + \frac{2\log\frac{1}{\delta}}{3n}
+    R(f) - \hat R_D(f) \le 2M\sqrt{\frac{2\log\vert\cH\vert}{n}}.
 \end{equation}
-with probability at least $1-\delta$. 
 
-First, recall Bernstein's inequality in Proposition in the Appendix. % why Bernstein helps 
+In this section, we want to improve this bound adding also the variance of our estimator, in order to take into further consideration the structure of our problem. The main ingredient to do so is Bernstein inequality, see Theorem~\ref{app: bernstein} in the Appendix. Indeed, Bernstein's method extends Hoeffding's results by bounding the expectation of the MGF with the variance of the random variable, instead of its range (``worst-case'' variance). This is done by Taylor expanding the MGF, assuming the random variable is centered, and bounding higher-order moments with the second-order one, i.e.\ the variance, since we also assume the random variable is bounded.
+
+We apply Bernstein's inequality (Theorem~\ref{app: bernstein}) to the random variables $\ell(f(X_i), Y_i) - \expv_D[\ell(f(X_i),Y_i)]$, $i=1,\ldots,n$, which are centered and bounded by $M$ (\mati{or maybe better bound?}). Then $\sigma^2 = \mathrm{Var}(\ell(f(X_i),Y_i))$, $i=1,\ldots,n$ (because data is identically distirbuted across observations $i=1,\ldots,n$). 
+
+% NON SO COME SCRIVERE QUESTE COSEEE PERCHE' DOVREI USARE RISULTATI IN PROBABILITY!!! QUINDI LA MIA (17). BO! però allora non mi serve che le f siano deterministiche. perche a loro serve solo perche hanno in probability anche il risultato del sup, la mia 43. BOOOOOOO
+% POI COMUNQUE, APPLY BERNSTEIN E GUARDA I BOUND DOPO
+% POI GUARDA IL NOISE
+% CHIACCHIERA CON PIE: i miei risultati in expected value sono solamente il risultato in probability con la formula di expected value come integrale della probabilità (A.2), e quindi seguono solo dall'integrare il bound. io lo faccio perché mi interessa il risultato in expectation ed è implementabile, loro come hoeffding o bernstein danno il risultato in probabilità, piu generico. io andrei avanti a vederli in prob, perche il paper fa cosi, e poi trasformerei in exp value quelli che mi interessano per implementarli.
+
 
 \subsection{Pensieri notturni}
 Let
