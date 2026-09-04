@@ -55,9 +55,12 @@
 \newtheorem{definition}{Definition}[section]
 \newtheorem{proposition}[definition]{Proposition}
 \newtheorem{theorem}[definition]{Theorem}
+
 \newtheorem{corollary}[definition]{Corollary}
 \newtheorem{lemma}[definition]{Lemma}
 \newtheorem{example}[definition]{Example}
 \newtheorem{remark}[definition]{Remark}
 \newtheorem{assumption}[definition]{Assumption}
 \newtheorem{fact}[definition]{Fact}
+
+\newenvironment{intuition}[1][Intuition]{\begin{proof}[#1]\renewcommand{\qed}{\relax}}{\topsep0pt\end{proof}}

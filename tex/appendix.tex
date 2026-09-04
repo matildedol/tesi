@@ -15,9 +15,9 @@
 
 \begin{proposition}[Alternative characterization of expected value]\label{app: expvcmf}
     For any non-negative random variable $Z$, it holds
-    \[
+    \begin{equation}
     \expv[Z] = \int_0^\infty \Pr [Z\ge \varepsilon] \de \varepsilon.
-    \]
+    \end{equation}
     \begin{proof}
         The proof follows directly from the definition of expected value and the Fubini-Tonelli theorem. 
         First observe that, for any $z \in \R^+$,
@@ -31,48 +31,41 @@
             &=\int \int_0^\infty \mathbb{I}(0\le \varepsilon \le z) p(z) \de z \de \varepsilon  \\
             &= \int \Pr[Z \ge \varepsilon] \de \varepsilon
         \end{align*}
-        where in the third line we used Fubini-Tonelli, since the integrand is non-negative, and in the last line we observe that the expected value of an indicator function is the probability that the event is true. 
-        {\it Intuition:\/} this formula is passing through the $x$-axis (with values of the support) and summing the probability that $X$ is greater than $x$ each time (weighted by the infinitesimal width of the interval $\de x$). Consider first that if our sample contains a lot of realizations of a large value of $X$, this value will contribute to each addend with a lot of probability, hence yielding a larger result (the expected value of $X$). If instead the opposite is true, a lot of probability will be used up by the first addends, obtaining a smaller result.\ \mati{Then, there's an explanation that goes like dividing the area into horizontal stripes instead of vertical, but it is not clear to me}.
-    \end{proof}
+        where in the third line we used Fubini-Tonelli, since the integrand is non-negative, and in the last line we observe that the expected value of an indicator function is the probability that the event is true.
+        \end{proof}
+        \begin{intuition} This formula is passing through the $x$-axis (with values of the support) and summing the probability that $X$ is greater than $x$ each time (weighted by the infinitesimal width of the interval $\de x$). Consider first that if our sample contains a lot of realizations of a large value of $X$, this value will contribute to each addend with a lot of probability, hence yielding a larger result (the expected value of $X$). If instead the opposite is true, a lot of probability will be used up by the first addends, obtaining a smaller result.\ \mati{Then, there's an explanation that goes like dividing the area into horizontal stripes instead of vertical, but it is not clear to me}.
+        \end{intuition}
 \end{proposition}
 
-\begin{theorem}[Markov inequality]
+\begin{theorem}[Markov inequality]\label{thm: markov}
     Given a non-negative random variable $X$ and $t>0$, it holds
     \begin{equation}
         \Pr[X\ge t] \le \frac{\expv[X]}{t}.
     \end{equation}
     \begin{proof}
-        The proof is a simple derivation, namely
+        The proof is a simple derivation using the definition of expected value, namely
         \begin{align}
             \expv[X] &= \int_0^\infty xp(x) \de x\\
-            &\le \int_t^\infty xp(x) \de x\\
-            &\le \int_t^\infty tp(x) \de x\\
+            &\ge \int_0^t xp(x) \de x\\
+            &\ge \int_0^t tp(x) \de x\\
             &= t \Pr[X\ge t].
         \end{align}
-        The first step is just that $\expv[X]\le \expv[X\vert X\ge t]$ for any $t\ge0$, and the second is algebraic manipulation. I didn't find an intuitive explanation of the result that I like. 
+        The first step is just that $\expv[X]\ge \expv[X\vert X\le t]$ for any $t\ge0$, and the second is algebraic manipulation. An alternative proof uses the tail integral representation of the expected value, Proposition~\ref{app: expvcmf} (since $X$ is non-negative by assumption):
+        \begin{align}
+            \expv[X] &= \int_0^\infty \Pr[X\ge t] \de t\\
+            &\ge \int_0^s \Pr[X \ge t] \de t\\
+            &\ge \int_0^s \Pr[X \ge s] \de t\\
+            &= {\Big[t \Pr[X \ge s]\Big]}_0^s \\
+            &= s \Pr[X\ge s]
+        \end{align}
+        and the reasoning is the same. 
     \end{proof}
+        \begin{intuition}
+            This simple result just states that, for a fixed, large $t$, the probability that a random variable is large is controlled by its expected value. 
+        \end{intuition}
 \end{theorem}
-\begin{proposition}[Gaussian tail bound]\label{app: gtailbound}
-    The Gaussian tail bound used above to obtain (\ref{eq: mainbounds}) comes from the following result. Consider a generic Gaussian integral over the rightmost tail, then
-    \[
-    \int_{x_0}^\infty e^{-c x^2}\de x \le \frac{1}{2x_0c} e^{-c x_0}
-    \]
-    \begin{proof}
-    We express the integrand as the derivative of an exponential, and then use IBP
-    \begin{align*}
-        \int_{x_0}^\infty e^{-c x^2}\de x &= \int_{x_0}^\infty -\frac{1}{2c x} \deriv{e^{-c x^2}}{x} \de x = -\frac{e^{-c x^2}}{2c x}\Bigg\vert_{x_0}^\infty - \int_{x_0}^\infty \deriv{}{x} (-\frac{1}{2c x}) e^{-c x^2} \de x
-        \\ &=\frac{1}{2c x_0}e^{-2c x_0} - \int_{x_0}^\infty \deriv{}{x} (-\frac{1}{2c x}) e^{-c x^2} \de x
-        \le \frac{1}{2c x_0}e^{-2c x_0} 
-    \end{align*}
-    where the inequality follows from 
-    \[
-    \deriv{}{x} (-\frac{1}{c x^2}) \ge 0
-    \]
-    and hence the integral being non-negative. 
-    \end{proof}
-\end{proposition}
 
-\begin{theorem}[Hoeffding's Lemma -- symmetric interval]\label{app: hoeffdinglemma}
+\begin{theorem}[Hoeffding's Lemma -- symmetric interval, centered random variable]\label{app: hoeffdinglemma}
     Let $X$ be a centered random variable such that $\vert X\vert \le a$ for some $a\in\R$. Then
     \begin{equation}
         \expv[e^{\lambda X}] \le e^{\frac{\lambda^2 a^2}{2}}
@@ -91,7 +84,7 @@
         &= \frac{e^{\lambda a}+e^{-\lambda a}}{2}\notag\\
         &= \cosh (\lambda a).
     \end{align}
-    Notice that the bound on $\expv[e^{\lambda X}]$ is exactly this value when $X$ is a Rademacher random variable, that is when it has all the mass in the tails. 
+    Notice that the inequality is tight when $X$ is a Rademacher random variable, that is when it has all the mass in the tails. 
     Now, recall the Taylor series expansions
     \begin{equation}
         e^{u} = \sum_{k = 0}^\infty \frac{u^k}{k!} \quad \Rightarrow \quad e^{u^2/2} = \sum_{k = 0}^\infty \frac{{(u^2/2)}^k}{k!} = \sum_{k = 0}^\infty \frac{u^{2k}}{2^k k!}
@@ -100,7 +93,7 @@
     \begin{equation}
         \cosh(u) = \sum_{k=0}^\infty \frac{u^{2k}}{(2k)!}.
     \end{equation}
-    Thus, to prove the result we just need to comapre $(2k)!$ and $2^k k! $. We have
+    It follows that to prove the result we just need to comapre $(2k)!$ and $2^k k! $. We have
     \begin{align*}
         (2k)! &= (1\cdot 3\cdot 5\cdots (2k-1)) \cdot (2\cdot 4 \cdots 2k)\\
         &= (1\cdot 3\cdot 5\cdots (2k-1)) \cdot ((2 \cdot 1)\cdot(2\cdot 2)\cdot (2\cdot 3)\cdots (2\cdot k))\\
@@ -112,8 +105,12 @@
         \expv[e^{\lambda X}] \le \cosh (\lambda a)\le e^{\lambda^2a^2 / 2}.
     \end{equation}
 \end{proof}
+    \begin{intuition}
+        A naive intuition of Hoeffding's lemma is that any bounded random variable cannot fluctuate more than a Rademacher one. However, the result tells us more: it bounds the decay of the tail probability of a random variable with an exponential decay that is the Gaussian one. This is clear from the next version of the lemma and the following considerations. 
+    \end{intuition}
 \end{theorem}
-Let us state, for the sake of completeness, the generic version of Hoeffding's lemma. 
+
+Let us state, for the sake of completeness, a more general version of Hoeffding's lemma. 
 \begin{theorem}[Hoeffding's Lemma]\label{app: hoeffdinglemmageneric}
     Let $X$ be any random variable such that $a\le  X \le b$ for some $a,b\in\R$. Then
     \begin{equation}
@@ -121,44 +118,69 @@ Let us state, for the sake of completeness, the generic version of Hoeffding's l
     \end{equation}
     $\forall \lambda \in \R$.
 \end{theorem}
+
+\begin{proposition}[Gaussian tail bound]\label{app: gtailbound}
+    The Gaussian tail bound used above to obtain (\ref{eq: mainbounds}) comes from the following result. Consider a generic Gaussian integral over the rightmost tail, then
+    \begin{equation}
+    \int_{x_0}^\infty e^{-c x^2}\de x \le \frac{1}{2x_0c} e^{-c x_0}
+    \end{equation}
+    \begin{proof}
+    We express the integrand as the derivative of an exponential, and then use IBP
+    \begin{align*}
+        \int_{x_0}^\infty e^{-c x^2}\de x &= \int_{x_0}^\infty -\frac{1}{2c x} \deriv{e^{-c x^2}}{x} \de x = -\frac{e^{-c x^2}}{2c x}\Bigg\vert_{x_0}^\infty - \int_{x_0}^\infty \deriv{}{x} (-\frac{1}{2c x}) e^{-c x^2} \de x
+        \\ &=\frac{1}{2c x_0}e^{-2c x_0} - \int_{x_0}^\infty \deriv{}{x} (-\frac{1}{2c x}) e^{-c x^2} \de x
+        \le \frac{1}{2c x_0}e^{-2c x_0} 
+    \end{align*}
+    where the inequality follows from 
+    \begin{equation}
+    \deriv{}{x} (-\frac{1}{c x^2}) \ge 0
+    \end{equation}
+    and hence the integral being non-negative. 
+    \end{proof}
+\end{proposition}
+
 \begin{remark}[Hoeffding's lemma and subgaussian random variables]
     A centered random variable is said subgaussian with parameter $\gamma$ if
     \begin{equation}
         \expv[e^{\lambda X}] \le e^{\frac{\lambda^2\gamma^2}{2}},
     \end{equation}
     for any $\lambda \in \R$. The definition comes from the fact that for a centered, gaussian random variable, the inequality is sharp with $\gamma = \sigma$ standard deviation of $X$. 
-    Hoeffding's lemma just says that any centered random variable bounded as $\vert X\vert\le a$ is subgaussian with parameter $a$. Also, its generic version says that if $a\le X\le b$, then $X$ is subgaussian with parameter $\frac{b-a}{2}$.
+    Hoeffding's lemma just says that any centered random variable bounded as $\vert X\vert\le a$ is subgaussian with parameter $a$. Also, its general version says that if $a\le X\le b$, then $X$ is subgaussian with parameter $\frac{b-a}{2}$.
 \end{remark}
 
+The next two results are the most {\it operational\/} ones, which aim at bounding the deviation of a sum of random variables from their mean. They follow directly from Theorems~\ref{thm: markov} and~\ref{app: hoeffdinglemma}.
 
 \begin{theorem}[Hoeffding's inequality]\label{app: hoeffding}
-    Let $Z_1,\ldots,Z_n$ be independent random variables such that $Z_i \in [b_i,a_i]$ almost surely for constants $a_i,b_i\in\R$, and let $\mu \coloneq \expv\big[\frac1n\sum_i Z_i\big] = \frac1n \sum_i \expv[Z_i]$. Then, for every $\varepsilon>0$,
-    \[
-    \Pr\bigg[\frac1n\sum_{i=1}^n Z_i - \mu \ge \varepsilon\bigg] \le \exp\bigg(-\frac{2n^2\varepsilon^2}{\sum_{i=1}^n {(a_i-b_i)}^2}\bigg).
-    \]
+    Let $Z_1,\ldots,Z_n$ be independent random variables such that $Z_i \in [a_i,b_i]$ almost surely for constants $a_i,b_i\in\R$, and let $\mu \coloneq \expv\big[\frac1n\sum_i Z_i\big] = \frac1n \sum_i \expv[Z_i]$. Then, for every $\varepsilon>0$,
+    \begin{equation}
+    \Pr\bigg[\frac1n\sum_{i=1}^n Z_i - \mu \ge \varepsilon\bigg] \le \exp\bigg(-\frac{2n^2\varepsilon^2}{\sum_{i=1}^n {(b_i-a_i)}^2}\bigg).
+    \end{equation}
     \begin{proof}
-    Fix $t>0$. By Markov's inequality applied to $e^{t\sum_i Z_i}$ and independence of the $Z_i$,
-    \[
-    \Pr\bigg[\sum_i Z_i - n\mu \ge n\varepsilon\bigg] = \Pr\big[e^{t\sum_i(Z_i-\expv[Z_i])} \ge e^{tn\varepsilon}\big] \le e^{-tn\varepsilon}\, \expv\Big[e^{t\sum_i (Z_i - \expv[Z_i])}\Big] = e^{-tn\varepsilon}\prod_{i=1}^n \expv\big[e^{t(Z_i-\expv[Z_i])}\big].
-    \]
-    By Hoeffding's lemma, since $Z_i - \expv[Z_i]$ has zero mean and takes values in an interval of length $a_i - b_i$, we have
-    \[
-    \expv\big[e^{t(Z_i - \expv[Z_i])}\big] \le \exp\bigg(\frac{t^2 {(a_i-b_i)}^2}{8}\bigg),
-    \]
+    Let $Z_n \coloneq \sum_i Z_i$. We will prove the equivalent statement 
+    \begin{equation}
+        \Pr\bigg[Z_n - \expv[Z_n] \ge \varepsilon \bigg] \le \exp\bigg(-\frac{2\varepsilon^2}{\sum_{i=1}^n {(b_i-a_i)}^2}\bigg).
+    \end{equation}
+    By Markov's inequality applied to $e^{t(\sum_i Z_i-\expv[\sum_i Z_i])}$ and independence of the $Z_i$, $\forall \lambda>0$ it holds
+    \begin{equation}
+    \Pr\bigg[Z_n - \expv[Z_n] \ge \varepsilon\bigg] = \Pr\big[e^{\lambda\sum_i(Z_i-\expv[Z_i])} \ge e^{\lambda\varepsilon}\big] \le \frac{\expv\big[e^{\lambda\sum_i (Z_i - \expv[Z_i])}\big]}{e^{\lambda\varepsilon}} = e^{-\lambda\varepsilon}\prod_{i=1}^n \expv\big[e^{\lambda(Z_i-\expv[Z_i])}\big].
+    \end{equation}
+    By Hoeffding's lemma, since $Z_i - \expv[Z_i]$ has zero mean and takes values in an interval of length $b_i - a_i$, we have
+    \begin{equation}
+    \expv\big[e^{\lambda(Z_i - \expv[Z_i])}\big] \le \exp\bigg(\frac{\lambda^2 {(b_i-a_i)}^2}{8}\bigg),
+    \end{equation}
     so that
-    \[
-    \Pr\bigg[\sum_i Z_i - n\mu \ge n\varepsilon\bigg] \le \exp\bigg(-tn\varepsilon + \frac{t^2}{8}\sum_i {(a_i-b_i)}^2\bigg).
-    \]
-    The right-hand side is minimized at $t = 4n\varepsilon / \sum_i {(a_i-b_i)}^2$, which gives
-    \[
-    \Pr\bigg[\sum_i Z_i - n\mu \ge n\varepsilon\bigg] \le \exp\bigg(-\frac{2n^2\varepsilon^2}{\sum_i {(a_i-b_i)}^2}\bigg),
-    \]
-    and dividing the event by $n$ yields the claim.
+    \begin{equation}
+    \Pr\bigg[Z_n - \expv[Z_n] \ge \varepsilon\bigg] \le \exp\bigg(-\lambda\varepsilon + \frac{\lambda^2}{8}\sum_i {(b_i-a_i)}^2\bigg).
+    \end{equation}
+    The right-hand side is minimized at $\lambda = 4\varepsilon / \sum_i {(b_i-a_i)}^2$. Substituting this value yields
+    \begin{equation}
+    \Pr\bigg[Z_n - \expv[Z_n]\ge \varepsilon\bigg] \le \exp\bigg(-\frac{2\varepsilon^2}{\sum_i {(b_i-a_i)}^2}\bigg).
+    \end{equation}
     \end{proof}
 \end{theorem}
 
 \begin{theorem}[Bernstein's inequality]
-
+\mati{I leave this on hold for now because I don't know which version of it suits my purpose. The proof, however, is similar to Hoeffding's one, but instead of bounding with the range, we expand the MGF and bound higher order moments with the second one $\rightarrow$ the variance comes up.}
 \end{theorem}
 \section{Toy example}
 
@@ -185,13 +207,13 @@ where $\sum_x$ is the sum over all possible values of $x$, and $p_x,p_y$ are mar
 \end{align}
 and since the sums in equation (\ref{example ERhat}) run over all the possible values $x_2$ and $y_2$ can take, the two quantities are equal. The result does not change if we consider larger datasets.
  Now, we look at the case where we fit and evaluate the estimator on a single dataset $(x_1,y_1)$. In this case, we would have
-        \[
+        \begin{equation}
     \expv[\hat R_{d_1} (\hat f_{d_1})] = \sum_{x_1,y_1} \frac{{(x_1y_1)}^2}{x_1^4}x_1^2p_x(x_1) + \sum_{y_1} p_y(y_1)y_1^2 - \sum_{x_1,y_1} 2\frac{x_1y_1}{x_1^2}p(x_1,y_1)x_1y_1.
-    \]
+    \end{equation}
     Where the ``cross'' terms make the estimator biased. Doing the math,
-    \[
+    \begin{equation}
     \expv[\hat R_{d_1} (\hat f_{d_1})] = 2\sum_{y_1}y_1^2 p_y(y_1) - 2\sum_{y_1}y_1^2 p_y(y_1) = 0 \le R(\hat f_{d_1}) 
-    \]
+    \end{equation}
     where the inequality comes from $\ell(\cdot)\ge 0$. Hence, in this example the empirical risk evaluated on the same data to which the estimator is fitted underestimates the risk of the estimator. We will see that this is always the case.
 \end{example}
 \section{Bound proposition in different settings}
@@ -248,9 +270,9 @@ and, finally, taking expectations
         \expv[\hat R_D(\hat f_D)] \le \expv[R(\hat f_D)] \quad \text{a.s.}
 \end{equation}
 Next, we prove the upper bound ($\expv \le 2 \sqrt{}\ldots$). For any $f \in \cH$, $\expv [\hat R_D (f)]=R(f)$. Let $Z_i \coloneq \ell(f(x_i),y_i)$ and have
-\[
+\begin{equation}
 \hat R_D(f) =\frac{1}{n}\sum_i Z_i 
-\]
+\end{equation}
 We now want to apply Hoeffding's inequality. To do so, we need to satisfy 3 conditions:
 \begin{enumerate}
     \item $Z_1, \ldots, Z_n$ i.i.d.
@@ -285,9 +307,9 @@ To obtain our initial inequality from this result on a probability, we use a tec
     \expv[X] = \int_0^\infty \Pr(X\ge \varepsilon) \de \varepsilon
 \end{equation}
 which is true for any non-negative random variable $X$, see Proposition~\ref{app: expvcmf} in the appendix. Then, we want to use our bound (\ref{eq: upper boundI}) for the integrand. Let $a\coloneq \vert\cH\vert$ and $c\coloneq n/8$, so that
-\[
+\begin{equation}
 \Pr (X\ge \varepsilon) \le a e^{-c\varepsilon^2}.
-\] 
+\end{equation} 
 Notice that for high values of $\varepsilon$, the bound is a very good one, but for $\varepsilon \gg 1$ it is bad. Indeed, we can use a better bound:
 \begin{equation}
     \Pr[X\ge \varepsilon] \le \min\{1, a  e^{-c\varepsilon^2}\}
@@ -338,13 +360,13 @@ where
     \Vert f \Vert_{\infty} \coloneqq \max_{x\in\X} \vert f_{w,b}(x) \vert.
 \end{equation}
 Then, we obtain 
-\[
+\begin{equation}
 -1 \le f(x_i) \le 1 \qquad \forall i
-\]
+\end{equation}
 and hence
-\[
+\begin{equation}
 \log (1 + \frac{1}{e}) \le \log (1+e^{-y_i f(x_i)}) \le \log (1+ e) \qquad \forall i. 
-\] 
+\end{equation} 
 Plugging these bounds into Hoeffding's inequality, we obtain 
 \begin{equation}
     \Pr [\frac{1}{n}\sum_i Z_i - \mu \ge \varepsilon] \le e^{-n\varepsilon^2/8}
@@ -392,7 +414,7 @@ We consider the following items:
 \begin{itemize}[label=$\cdot$]
 % \item a probability measure $\mu$ over $\R, \mathcal{A}$, $\mu : \mathcal{A} \to [0,1], \mu(\R) = 1$;
     \item a probability distribution $p$ over $S \subseteq \R$;
-    \item support of the distribution $ s = s_1,\ldots,s_N$, indexed with $j$, with probabilities $p_j$:  \[\expv(X)= \sum_j s_j p_j \eqqcolon \mu; \qquad \mathrm{Var}(X) = \sum_j s_j^2 p_j - {(\sum_j s_j p_j)}^2 \eqqcolon \sigma^2;\]
+    \item support of the distribution $ s = s_1,\ldots,s_N$, indexed with $j$, with probabilities $p_j$:  \begin{equation}\expv(X)= \sum_j s_j p_j \eqqcolon \mu; \qquad \mathrm{Var}(X) = \sum_j s_j^2 p_j - {(\sum_j s_j p_j)}^2 \eqqcolon \sigma^2;\end{equation}
     \item random variables  $X_1,\ldots,X_n$, i.i.d.`\'to $X \sim p(\mu, \sigma^2)$;
     \item a dataset $x_1,\ldots,x_n$ realization of $X_1, \ldots, X_n$, indexed with $i$, which is therefore assumed to be sampled from our probability distribution $p$ (the assumption that Ben Recht doesn't like).
 \end{itemize}
@@ -412,11 +434,11 @@ The motivation for this definition is that we aim at predicting some value $a$ f
 \begin{proposition}\label{prop: results}
     The following results hold
     \begin{itemize}
-        \item[$(i)$] by realizing the distirbution $p$ as our random varibale $X$, the expected risk can be expressed as \[R(a) = \expv[{(X-a)}^2]\]
+        \item[$(i)$] by realizing the distirbution $p$ as our random varibale $X$, the expected risk can be expressed as \begin{equation}R(a) = \expv[{(X-a)}^2]\end{equation}
         \item[$(ii)$]
-        \[
+        \begin{equation}
         R(a)={(a-\mu)}^2 + \sigma^2
-        \]
+        \end{equation}
     \end{itemize}
     \begin{proof}
     $(i)$ follows plugging in $\sum s_j p_j = \expv[X]$ and from $a$ being a scalar: 
@@ -452,9 +474,9 @@ Ma se l'errore sulla distribuzione è costante, come può non esserlo l'errore s
         \expv[\hat R (a)]= R(a).
     \end{equation}
     \begin{proof}
- \[
+ \begin{equation}
  \expv[\hat R(a)] = \expv [\frac{1}{n}\sum_i {(X_i - a)}^2] = \frac{1}{n} \sum_i \expv[{(X_i - a)}^2] = \frac{1}{n} n \cdot \expv[{(X_i - a)}^2] = \expv[{(X_i - a)}^2]= R(a) 
- \]
+ \end{equation}
  using Proposition~\ref{prop: results} $(i)$ and that $X_1, \ldots, X_n$ are i.i.d.\ this is the same motivation behind the empriical mean being an unbiased estimator of the true mean. 
     \end{proof}
 \end{proposition}
@@ -479,12 +501,12 @@ ecco, nel caso della sample mean, il rischio empirico è un biased estimate del 
 
     \begin{proof}
         The object we are looking at is
-        \[
-        \hat R (\hat \mu) \coloneq \frac{1}{n}\sum_{i=1}^n{(X_i - \hat\mu)}^2 = \frac{1}{n}\sum_{i=1}^n{(X_i - \frac{1}{n}\sum_{j=1}^n X_j)}^2        \] 
+        \begin{equation}
+        \hat R (\hat \mu) \coloneq \frac{1}{n}\sum_{i=1}^n{(X_i - \hat\mu)}^2 = \frac{1}{n}\sum_{i=1}^n{(X_i - \frac{1}{n}\sum_{j=1}^n X_j)}^2        \end{equation} 
         and
-        \[
+        \begin{equation}
         R(\hat\mu) \coloneq \expv[{(X-\hat\mu)}^2] = \expv[{(X -\frac{1}{n}\sum_{i=1}^n X_i)}^2]
-        \]
+        \end{equation}
         and we recall that we should look at $\hat R$ as a ``score'' we give to the estimator for the mean, the lower the better, while $R$ is the true score of the estiimator. 
         We have
         \begin{align*}
@@ -496,17 +518,17 @@ ecco, nel caso della sample mean, il rischio empirico è un biased estimate del 
             {\color{magenta} - \frac{1}{n}\sum_{i=1}^n \frac{2}{n}\expv (X_i \sum_{j=1}^n X_j)}
         \end{align*}
         and, similarly, 
-        \[
+        \begin{equation}
         R(\hat\mu) = {\color{darkorange}\expv X^2}  \,
             {\color{bluette} + \frac{1}{n^2}\expv{(\sum_{i=1}^n X_i)}^2} \,
             {\color{pink} - \frac{2}{n}\expv (X\sum_{i=1}^n X_i)}
-        \]
+        \end{equation}
         The orange terms are equal by $X_i \sim X\,\, \forall i= 1,\ldots,n$, the blue terms are identical, hence we study the pink terms to evaluate the bias.
-        \[
+        \begin{equation}
         {\color{pink} 
         - \frac{2}{n}\expv (X\sum_{i=1}^n X_i) = - \frac{2}{n}\sum_i \expv(XX_i) =- \frac{2}{n} \sum_i \expv(X)\expv(X_i) = - \frac{2}{n} n \expv^2(X) = - 2 \expv^2(X)
         }
-        \]
+        \end{equation}
         because $X, X_i$ are independent, and $\expv X_i = \expv X$. As for the empirical risk, we have
         \begin{align*}
         &{\color{magenta}
@@ -518,9 +540,9 @@ ecco, nel caso della sample mean, il rischio empirico è un biased estimate del 
         \color{magenta} = - \frac{2}{n^2} [\sum_i \expv (X_i^2 )+ \sum_{i\neq j}\expv (X_i) \expv (X_j)] = - \frac{2}{n^2}n \expv (X^2) - \frac{2}{n^2}(n^2-n)\expv^2(X) = - \frac{2}{n}\expv (X^2 ) - (2 - \frac{2}{n})\expv^2(X) }
         \end{align*}
         where the coefficients $- \frac{2}{n} - 2 + \frac{2}{n}$ sum to $-2$, but crucially
-        \[
+        \begin{equation}
         \expv (X^2) \neq \expv^2 (X)
-        \]
+        \end{equation}
 because $\expv (X^2) - \expv^2 (X) = \sigma^2 \neq 0$. In fact, if $\sigma^2 = 0$, i.e. $X$ constant, the bias would be 0, which is Proposition~\ref{app: unbiased}.
 
 Subtracting the quantities, we obtain
