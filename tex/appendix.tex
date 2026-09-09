@@ -155,6 +155,7 @@ The next two results are the most {\it operational\/} ones, which aim at boundin
     \begin{equation}
     \Pr\bigg[\frac1n\sum_{i=1}^n Z_i - \mu \ge \varepsilon\bigg] \le \exp\bigg(-\frac{2n^2\varepsilon^2}{\sum_{i=1}^n {(b_i-a_i)}^2}\bigg).
     \end{equation}
+    \mati{non c'è un abs value? come so qual è maggiore tra empirical mean e $\mu$?}
     \begin{proof}
     Let $Z_n \coloneq \sum_i Z_i$. We will prove the equivalent statement 
     \begin{equation}
@@ -185,7 +186,7 @@ Let $X_1,\ldots,X_n$ be independent real-valued random variables such that $\for
 \Pr\bigg[\frac{1}{n}\sum_{i=1}^n X_i > \varepsilon \bigg] \le e^{-\frac{n\varepsilon^2}{2(\sigma^2 + M\varepsilon/3)}}.
 \end{equation}
 \begin{proof}
-    Consider the MGF $e^{\lambda X_i}$. We have
+    Consider the moment generating functino (MGF) $e^{\lambda X_i}$. We have
     \begin{equation}
         e^{\lambda X_i} = 1 + \lambda e^{\lambda X_i} + \frac{1}{2}\lambda^2 X_i^2 + \frac{1}{3!}\lambda^3 X_i^3 + \frac{1}{4!}\lambda^4 X_i^4 + \cdots.
     \end{equation}
@@ -259,7 +260,7 @@ and since the sums in equation (\ref{example ERhat}) run over all the possible v
 \end{example}
 \section{Bound proposition in different settings}
 
-Here, we show the bound result Proposition~\ref{prop: main bound} in two different seetings from before. 
+Here, we show the bound result Theorem~\ref{thm: main bound} in two different seetings from before.
 
 \paragraph{Sign function and quadratic loss}
     Let $\mathcal{G}$ be the space of functions $g:\X\to\R$ and $\mathcal{H}$ the space of functions $f:\R\to\Y$ such that
@@ -429,9 +430,24 @@ The proof is then completed exactly as before, with parameters $a = \vert\cH\ver
 
 
 
+\section{Additional Proofs}\label{appendix extras}
 
-
-
+\begin{remark}[Equivalence of our result with~\cite{boucheron2005theory}]\label{app: equivalence of results}
+    We show that our inequality~(\ref{ineq: boundvar}) is equivalent to inequality $(13)$ in~\cite{boucheron2005theory}, Section $5$. 
+    As a consequence of~(\ref{ineq: boundvar}),
+    \begin{equation}
+        \Pr[R(f)-\hat R_D(f) \le \varepsilon] \ge 1 - e^{-\frac{n\varepsilon^2}{2(\Var(f) + M\varepsilon/3)}}.
+    \end{equation}
+   Take $\delta\in\R^+$. We want to find for which value of $\varepsilon$, $1-\delta$ is a lower bound on the probability that the event is true, hence $1 - \delta \le 1 - e^{-\frac{n\varepsilon^2}{2(\Var(f) + M\varepsilon/3)}}$. We have 
+   \begin{align}
+    \delta &\ge e^{-\frac{n\varepsilon^2}{2(\Var(f) + M\varepsilon/3)}};\\
+    \log \delta &\ge -\frac{n\varepsilon^2}{2(\Var(f) + M\varepsilon/3)};\\
+    2\log \frac{1}{\delta}(\Var(f) + M\varepsilon/3) &\le n\varepsilon^2;\\
+    n\varepsilon^2 - \frac{2}{3}M\log\frac{1}{\delta}\varepsilon  &\ge 2\log\frac{1}{\delta}\Var(f)\\
+    \varepsilon^2 - \frac{2}{3n}M\log\frac{1}{\delta}\varepsilon &\ge \frac{2\log\frac{1}{\delta}\Var(f)}{n}
+   \end{align}
+\mati{\ldots finisci}
+\end{remark}
 
 \section{Mean analysis}
 

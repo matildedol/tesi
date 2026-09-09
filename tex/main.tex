@@ -11,10 +11,15 @@
 \linespread{1.2}
 \input{math}
 \usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{amsmath}
+\usepackage{empheq}
 \definecolor{benred}{HTML}{8B0000}
 \definecolor{bluette}{RGB}{0, 123, 255} % bright bluish tone
 \definecolor{darkorange}{RGB}{255, 140, 0}
 \definecolor{pink}{RGB}{255, 130, 190}
+\definecolor{acquagreen}{RGB}{0,230,255} % verde acqua
+\setlength{\fboxrule}{0.8pt}
 
 \usepackage{xcolor}
 
@@ -201,11 +206,11 @@ Notice that we can always take a {\it\/truncation map} $T:\R\to[-1,1]$, defined 
 \end{equation}
 so that $T\circ f(x)$ is bounded for any $f$ and $x$. Hence, we consider $A = \{T\circ f(x) : f \in\cH, x\in\X\}$ and $\mathcal{F}\coloneq\{f \vert f:\X \to \R\}$, $\cH \subseteq \mathcal{F}, \cH = \{T\circ f \vert f \in \mathcal{F}\}$. Now, we are ready to state our main result. 
 
-\begin{proposition}[Bounds on the bias]\label{prop: main bound}
+\begin{theorem}[Bounds on the bias]\label{thm: main bound}
 Consider data $D: \Omega^n \to \X^n \times \Y^n$, a predictor $\hat f_D \in \cH$, and a loss function $\ell:\Y\times\Y\to\R^+$. Let $\ell$ be as in Assumption~\ref{ass: lipsch loss}, so that $\ell(\cdot) \le M$ for some $M\in\R$ by Proposition~\ref{prop: suff assump 2.2}. Then, the empirical and the expected risk of $\hat f_D$ satisfy the following bound
-\begin{equation}\label{eq: mainbounds}
+\begin{empheq}[box=\fcolorbox{black}{white}]{equation}\label{eq: mainbounds}
     0 \le \expv_D[ R(\hat f_D) - \hat R_D(\hat f_D)] \le 2M\sqrt{\frac{\log \vert \cH \vert}{2n}}.
-\end{equation}
+\end{empheq}
 \begin{proof}
 We prove the lower bound ($0\le\expv_D\ldots$) first. All the expectations are over the randomness of the data $D$, we drop the subscript to light notation. We have
 \begin{equation}\label{ineq: minimizer1}
@@ -244,16 +249,16 @@ We now want to apply Hoeffding's inequality (Theorem~\ref{app: hoeffding} in the
 \begin{enumerate}
     \item $Z_1, \ldots, Z_n$ i.i.d.;
     \item $\expv[Z_1] = \cdots = \expv[Z_n]$;
-    \item $b_i \le Z_i \le a_i$ for some $a_1, \ldots, a_n \in \R$ and $b_1,\ldots,b_n\in\R$. 
+    \item $a_i \le Z_i \le b_i$ for some $a_1, \ldots, a_n \in \R$ and $b_1,\ldots,b_n\in\R$. 
 \end{enumerate}
 
-We have that $(i)$ is satisfied by ${Z_i}s$ being i.i.d.\ by construction. Condition $(ii)$ is satisfied since all the $(x_i,y_i)$ have the same distribution. $(iii)$ is satisfied with $b_1=\cdots=b_n=0$ and $a_1 = \cdots = a_n = M$ by non-negativity of the loss function and Proposition~\ref{prop: suff assump 2.2} with our definition of $\cH$. 
+We have that $(i)$ is satisfied by ${Z_i}s$ being i.i.d.\ by construction. Condition $(ii)$ is satisfied since all the $(x_i,y_i)$ have the same distribution. $(iii)$ is satisfied with $a_1=\cdots=a_n=0$ and $b_1 = \cdots = b_n = M$ by non-negativity of the loss function and Proposition~\ref{prop: suff assump 2.2} with our definition of $\cH$. 
 Now we can apply Hoeffding's. We obtain 
 \begin{equation*}
     \Pr [\frac{1}{n}\sum_i Z_i - \mu \ge \varepsilon] \le e^{-2n\varepsilon^2/M^2}
 \end{equation*}
 and thus
-\begin{equation}\label{ineq: applyhoeffding}
+\begin{equation}\label{ineq: highprobbound}
     \Pr [ R(f) - \hat R_D(f) \ge \varepsilon]\le e^{- 2n\varepsilon^2/M^2}
 \end{equation}
 Now, to obtain a bound for $\hat f_D$ we bound it with the union of the probabilities of the events for each $f\in\cH$. 
@@ -274,26 +279,26 @@ To obtain our initial inequality from this result on a probability, we use a tec
 \begin{equation}\label{eq: keying}
     \expv[X] = \int_0^\infty \Pr(X\ge \varepsilon) \de \varepsilon
 \end{equation}
-which is true for any non-negative random variable $X$, see Proposition~\ref{app: expvcmf} in the appendix. Then, we want to use our bound (\ref{eq: upper bound}) for the integrand. Let $a\coloneq \vert\cH\vert$ and $c\coloneq 2n/M^2$, so that
+which is true for any non-negative random variable $X$, see Proposition~\ref{app: expvcmf} in the appendix. Then, we want to use our bound (\ref{eq: upper bound}) for the integrand. Let $\alpha\coloneq \vert\cH\vert$ and $c\coloneq 2n/M^2$, so that
 \[
-\Pr (X\ge \varepsilon) \le a e^{-c\varepsilon^2}.
+\Pr (X\ge \varepsilon) \le \alpha e^{-c\varepsilon^2}.
 \] 
 Notice that for high values of $\varepsilon$, the bound is a very good one, but for $\varepsilon \gg 1$ it is bad. Indeed, we can use a better bound:
 \begin{equation}
-    \Pr[X\ge \varepsilon] \le \min\{1, a  e^{-c\varepsilon^2}\}
+    \Pr[X\ge \varepsilon] \le \min\{1, \alpha  e^{-c\varepsilon^2}\}
 \end{equation}
-Therefore, it makes sense to split the integral in (\ref{eq: keying}) in two parts with a threshold $a  e^{-c\varepsilon_0^2} = 1$. This means splitting the integral at $\varepsilon_0 = \sqrt{\frac{\log a}{c}}$. We obtain 
+Therefore, it makes sense to split the integral in (\ref{eq: keying}) in two parts with a threshold $\alpha  e^{-c\varepsilon_0^2} = 1$. This means splitting the integral at $\varepsilon_0 = \sqrt{\frac{\log \alpha}{c}}$. We obtain 
 \begin{align*}
-\expv[X] &= \int_0^\infty \Pr(X\ge \varepsilon) \de \varepsilon \le \int_0^{\sqrt\frac{\log a}{c}} 1 \de \varepsilon + \int_{\sqrt\frac{\log a}{c}}^\infty ae^{-c\varepsilon^2}\de \varepsilon\\
-&=\sqrt\frac{\log a}{c} + a\frac{1}{2\sqrt{c\log a}}e^{-c\varepsilon^2} = \sqrt\frac{\log a}{c} + \frac{1}{2\sqrt{c\log a}}
+\expv[X] &= \int_0^\infty \Pr(X\ge \varepsilon) \de \varepsilon \le \int_0^{\sqrt\frac{\log \alpha}{c}} 1 \de \varepsilon + \int_{\sqrt\frac{\log \alpha}{c}}^\infty \alpha e^{-c\varepsilon^2}\de \varepsilon\\
+&=\sqrt\frac{\log \alpha}{c} + \alpha\frac{1}{2\sqrt{c\log \alpha}}e^{-c\varepsilon^2} = \sqrt\frac{\log \alpha}{c} + \frac{1}{2\sqrt{c\log \alpha}}
 \end{align*}
-where the second integral is solved with a standard Gaussian tail bound (see Proposition~\ref{app: gtailbound}), and in the last equality we substituted $a = 1/e^{-c\varepsilon^2}$. Finally, we can use a looser but simpler bound assuming  $a\ge e^{1/2}$, which is sensible since $a=\vert\cH\vert $ and $e^{1/2}<2$,
+where the second integral is solved with a standard Gaussian tail bound (see Proposition~\ref{app: gtailbound}), and in the last equality we substituted $\alpha = 1/e^{-c\varepsilon^2}$. Finally, we can use a looser but simpler bound assuming  $\alpha\ge e^{1/2}$, which is sensible since $\alpha=\vert\cH\vert $ and $e^{1/2}<2$,
 \begin{equation}\label{eq}
-    \expv[X] \le 2\sqrt\frac{\log a}{c}
+    \expv[X] \le 2\sqrt\frac{\log \alpha}{c}
 \end{equation}
-which yields the result for $X = R(\hat f_D)-\hat R(\hat f_D)$, $a = \vert \cH\vert$, and $c=2n/M^2$. 
+which yields the result for $X = R(\hat f_D)-\hat R(\hat f_D)$, $\alpha = \vert \cH\vert$, and $c=2n/M^2$. 
 \end{proof}
-\end{proposition}
+\end{theorem}
 
 \begin{example}[Bound for the logistic loss function]
 Let us see how this bound looks like for a logistic loss function. By our definition of $\cH$ via the truncation map, we have $B=1$; then, $C = 1$ and $C^\prime = \log2$ by Example~\ref{ex: logistic}. Hence,
@@ -304,7 +309,7 @@ Let us see how this bound looks like for a logistic loss function. By our defini
 
 \subsection{Rademacher Complexity and Symmetrization Trick}
 
-In this section, we present a different bound from the one in Proposition~\ref{prop: main bound}, based on the so-called {\it\/Rademacher complexity} and on a {\it\/symmetrization trick}.
+In this section, we present a different bound from the one in Theorem~\ref{thm: main bound}, based on the so-called {\it\/Rademacher complexity} and on a {\it\/symmetrization trick}.
 % We follow~\cite{bach2024learning}.
 
 \begin{definition}[Rademacher complexity]\label{def: rademacher}
@@ -340,14 +345,14 @@ The Rademacher complexity controls the maximal deviation of the empirical risk $
         \end{equation*}
         The key ingredient of the proof is to introduce an independent copy of our dataset $D$, $D'$, and study the random variable $h(Z') - h(Z)$, which has a symmetric distribution and hence is easier to analyze ({\it\/ symmetrization trick}). 
         We proceed as follows. 
-
         Introduce $D^\prime = {(Z_i')}_{i=1}^n$ identical copies of $Z'$ and rewrite
         \begin{equation}
             \expv_D[h(Z)] = \expv_{D^\prime\vert D} [h(Z_i')\vert D].
         \end{equation}
         Then,
         \begin{align}
-            \expv_D[\sup_{f\in\cH} (R-\hat R) (f)] &= \expv_D\bigg[\sup_{h\in(\ell\circ\mathcal H)} \expv_{D^\prime\vert D} \Big[h(Z_i')\Big\vert D\Big] - \frac{1}{n}\sum_i h(Z_i)\bigg] \notag\\\notag
+            \expv_D[\sup_{f\in\cH} (R-\hat R) (f)] &= \expv_D\bigg[\sup_{h\in(\ell\circ\mathcal H)} \expv_D[h(Z)] - \frac{1}{n}\sum_i h(Z_i)\bigg] \notag\\
+            &= \expv_D\bigg[\sup_{h\in(\ell\circ\mathcal H)} \expv_{D^\prime\vert D} \Big[h(Z_i')\Big\vert D\Big] - \frac{1}{n}\sum_i h(Z_i)\bigg] \notag\\\notag
             &= \expv_D\bigg[\sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i \expv_{D^\prime\vert D} \Big[h(Z_i')\Big\vert D\Big]-  h(Z_i) \bigg]\\
             &= \expv_D\bigg[\sup_{h\in(\ell\circ\mathcal H)}  \expv_{D^\prime\vert D} \Big[ \frac{1}{n} \sum_i h(Z_i')-  h(Z_i)\Big\vert D\Big] \bigg].
         \end{align} 
@@ -386,7 +391,7 @@ The Rademacher complexity controls the maximal deviation of the empirical risk $
             &= \expv_{D,D^\prime,\varepsilon}\bigg[  \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i \varepsilon_i(h(Z_i')-  h(Z_i)) \bigg].
         \end{align}
         where in the last row we take the expected value over the disorder of $\varepsilon$ and use the tower law.
-        Finally, inequality (\ref{eq: 26}) becomes
+        Plugging this into inequality (\ref{eq: 26}), we obtain
         \begin{align*}
             \expv_D[\sup_{f\in\cH} (R-\hat R) (f)] &\le \expv_{D,D^\prime,\varepsilon}\bigg[  \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i \varepsilon_i(h(Z_i')-  h(Z_i)) \bigg]\\
             &\le \expv_{D^\prime,\varepsilon}\bigg[  \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i \varepsilon_i h(Z_i') \bigg] + \expv_{D,\varepsilon}\bigg[ \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i - \varepsilon_i h(Z_i) \bigg]\\
@@ -419,9 +424,9 @@ The following result gives us an explicit bound on the Rademacher complexity. Th
 
         Now, we want to apply Hoeffding's lemma (Theorem~\ref{app: hoeffdinglemma} in the appendix) to each factor. Notice that we can do so because each $\varepsilon_i \ell(Y_i,f(X_i))$ is a centered random variable, since $\expv[\varepsilon_i]=0$ and $\varepsilon_i$ is independent of $\ell(Y_i,f(X_i))$, and it satisfies $\vert \varepsilon_i \ell(Y_i,f(X_i)) \vert \le M$ by assumption. We obtain
         \begin{equation}
-            \expv_{\varepsilon_i}\Big[\exp\big(t\varepsilon_i \ell(Y_i,f(X_i))\big)\Big] \le e^{t^2M^2/2}
+            \expv_{\varepsilon_i}\Big[\exp\big(t\varepsilon_i \ell(Y_i,f(X_i))\big)\Big] \le e^{t^2M^2/2}.
         \end{equation}
-        and plugging this back into (\ref{eq: massart-start}), we obtain
+        Plugging this back into (\ref{eq: massart-start}), we obtain
         \begin{equation}\label{eq: massart-hoeffding}
             \exp\bigg(t\, \expv_{\varepsilon,D} \Big[\sup_{f\in\cH}\sum_{i=1}^n \varepsilon_i \ell(Y_i,f(X_i))\Big]\bigg) \le \sum_{f\in\cH}\prod_{i=1}^n e^{t^2M^2/2} = \vert \cH \vert e^{nt^2M^2/2},
         \end{equation}
@@ -449,25 +454,37 @@ The following result gives us an explicit bound on the Rademacher complexity. Th
     \end{proof}
 \end{proposition}
 Hence, putting together Propositions~\ref{prop: symmetriz} and~\ref{prop: massart's lemma}, we obtain the following bound on the deviation of the empirical risk from the true risk
-\begin{equation}\label{bound: rademacher}
+\begin{empheq}[box=\fcolorbox{black}{white}]{equation}\label{bound: rademacher}
     \expv_D[\sup_{f\in\cH} (R-\hat R_D) (f)] \le 2 M\sqrt{\frac{2\log\vert\cH\vert}{n}}.
-\end{equation}
+\end{empheq}
 \subsection{Adding the variance}
-Following~\cite{boucheron2005theory}, Section $5$, assume now that estimators $f$ are deterministic or ``fixed'' and we shift back our perspective to results in high probability \mati{cioè dico i risultati come la prob che X $\ge \varepsilon$ oppure risultati in high probability, che mi permette di vedere il rate. poi trasformerò in expected value usando la A.2 quelli interessanti}. In this case, as a consequence of~(\ref{eq: mainbound}), it holds
-\begin{equation}
-    R(f) - \hat R_D(f) \le 2M\sqrt{\frac{2\log\vert\cH\vert}{n}}.
+Let us consider only deterministic estimators $f$ for a moment (i.e.\ whose choice does not depend on the data, following~\cite{boucheron2005theory}, Section $5$), and recall inequality~(\ref{ineq: highprobbound})
+\begin{equation}\label{ineq:  bound14}
+    \Pr [ R(f) - \hat R_D(f) \ge \varepsilon]\le e^{- 2n\varepsilon^2/M^2}.
 \end{equation}
+\mati{io credo loro usino una f deterministica perché così nella loro (3) il valore atteso a dx va via, e poi per poter applicare Bernstein}
 
-In this section, we want to improve this bound adding also the variance of our estimator, in order to take into further consideration the structure of our problem. The main ingredient to do so is Bernstein inequality, see Theorem~\ref{app: bernstein} in the Appendix. Indeed, Bernstein's method extends Hoeffding's results by bounding the expectation of the MGF with the variance of the random variable, instead of its range (``worst-case'' variance). This is done by Taylor expanding the MGF, assuming the random variable is centered, and bounding higher-order moments with the second-order one, i.e.\ the variance, since we also assume the random variable is bounded.
+In this section, we want to improve this bound taking more into consideration the structure of our problem. The main ingredient to do so is Bernstein inequality (Theorem~\ref{app: bernstein} in the Appendix) that, using a Taylor expansion of the moment generating function and boundedness of the random variable, uses the second-order moment to bound tail probabilities instead of the range of the support, as Hoeffidng's inequality does. Indeed, given $n$ random variables $\ell(f(X_i),Y_i) - \expv_D[\ell(f(X_i),Y_i)]$, $i=1,\ldots,n$, which are independent, centered, and bounded by $M$ by Assumption~\ref{ass: bounded loss} \mati{in the worst case coming from $\ell \le M$! can do better?}, $\forall \varepsilon>0$ it holds
+\begin{empheq}[box=\fcolorbox{black}{white}]{equation}\label{ineq: boundvar}
+    \Pr[R(f) - \hat R_D(f) \ge \varepsilon] \le e^{-\frac{n\varepsilon^2}{2(\mathrm{Var}(f) + M\varepsilon/3)}}.
+\end{empheq}
+\mati{come posso giustificare che metto prima l'exp value e poi la media empirica? si ricollega al dubbio su Hoeffding nella A.8}
 
-We apply Bernstein's inequality (Theorem~\ref{app: bernstein}) to the random variables $\ell(f(X_i), Y_i) - \expv_D[\ell(f(X_i),Y_i)]$, $i=1,\ldots,n$, which are centered and bounded by $M$ (\mati{or maybe better bound?}). Then $\sigma^2 = \mathrm{Var}(\ell(f(X_i),Y_i))$, $i=1,\ldots,n$ (because data is identically distirbuted across observations $i=1,\ldots,n$). 
+In Remark~\ref{app: equivalence of results} in the Appendix, we show how this bound is equivalent to equation $(13)$ in Section $5$ of~\cite{boucheron2005theory}.
+Notice that with $\Var(f)$ we mean $\Var(\ell(f(X),Y))$, since the $f$s are deterministic. Now, if $\Var(f)\ge \varepsilon$, the variance controls the behavior of the denominator $2(\Var(f) + M\varepsilon/3)$; instead, if $\Var(f)\le\varepsilon$, i.e.\ if the variance is small, the denominator is $2(\Var(f) + M\varepsilon/3) \le \frac{2}{3}(3 + M) \varepsilon$ and the upper bound behaves like $e^{-n\varepsilon}$ instead of $e^{-n\varepsilon^2}$ as in inequality~(\ref{ineq: bound14})~\cite{boucheron2003concentration}. 
+Moreover, notice that
+\begin{align}
+    \Var(f) &= \Var(\ell(f(X),Y)) \\
+    &= \frac{1}{n}\sum_i \Var(\ell(f(X_i), Y_i)) \\
+    &= n\cdot \frac{1}{n^2}\sum_i \Var(\ell(f(X_i), Y_i))\\
+    &= n \Var\bigg(\frac{1}{n}\sum_i \ell(f(X_i), Y_i)\bigg) \\
+    &= n\Var(\hat R_D(f)).
+\end{align}
+When $\ell$ is the counting loss, $\hat R_D(f)$ is a Binomial random variable whose variance is $R(f)(1-R(f))\le R(f)$. Hence, $\Var(f)$ is small when the expected risk is small, and in this case~(\ref{ineq: boundvar}) is much better than~(\ref{ineq: bound14}). 
 
-% NON SO COME SCRIVERE QUESTE COSEEE PERCHE' DOVREI USARE RISULTATI IN PROBABILITY!!! QUINDI LA MIA (17). BO! però allora non mi serve che le f siano deterministiche. perche a loro serve solo perche hanno in probability anche il risultato del sup, la mia 43. BOOOOOOO
-% POI COMUNQUE, APPLY BERNSTEIN E GUARDA I BOUND DOPO
-% POI GUARDA IL NOISE
 % CHIACCHIERA CON PIE: i miei risultati in expected value sono solamente il risultato in probability con la formula di expected value come integrale della probabilità (A.2), e quindi seguono solo dall'integrare il bound. io lo faccio perché mi interessa il risultato in expectation ed è implementabile, loro come hoeffding o bernstein danno il risultato in probabilità, piu generico. io andrei avanti a vederli in prob, perche il paper fa cosi, e poi trasformerei in exp value quelli che mi interessano per implementarli.
 
-
+\newpage
 \subsection{Pensieri notturni}
 Let
 \[
