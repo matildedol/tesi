@@ -457,7 +457,7 @@ Hence, putting together Propositions~\ref{prop: symmetriz} and~\ref{prop: massar
 \begin{empheq}[box=\fcolorbox{black}{white}]{equation}\label{bound: rademacher}
     \expv_D[\sup_{f\in\cH} (R-\hat R_D) (f)] \le 2 M\sqrt{\frac{2\log\vert\cH\vert}{n}}.
 \end{empheq}
-\subsection{Adding the variance}
+\subsection{Adding the variance}\label{sec: variance}
 Let us consider only deterministic estimators $f$ for a moment (i.e.\ whose choice does not depend on the data, following~\cite{boucheron2005theory}, Section $5$), and recall inequality~(\ref{ineq: highprobbound})
 \begin{equation}\label{ineq:  bound14}
     \Pr [ R(f) - \hat R_D(f) \ge \varepsilon]\le e^{- 2n\varepsilon^2/M^2}.
@@ -465,24 +465,62 @@ Let us consider only deterministic estimators $f$ for a moment (i.e.\ whose choi
 \mati{io credo loro usino una f deterministica perché così nella loro (3) il valore atteso a dx va via, e poi per poter applicare Bernstein}
 
 In this section, we want to improve this bound taking more into consideration the structure of our problem. The main ingredient to do so is Bernstein inequality (Theorem~\ref{app: bernstein} in the Appendix) that, using a Taylor expansion of the moment generating function and boundedness of the random variable, uses the second-order moment to bound tail probabilities instead of the range of the support, as Hoeffidng's inequality does. Indeed, given $n$ random variables $\ell(f(X_i),Y_i) - \expv_D[\ell(f(X_i),Y_i)]$, $i=1,\ldots,n$, which are independent, centered, and bounded by $M$ by Assumption~\ref{ass: bounded loss} \mati{in the worst case coming from $\ell \le M$! can do better?}, $\forall \varepsilon>0$ it holds
-\begin{empheq}[box=\fcolorbox{black}{white}]{equation}\label{ineq: boundvar}
+\begin{equation}\label{ineq: boundvar}
+    %[box=\fcolorbox{black}{white}]{equation}
     \Pr[R(f) - \hat R_D(f) \ge \varepsilon] \le e^{-\frac{n\varepsilon^2}{2(\mathrm{Var}(f) + M\varepsilon/3)}}.
-\end{empheq}
+\end{equation}
 \mati{come posso giustificare che metto prima l'exp value e poi la media empirica? si ricollega al dubbio su Hoeffding nella A.8}
-
-In Remark~\ref{app: equivalence of results} in the Appendix, we show how this bound is equivalent to equation $(13)$ in Section $5$ of~\cite{boucheron2005theory}.
-Notice that with $\Var(f)$ we mean $\Var(\ell(f(X),Y))$, since the $f$s are deterministic. Now, if $\Var(f)\ge \varepsilon$, the variance controls the behavior of the denominator $2(\Var(f) + M\varepsilon/3)$; instead, if $\Var(f)\le\varepsilon$, i.e.\ if the variance is small, the denominator is $2(\Var(f) + M\varepsilon/3) \le \frac{2}{3}(3 + M) \varepsilon$ and the upper bound behaves like $e^{-n\varepsilon}$ instead of $e^{-n\varepsilon^2}$ as in inequality~(\ref{ineq: bound14})~\cite{boucheron2003concentration}. 
-Moreover, notice that
-\begin{align}
-    \Var(f) &= \Var(\ell(f(X),Y)) \\
-    &= \frac{1}{n}\sum_i \Var(\ell(f(X_i), Y_i)) \\
-    &= n\cdot \frac{1}{n^2}\sum_i \Var(\ell(f(X_i), Y_i))\\
-    &= n \Var\bigg(\frac{1}{n}\sum_i \ell(f(X_i), Y_i)\bigg) \\
-    &= n\Var(\hat R_D(f)).
-\end{align}
-When $\ell$ is the counting loss, $\hat R_D(f)$ is a Binomial random variable whose variance is $R(f)(1-R(f))\le R(f)$. Hence, $\Var(f)$ is small when the expected risk is small, and in this case~(\ref{ineq: boundvar}) is much better than~(\ref{ineq: bound14}). 
+Notice that with $\Var(f)$ we mean $\Var(\ell(f(X),Y))$, since the $f$s are deterministic.
+If $\Var(f) \le \varepsilon$, i.e.~if the expected risk is small, the upper bound behvaes like $e^{n\varepsilon}$, improving on~(\ref{ineq: bound14}). 
+We show this in Remark~\ref{app: equivalence of results} in the Appendix, where we also obtain the high-probability version of~(\ref{ineq: boundvar}), stated in~\cite{boucheron2005theory}.
 
 % CHIACCHIERA CON PIE: i miei risultati in expected value sono solamente il risultato in probability con la formula di expected value come integrale della probabilità (A.2), e quindi seguono solo dall'integrare il bound. io lo faccio perché mi interessa il risultato in expectation ed è implementabile, loro come hoeffding o bernstein danno il risultato in probabilità, piu generico. io andrei avanti a vederli in prob, perche il paper fa cosi, e poi trasformerei in exp value quelli che mi interessano per implementarli.
+
+% UNA COSA IMP: i risultati del paper usano, a monte, la bounded differences inequality, con cui boundano sup Pf - Pnf con il valore atteso di sup Pf - Pnf più un altro fatto. poi boundano il valore atteso con simmetrizzazione e rademacher. io parto direttamente dal bound sul valore atteso, quindi la mia LHS è E[], la loro è solo []. sec me va bene il mio in quanto è implementabile. 
+\bigskip
+
+Ora, seguendo il paper, questa detta sopra è la logica generale. I risultati che sviluppano il bound $(43)$ invece partono ora e boundano il sup della deviazione, non la deviazione per una $f$ singola come la $(44)$ e $(45)$. Questi risultati sono prima un bound che è corollario $5.2$ in Boucheron, il quale è ottenuto con simmetrizzazione e Rademacher. Poi, si applica Bernstein e si ottiene corollario $5.3$. 
+
+Ora, io scriverei anche la proof per ottenre corollario $5.2$, ma non mi è chiaro perché questo stia qui, cosa abbia a che fare con la varianza. Dunque, scriverò direttamente i due corollari specificandoli per il mio setting, quindi invece di VC dimension lascio la cardinalità e li esprimo con $\varepsilon$ e non $\delta$. 
+
+Non so neanche bene perché siano risultati che incorporano la varianza. 
+\bigskip
+
+We obtain the following bounds:
+\begin{equation}
+    \Pr[ 
+(R - \hat R_D) (\hat f_D) > \varepsilon
+]
+\le
+4\exp\!\left[
+2\vert\cH\vert\log(n+1)
+-
+\frac{n}{16}
+{\left(
+\sqrt{\hat R_D(\hat f_D)+4\varepsilon}
+-
+\sqrt{\hat R_D(\hat f_D)}
+\right)}^2
+\right].
+\end{equation}
+and
+\begin{equation}
+    \Pr[
+R(\hat f_D) - \inf_{f\in\cH} R(f)> \varepsilon
+]
+\le
+\exp\left[
+\vert \cH\vert\log n
+-
+\frac{n}{4}
+{\left(
+\sqrt{\inf_{f\in\cH} R(f)+\frac{4\varepsilon}{C}}
+-
+\sqrt{\inf_{f\in\cH} R(f)}
+\right)}^2
+\right]
+\end{equation}
+where we see that the first bound simplifies when the training error goes to $0$ and the second bound when there is an $f$ that achieves zero test error. I.e., in the former we need ***, in the latter an expressive enough hypotheses class. 
 
 \newpage
 \subsection{Pensieri notturni}

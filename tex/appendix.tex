@@ -432,8 +432,19 @@ The proof is then completed exactly as before, with parameters $a = \vert\cH\ver
 
 \section{Additional Proofs}\label{appendix extras}
 
-\begin{remark}[Equivalence of our result with~\cite{boucheron2005theory}]\label{app: equivalence of results}
-    We show that our inequality~(\ref{ineq: boundvar}) is equivalent to inequality $(13)$ in~\cite{boucheron2005theory}, Section $5$. 
+\begin{remark}[Additional notes on variance-based bound]\label{app: equivalence of results}
+    Recall inequality~(\ref{ineq: boundvar}) from Section~\ref{sec: variance}. We first discuss why it is an improvement.  If $\Var(f)\ge \varepsilon$, the variance controls the behavior of the denominator $2(\Var(f) + M\varepsilon/3)$; instead, if $\Var(f)\le\varepsilon$, i.e.\ if the variance is small, the denominator is $2(\Var(f) + M\varepsilon/3) \le \frac{2}{3}(3 + M) \varepsilon$ and the upper bound behaves like $e^{-n\varepsilon}$ instead of $e^{-n\varepsilon^2}$ as in inequality~(\ref{ineq: bound14})~\cite{boucheron2003concentration}. 
+Moreover, notice that
+\begin{align}
+    \Var(f) &= \Var(\ell(f(X),Y)) \\
+    &= \frac{1}{n}\sum_i \Var(\ell(f(X_i), Y_i)) \\
+    &= n\cdot \frac{1}{n^2}\sum_i \Var(\ell(f(X_i), Y_i))\\
+    &= n \Var\bigg(\frac{1}{n}\sum_i \ell(f(X_i), Y_i)\bigg) \\
+    &= n\Var(\hat R_D(f)).
+\end{align}
+When $\ell$ is the counting loss, $\hat R_D(f)$ is a Binomial random variable whose variance is $R(f)(1-R(f))\le R(f)$. Hence, $\Var(f)$ is small when the expected risk is small, and in this case~(\ref{ineq: boundvar}) is much better than~(\ref{ineq: bound14}). 
+    
+    Next, we show that our inequality~(\ref{ineq: boundvar}) is equivalent to inequality $(13)$ in~\cite{boucheron2005theory}, Section $5$. 
     As a consequence of~(\ref{ineq: boundvar}),
     \begin{equation}
         \Pr[R(f)-\hat R_D(f) \le \varepsilon] \ge 1 - e^{-\frac{n\varepsilon^2}{2(\Var(f) + M\varepsilon/3)}}.
