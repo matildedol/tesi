@@ -479,11 +479,16 @@ We show this in Remark~\ref{app: equivalence of results} in the Appendix, where 
 % UNA COSA IMP: i risultati del paper usano, a monte, la bounded differences inequality, con cui boundano sup Pf - Pnf con il valore atteso di sup Pf - Pnf più un altro fatto. poi boundano il valore atteso con simmetrizzazione e rademacher. io parto direttamente dal bound sul valore atteso, quindi la mia LHS è E[], la loro è solo []. sec me va bene il mio in quanto è implementabile. 
 \bigskip
 
-Ora, seguendo il paper, questa detta sopra è la logica generale. I risultati che sviluppano il bound $(43)$ invece partono ora e boundano il sup della deviazione, non la deviazione per una $f$ singola come la $(44)$ e $(45)$. Questi risultati sono prima un bound che è corollario $5.2$ in Boucheron, il quale è ottenuto con simmetrizzazione e Rademacher. Poi, si applica Bernstein e si ottiene corollario $5.3$. 
+Ora, quella detta sopra è solo la logica generale di questa sezione. I risultati concreti (che portano avanti il bound) invece partono ora e boundano il sup della deviazione, non la deviazione per una $f$ singola come la $(44)$ e $(45)$. Questi risultati sono il teorema $5.1$, il quale è ottenuto con simmetrizzazione e Rademacher. Qui non mi è chiaro perché sarebbe un risultato sulla varianza: forse per la normalizzazione, ma questa è presentata come un fatto tecnico e Bernstein dovrebbe essere il tool da usare per includere la varianza, ma qui non lo usano. 
 
-Ora, io scriverei anche la proof per ottenre corollario $5.2$, ma non mi è chiaro perché questo stia qui, cosa abbia a che fare con la varianza. Dunque, scriverò direttamente i due corollari specificandoli per il mio setting, quindi invece di VC dimension lascio la cardinalità e li esprimo con $\varepsilon$ e non $\delta$. 
+Poi, si applica questo scenario (con una diseguaglianza algebrica scema) al caso di risk minimization, e si ottiene il corollario 5.2, e poi si fa un ragionamento $X$ che porta a fornire una versione del bound sopra con $\inf R(f)$, il corollario 5.3, ottenuto usando Bernstein + 5.2. Non mi è chiaro nemmeno questo ragionamento $X$. Riassumendo, quello che ho capito è
+\[
+\sup_{f\in\cH}\frac{Pf -P_n f}{\sqrt{Pf}} \xlongrightarrow{\text{Symm.\ e Rademacher}}  \text{Thm } 5.1 \xlongrightarrow{\text{Apply to risk min.\ + algebraic ineq.}} \text{Cor } 5.2 \xlongrightarrow{\text{Ragionamento }X} \text{Cor } 5.3
+\]
+e le mie domande sono perché il thm 5.1 ingloba la varianza e il ragionamento $X$.
+\bigskip
 
-Non so neanche bene perché siano risultati che incorporano la varianza. 
+Qui scrivo i risultati della 5.2 e 5.3 nel mio setting, cioè invece della VC dimension uso la cardinalità di $\cH$ e scrivo le diseguaglianze in forma di $\varepsilon$ e non $\delta$. 
 \bigskip
 
 We obtain the following bounds:
@@ -520,7 +525,34 @@ R(\hat f_D) - \inf_{f\in\cH} R(f)> \varepsilon
 \right)}^2
 \right]
 \end{equation}
-where we see that the first bound simplifies when the training error goes to $0$ and the second bound when there is an $f$ that achieves zero test error. I.e., in the former we need ***, in the latter an expressive enough hypotheses class. 
+where we see that the first bound simplifies when the training error goes to $0$ and the second bound when there is an $f$ that achieves zero test error. I.e., in the former we need a long enough training or enough parameters, in the latter we need the right model (possibly, one with few parameters) to be included in the hypotheses class. 
+
+% CHIACCHIERATA CON CHRI: non solo a me non sono chiare le proof, che il paper scrive in buona parte in plain English, sed etiam non mi è chiaro come l'obiettivo di aggiungere la varianza al bound sia raggiunto, e quindi quale sia la logica di ottenere questi risultati. Quindi, guardiamo al secondo risultato e cerchiamo di capire come viene usato Bernstein lì. Poi a ritroso ricostruiamo il ragionamento, per quanto possibile, e poi andiamo avanti. Anche vorrei ricordarmi che senso ha fare simmetrizzaizone e Rademacher. 
+
+% risposta alla simmetrizzazione: Mah è in generale una tecnica per boundare una deviazione di processi empirici! la introduce Panchenko (MIT) nel 2004
+
+% invece, as for the variance: 
+
+Noto che nella $(47)$ la varianza c'è anche se nascosta, perché il ragionamento che fanno nel paper è questo.
+
+Let $f'\in\cH$ be such that $R(f') = \inf_{f\in\cH} R(f)$. We have
+\[
+\hat R_D(\hat f_D) \le \hat R_D (f')
+\]
+by definition of $\hat f_D$. Then,
+\[
+\hat R_D(\hat f_D) - R(f') \le \hat R_D (f') - R(f')
+\]
+applying Bernstein inequality,
+\[
+\hat R_D(\hat f_D) - R(f') \le \sqrt{\frac{2R(f') \log \frac{1}{\delta}}{n}} + \frac{2\log \frac{1}{\delta}}{3n}.
+\]
+Then we say that $R(\hat f_D)$ is bounded by $\hat R_D(\hat f_D)$ as in (46), and hence we can bound $R(\hat f_D) - R(f')$ using the last inequality and (46). 
+
+Quindi, usiamo la varianza della funzione che minimizza il rischio atteso (valore atteso), e la usiamo come $\Var(f') \le R(f') = \inf_{f\in cH} R(f)$. Questo permette di studiare il caso in cui questo infimo è zero, cioè quando lo stimatore giusto è includo nella classe di ipotesi. E questo ritorna utile nella sezione dopo, con l'errore. 
+
+\subsection{Noise analysis}
+
 
 \newpage
 \subsection{Pensieri notturni}
