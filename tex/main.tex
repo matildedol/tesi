@@ -27,7 +27,7 @@
 
 \newcommand{\mati}[1]{\textcolor{magenta}{#1}}
 
-\title{Notes on analysis of gradient descent}
+\title{The Mathematics of Generalization}
 \author{matilde \\ February 2026}
 
 \begin{document}
@@ -479,9 +479,9 @@ We show this in Remark~\ref{app: equivalence of results} in the Appendix, where 
 % UNA COSA IMP: i risultati del paper usano, a monte, la bounded differences inequality, con cui boundano sup Pf - Pnf con il valore atteso di sup Pf - Pnf più un altro fatto. poi boundano il valore atteso con simmetrizzazione e rademacher. io parto direttamente dal bound sul valore atteso, quindi la mia LHS è E[], la loro è solo []. sec me va bene il mio in quanto è implementabile. 
 \bigskip
 
-Ora, quella detta sopra è solo la logica generale di questa sezione. I risultati concreti (che portano avanti il bound) invece partono ora e boundano il sup della deviazione, non la deviazione per una $f$ singola come la $(44)$ e $(45)$. Questi risultati sono il teorema $5.1$, il quale è ottenuto con simmetrizzazione e Rademacher. Qui non mi è chiaro perché sarebbe un risultato sulla varianza: forse per la normalizzazione, ma questa è presentata come un fatto tecnico e Bernstein dovrebbe essere il tool da usare per includere la varianza, ma qui non lo usano. 
+Ora, quella detta sopra è solo la logica generale di questa sezione. I risultati concreti (che portano avanti il bound) invece partono ora e boundano il sup della deviazione, non la deviazione per una $f$ singola come la $(44)$ e $(45)$. Questi risultati sono il teorema $5.1$, il quale è ottenuto con simmetrizzazione e Rademacher. \mati{Qui non mi è chiaro perché sarebbe un risultato sulla varianza: forse per la normalizzazione, ma questa è presentata come un fatto tecnico e Bernstein dovrebbe essere il tool da usare per includere la varianza, ma qui non lo usano. }
 
-Poi, si applica questo scenario (con una diseguaglianza algebrica scema) al caso di risk minimization, e si ottiene il corollario 5.2, e poi si fa un ragionamento $X$ che porta a fornire una versione del bound sopra con $\inf R(f)$, il corollario 5.3, ottenuto usando Bernstein + 5.2. Non mi è chiaro nemmeno questo ragionamento $X$. Riassumendo, quello che ho capito è
+Poi, si applica questo scenario (con una diseguaglianza algebrica scema) al caso di risk minimization, e si ottiene il corollario 5.2, e poi si fa un ragionamento $X$ che porta a fornire una versione del bound sopra con $\inf R(f)$, il corollario 5.3, ottenuto usando Bernstein + 5.2. \mati{Non mi è chiaro nemmeno questo ragionamento $X$. }Riassumendo, quello che ho capito è
 \[
 \sup_{f\in\cH}\frac{Pf -P_n f}{\sqrt{Pf}} \xlongrightarrow{\text{Symm.\ e Rademacher}}  \text{Thm } 5.1 \xlongrightarrow{\text{Apply to risk min.\ + algebraic ineq.}} \text{Cor } 5.2 \xlongrightarrow{\text{Ragionamento }X} \text{Cor } 5.3
 \]
@@ -533,7 +533,7 @@ where we see that the first bound simplifies when the training error goes to $0$
 
 % invece, as for the variance: 
 
-Noto che nella $(47)$ la varianza c'è anche se nascosta, perché il ragionamento che fanno nel paper è questo.
+Noto che nella $(47)$ la varianza c'è anche se nascosta, perché il ragionamento che fanno nel paper è il seguente.
 
 Let $f'\in\cH$ be such that $R(f') = \inf_{f\in\cH} R(f)$. We have
 \[
@@ -547,9 +547,9 @@ applying Bernstein inequality,
 \[
 \hat R_D(\hat f_D) - R(f') \le \sqrt{\frac{2R(f') \log \frac{1}{\delta}}{n}} + \frac{2\log \frac{1}{\delta}}{3n}.
 \]
-Then we say that $R(\hat f_D)$ is bounded by $\hat R_D(\hat f_D)$ as in (46), and hence we can bound $R(\hat f_D) - R(f')$ using the last inequality and (46). 
+Then we say that $R(\hat f_D)$ is bounded by $\hat R_D(\hat f_D)$ as in (46), and hence we can bound $R(\hat f_D) - R(f')$ using (46) and the last inequality. 
 
-Quindi, usiamo la varianza della funzione che minimizza il rischio atteso (valore atteso), e la usiamo come $\Var(f') \le R(f') = \inf_{f\in cH} R(f)$. Questo permette di studiare il caso in cui questo infimo è zero, cioè quando lo stimatore giusto è includo nella classe di ipotesi. E questo ritorna utile nella sezione dopo, con l'errore. 
+This would hold for any function $f\in\cH$, ma usiamo la varianza della funzione che minimizza il rischio atteso (valore atteso), e la usiamo in $\Var(f') \le R(f') = \inf_{f\in cH} R(f)$. Questo permette di studiare il caso in cui questo infimo è zero, cioè quando lo stimatore giusto è incluso nella classe di ipotesi. E questo ritorna utile nella sezione dopo, con l'errore.
 
 \subsection{Noise analysis}
 
