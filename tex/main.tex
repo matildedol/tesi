@@ -552,7 +552,17 @@ Then we say that $R(\hat f_D)$ is bounded by $\hat R_D(\hat f_D)$ as in (46), an
 This would hold for any function $f\in\cH$, ma usiamo la varianza della funzione che minimizza il rischio atteso (valore atteso), e la usiamo in $\Var(f') \le R(f') = \inf_{f\in cH} R(f)$. Questo permette di studiare il caso in cui questo infimo è zero, cioè quando lo stimatore giusto è incluso nella classe di ipotesi. E questo ritorna utile nella sezione dopo, con l'errore.
 
 \subsection{Noise analysis}
-
+\begin{theorem}[Bound with noise]
+    Let $f'\in\cH$ be such that $R(f') = \inf_{f\in\cH} R(f)$. Define $\mathcal{L}$ the class of loss functions $\ell(f) \coloneq \mathbf{1}_{f(X)\neq Y} - \mathbf{1}_{f'(X)\neq Y}$ and let $\vert\mathcal{L}\vert$ be its cardinality. Assuming that 
+    \begin{equation}
+        \Var(\ell) \le {\left(\frac{R(\ell)}{h}\right)}^\alpha
+    \end{equation}
+    for some $h>0$, $\alpha \in (0,1]$, we have
+    \begin{equation}
+        R(\hat f_D) -\inf_{f \in \cH} R(f) \le {\left(2\frac{\log \frac{\vert\mathcal L\vert}{\delta} }{nh^\alpha}\right)}^{\frac{1}{2-\alpha}}
+    \end{equation}
+    with probability at least $1-\delta$. 
+\end{theorem}
 
 \newpage
 \subsection{Pensieri notturni}
