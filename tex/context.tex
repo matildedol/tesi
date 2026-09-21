@@ -1,4 +1,13 @@
-% on 18 Sep, I read some papers and start a project with chat on my thesis to immerse myself a little better into the context of my thesis. 
+\documentclass{amsart}
+\usepackage{fullpage}
+
+\title{The Mathematics of Generalization -- Context}
+\author{Matilde, September 2026}
+\begin{document}
+\maketitle
+
+[on 18 Sep, I read some papers and start a project with chat on my thesis to immerse myself a little better into the context of my thesis. This file is the result.]
+\\
 
 {\bf Generalization} = a form of abstraction whereby common properties of specific instances are formulated as general concepts or claims. (Wikipedia)
 \\
@@ -15,16 +24,16 @@
 Now, complexity is central to understanding generalization, because classical results in statistics find a monotonic relation between the complexity of the hypotheses class and the generalization power of the predictor (such a relationship is inverse). This is of course linked to the classical bias-variance tradeoff, where a too large complexity determines overfitting, but also to a classical result by Vapkin and Chervonenkis, who state that the richness of a class of events, measured by a {\it growth function}, controls the distance between the empirical and population probabilities of an event in the class (in the context of probability in general, not learning). This measure of complexity will then be referred to as VC dimension. 
 \\
 
-Also, when trying to understand what drives a good generalization ability, some hypotheses are formed, whose core component is a complexity measure~\cite{jiang2019fantasticgeneralizationmeasures}. Indeed, it can make sense to compare these complexity measures to compare such hypotheses. This further motivates why complexity is central to generalization. 
+Also, when trying to understand what drives a good generalization ability, some hypotheses are formed, whose core component is a complexity measure [Jiang {\it Fantastic measures\/}]. Indeed, it can make sense to compare these complexity measures to compare such hypotheses. This further motivates why complexity is central to generalization. 
 \\
 
 So, a natural question is: how do we measure complexity?
 \\
 
-In the finite case, the most straight-forward way is to count the number of models that an hypotheses class contains, i.e.\ the cardinality of the hypotheses set. This comes up in the bounds we propose, denoted by $\vert\cH\vert$. However, it always comes up due to trivial bounds, like union bounds or bounding the sup by the sum of the events. This leaves little intuition to why complexity should be a driver of generalization ability. $\star$
+In the finite case, the most straight-forward way is to count the number of models that an hypotheses class contains, i.e.\ the cardinality of the hypotheses set. This comes up in the bounds we propose. However, it always comes up due to trivial bounds, like union bounds or bounding the sup by the sum of the events. This leaves little intuition to why complexity should be a driver of generalization ability. $\star$
 \\
 
-This problem, however, is distinct from (althoug related to) the problem of finding an informative bound that captures the structure of the learning problem. For what regards this problem, I will take as. areference the Boucheron et al.\ paper and study and implement these bounds:
+This problem, however, is distinct from (althoug related to) the problem of finding an informative bound that captures the structure of the learning problem. For what regards this problem, I will take as a reference the Boucheron et al.\ paper and study and implement these bounds:
 \begin{enumerate}
     \item vanilla Hoeffding bound (done)
     \item variance-based bound
@@ -34,13 +43,17 @@ This problem, however, is distinct from (althoug related to) the problem of find
 This is the work for the next days: I will stop trying to understand their proofs, and instead I will directly write them in my setting and implement them. 
 \\
 
-Later on, I will possibly think of the $\star$ question, about complexity measures.
+Later on, I will possibly think of the $\star$ question, about complexity measures. Regarding this, I shall remember to read my conversation with Chat. Particularly useful. Some ideas that have arisen are to count only once functions that behave similarly, i.e.\ have a similar deviation, or to compute the Rademacher complexity empirically instead of bounding it with Massart (which gives the same trivial bound as before). 
+\\
+
+Remember: {\bf complexity si può pensare come il numero di funzioni nello spazio ma anche, più in generale, la capacità espressiva di quelle funzioni.} Per questo Rademacher ha senso, per questo si conta il numero di parametri. 
 \\
 
 Literature:
 \begin{itemize}
     \item Vapkin and Chervonenkis: classical paper studying the convergence of empirical frequency to population probability of that event. Sets the basis for class richness driving this convergence, it is not about learning, but this naturally translates to richness driving generalizatiom. Define measures that are predescendants of VC dimension. 
     \item Jiang, Bengio, and others {\it Fantastic measures\/}: compare 40 complexity measures, both empirical and theoretical, on a large number of different models. Find that a mathematically correct measure is not always informative, and that sharpness measures seem to have the highest correlation with generalization. Link with bounds: some of these measures are taken from bounds. 
-    \item Boucheron et al.: la survey di diversi bound proposta da Loz. Sincera, mi sembra scritta malissimo anche rispetto a Jiang per esempio. 
+    \item Boucheron et al.:\ la survey di diversi bound proposta da Loz. Sincera, mi sembra scritta malissimo anche rispetto a Jiang per esempio. 
 \end{itemize}
 
+\end{document}
