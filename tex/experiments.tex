@@ -23,3 +23,11 @@ what we observe is that the training data size and the standard deviation of the
 \end{itemize}
 
 \end{enumerate}
+
+Experiments with variance bound and noise bound. 
+
+The implementation structure remains the same as the experiments above, in the~\texttt{tesi/code} folder. We add new bounds to the~\texttt{base.ipynb} file. 
+
+In order for a bound to be implemented, we first express it as a bound on the expected value, using tail integration (just like we did to go from inequality~(\ref{eq: upper bound}) to the result of Theorem~\ref{thm: main bound}). We do this only for interesting bounds that we want to implement. 
+
+{\bf Variance bound:} the 

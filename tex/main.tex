@@ -131,7 +131,7 @@ A proof is found in the appendix (Proposition~\ref{app: unbiased}).
 \end{proof}
 \end{proposition}
 
-\section{Evaluating the bias}\label{sec: bias}
+\section{Statistical bounds on the risk}\label{sec: bias}
 
 With the technology defined above, we define an estimator given a dataset $D$ and an hypotheses space $\cH$ as
 \begin{equation}\label{1eq: argmin}
@@ -494,8 +494,8 @@ Qui scrivo i risultati della 5.2 e 5.3 nel mio setting, cioè invece della VC di
 \bigskip
 
 We obtain the following bounds:
-\begin{equation}
-    \Pr[ 
+\begin{empheq}[box=\fcolorbox{black}{white}]{equation}
+    \Pr[
 (R - \hat R_D) (\hat f_D) > \varepsilon
 ]
 \le
@@ -509,7 +509,7 @@ We obtain the following bounds:
 \sqrt{\hat R_D(\hat f_D)}
 \right)}^2
 \right].
-\end{equation}
+\end{empheq}
 and
 \begin{empheq}[box=\fcolorbox{black}{white}]{equation}
     \Pr[
@@ -552,6 +552,17 @@ applying Bernstein inequality,
 Then we say that $R(\hat f_D)$ is bounded by $\hat R_D(\hat f_D)$ as in (46), and hence we can bound $R(\hat f_D) - R(f')$ using (46) and the last inequality. 
 
 This would hold for any function $f\in\cH$, ma usiamo la varianza della funzione che minimizza il rischio atteso (valore atteso), e la usiamo in $\Var(f') \le R(f') = \inf_{f\in cH} R(f)$. Questo permette di studiare il caso in cui questo infimo è zero, cioè quando lo stimatore giusto è incluso nella classe di ipotesi. E questo ritorna utile nella sezione dopo, con l'errore.
+
+Finally, we use tail integration to obtain a result in expected value from inequality~(\ref{ineq: boundvar}), just like we did to go from inequality~(\ref{eq: upper bound}) to~(\ref{eq}), our first bound (although it's slightly more complixated here). 
+
+First, recall the relationship between the expected value of a non-negative random variable and a tail probability bound,
+\[
+\expv[X] = \int_0^\infty \Pr[X\ge\varepsilon] \de \varepsilon.
+\]
+
+
+
+
 
 \subsection{Noise analysis}
 
@@ -613,6 +624,7 @@ Let $\ell:\Y\times\Y\to\{0,1\}$ be the counting loss, $\ell(f(X),Y) = \mathbf{1}
 \end{theorem}
 
 It remains to discuss the assumption that $ \Var(f - f^*) \le {\left(\frac{R(f)-R(f^*)}{h}\right)}^\alpha$. 
+
 
 \newpage
 \subsection{Pensieri notturni}
