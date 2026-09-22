@@ -224,6 +224,49 @@ Let $X_1,\ldots,X_n$ be independent real-valued random variables such that $\for
     These two ingredients, together, allow to bound the MGF of $X$ with its variance, adding more of the structure of the problem to our bounds. 
 \end{intuition}
 \end{theorem}
+
+\begin{lemma}[Young's inequality]\label{lemma: young}
+Let $a,b\geq 0$ and let $p,q>1$ be conjugate exponents, i.e.
+\[
+\frac{1}{p}+\frac{1}{q}=1.
+\]
+Then
+\[
+ab\leq \frac{a^p}{p}+\frac{b^q}{q}.
+\]
+\end{lemma}
+
+\begin{proof}
+Fix $b\geq 0$ and consider
+\[
+\phi(a)=\frac{a^p}{p}-ab+\frac{b^q}{q},
+\qquad a\geq 0.
+\]
+Since
+\[
+\phi'(a)=a^{p-1}-b
+\qquad\text{and}\qquad
+\phi''(a)=(p-1)a^{p-2}\geq 0,
+\]
+$\phi$ attains its minimum at
+\[
+a=b^{1/(p-1)}=b^{q-1}.
+\]
+Using $q=p/(p-1)$, at this point
+\[
+\phi(a)
+=
+\frac{b^q}{p}-b^q+\frac{b^q}{q}
+=
+b^q\left(\frac1p+\frac1q-1\right)
+=0.
+\]
+Therefore $\phi(a)\geq0$ for all $a\geq0$, which is equivalent to
+\[
+ab\leq\frac{a^p}{p}+\frac{b^q}{q}.
+\]
+\end{proof}
+
 \section{Toy example}
 
 \begin{example}[Least squares with toy dataset]\label{app: toy}
