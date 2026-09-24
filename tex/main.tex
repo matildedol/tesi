@@ -625,6 +625,32 @@ Let $\ell:\Y\times\Y\to\{0,1\}$ be the counting loss, $\ell(f(X),Y) = \mathbf{1}
 
 It remains to discuss the assumption that $ \Var(f - f^*) \le {\left(\frac{R(f)-R(f^*)}{h}\right)}^\alpha$. 
 
+% CHIACCHIERATA CON LOZ:
+% per i bound, hanno senso i risultati in high probability perché così si statano di solito. anche perché integrando si perde dell’informazione. 
+% i risultati sul valore atteso sono più interpretabili a livello empirico, infatti ci sta scriverli sul pdf con delta e poi implementarli con il valore atteso, con un bound trovato con i metodi numerici. poi sul pdf si scrive “questo risultato è stato poi implementato in quest’altro modo. risolvere quest’integrale è difficile e quindi mi sono confrontata con un LLM e ho usato questi metodi numerici”. 
+% poi, riguardo alla mia domanda sul tradeoff tra spendere tempo a capire le proof e avere risultati: 
+% Passo indietro:
+% Ci sono una serie di bound che si basano su un conto delle funzioni che sono loose
+% Che sono loose già si sapeva, quello che faccio io è dire come possiamo migliorarli? Allora si può spendere tempo nel trovare quelli che dal pro di vista empirico siano più informativi 
+% Eg quello con Union bound è molto loose 
+% Quello con rademacher è un po’ più tight -> mi recupera qualcosa empirically? Sì , la saturazione 
+% Potrebbe essere imp il noise! Dove entra il noise? Ecc ecc 
+% Questo è il path del ragionamento: in questa tesi io ho ripercorso cercando di fare una cosa elementare l’evoluzione di cercare dei bound facendo una verifica numerica qualitativa e non quantitativa cioè sul comportamento della curva 
+% Se vedi le cose da questo pto di vista la dim del risultato particolare può essere imp oppure no - tipo per capire la struttura del bound
+% Lui personalmente pensa che sia più imp nel mio caso ripercorrere i vari bound e capire se riesco ad avere dei bound che prevedono tutti gli aspetti qualitativi delle curve o ci sono dei comportamenti che non sono spiegati ? 
+% In quest’ottica se c’è un bound un po’ più complicato lo si plotta e poi ci si spende il tempo prop a quanto è interessante
+% anche, come risultato alla fine mi diceva che vorrebbe vedere una sorta di tabella del tipo bound con noise fa questo, una funzione piu complessa fa quello, eccecc
+
+% CHIACCHIERATA CON PIE:
+% setting di base: hai dei dati x distribuiti come px e dei dati y = f(x) + \varepsilon che sono distribuiti come py = p(Y=y | px) e \varepsilon \sim N(0,\sigma^2). e poi noi prenidamo un set H e cerchiamo un buon estimatore. e quindi noi le cose che possiamo cambiare sono:
+% - distribuzione del noise
+% - distribuzione di x
+% - la funzione f con cui creiamo le y
+% - il set H
+
+% e la scelta del set H e dell'estimatore si parla bene non solo con f ma anche con px perché se f è seno ma px è concentrata in mezzo periodo, H puo benissimo essere funzioni quadratiche
+
+% quindi noi vogliamo ottenere dei bound che dipendano da tutte queste cose qui, per es se avessimo una misura della complessità di f e un bound che include questa cosa sarebbe molto fico 
 
 \newpage
 \subsection{Pensieri notturni}
