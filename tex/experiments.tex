@@ -1,5 +1,6 @@
 \section{Experiments}
 
+\subsection{Explorative experiments}
 The first experiment we have done consist in fitting a number of binary trees to a synthetic dataset and inspecting how the gap $\expv{[R(\hat f_D) - \hat R(\hat f_D)]}$ changes as we increase model complexity $\vert\cH\vert$. Specifically, the experiment consists in 
 \begin{enumerate}
     \item support: we discretize an interval $I\subset \R$ into $N$ numbers (we chose $I=[0,10], N = 10,000$);
@@ -19,12 +20,24 @@ what we observe is that the training data size and the standard deviation of the
     \item standard setting: a Gaussian noise and a centered parabola as data-generating function
 \begin{itemize}
     \item putting the depth of the tree in the x-axis, we observe a U-shaped error curve in the test set in a standard setting, for different values of $n$ training size, $N$ support size;
-    \item 
 \end{itemize}
-
+    \item experiments with Bernoullian noise
+    \begin{itemize}
+        \item from the first experiments, it seems that there is more noise in the data that is difficult to predict 
+        \item however, I believe that the difference only depends on the number of misclassified inputs (due to noise)
+        \item inspecting the datasets we generate and use for training, we find for which value of $p$ we get roughly the same portion of misclassified inputs as for a fixed value of $\sigma$ in the case of Gaussian noise
+        \item we find that indeed the two models behave the same, hence we disregard the noise structure as a source of interesting insights, and alla peggio la sostituiamo con la porzione di inputs misclassificati, anche se non dava un behavior così diverso o interessante
+    \end{itemize}
+    \item experiments with the sine (with different frequencies) as data-generating function
+    \begin{itemize}
+        \item we find the value of $r = m/n$, number of crossings of the x-axis over number of training points, for which prediction becomes as good as random guessing, i.e.\ the test error stays steady at $0.5$
+        \item we also verify that for only $3$ crossings of the x-axis, $8$ training points are enough to learn the data-generating function, confirming the importance of the relationship between $f^*, p_\X$ and $\cH$
+        \item as for the behavior of the bound, we conclude that the main problem is that it does not stabilize (but I would also add that it grows too fast, as before I was mistakenly plotting $\log \mathrm{depth}$ instead of $\log \vert \cH\vert$)
+        \item ci devo un po' pesnare per capire se ha un ruolo la funzione diversa oppure no\dots
+    \end{itemize}
 \end{enumerate}
 
-Experiments with variance bound and noise bound. 
+\subsection{Experiments with variance bound and noise bound}
 
 The implementation structure remains the same as the experiments above, in the~\texttt{tesi/code} folder. We add new bounds to the~\texttt{base.ipynb} file. 
 
@@ -42,3 +55,7 @@ Three remarks are in order.
 {\bf Variance bound (con $\inf_{f\in\cH} R(f)$):} non ho idea di come implementare il minimo del errore di test su tutti gli alberi possibili
 
 N.B.: we also implement the bounds disregarding all the constants that do not hold a meaning in our setting.
+
+After plotting the bound in equation~(\ref{bound: vartrainerror}) with the adjustments discussed above, we make the following observations. The bound is arguably worse than the ``naive'' one, because it remains uncertain until the value of $\vert\cH\vert$ where the training error goes to 0 in expectation, and then it grows linearly in $\vert\cH\vert$, which bounds really badly the behavior of the test error, that instead grows slowly and anzi stabilizes after a while. So, the theoretical gain of having a bound that grows more slowly in $n$ is not reflected from our experiments, because the dependence on $\vert \cH\vert$ is actually worse (square root vs.\ linear). 
+% bah questa è una osservazione abbastanza scema... 
+% plottare against la n? capire cosa ci andrebbe nella asse x? 
