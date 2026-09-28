@@ -103,7 +103,7 @@ Now, we would like to have a way to {\it\/ evaluate} our predictors, in order to
 \begin{definition}[Expected risk]
      Given a predictor $f$ and a loss function $\ell$, the expected risk is a deterministic function $R: (\X\times\Y) \times \cH \to \R$,
     \begin{equation}
-        R(f) \coloneq \sum_{i=1}^m \sum_{y_i\in\{-1,1\}}\ell(f(\bar x_i),y_i)p(\bar x_i, y_i).
+        R(f) \coloneq \sum_{\bar x \in \X} \sum_{y\in\{-1,1\}}\ell(f(\bar x),y)p(\bar x, y).
     \end{equation}
 \end{definition}
 The issue with using $R(f)$ as a metric, however, is that we do not know the true distribution $p$ in general. Hence, we approximate the expected risk with a new, emprical metric, the {\it\/empirical risk}, motivated by the law of large numbers. 
