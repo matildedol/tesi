@@ -569,12 +569,12 @@ First, recall the relationship between the expected value of a non-negative rand
 We report the results given by section 5.3 of~\cite{boucheron2005theory} and specify them to our setting.
 \\
 
-Let $\ell:\Y\times\Y\to\{0,1\}$ be the counting loss, $\ell(f(X),Y) = \mathbf{1}_{\{f(X)\neq Y\}}$ and consider a new set of functions $\mathcal G \coloneq \left\{ \mathbf{1}_{\{f(X)\neq Y\}} - \mathbf{1}_{\{f^*(X)\neq Y\}}\vert f\in\cH\right\}$ where $f^* \in \argmin_{f\in\cH} R(f)$ (this is indicated by $\mathcal F$ in the paper). We will indicate the elements of $\mathcal G$ as  $g_f$ for each $f\in\cH$. Then, $\expv[g_f] = \expv[\ell(f)] - \expv[\ell(f^*)] = R(f) - R(f^*)$. 
+Let $\ell:\Y\times\Y\to\{0,1\}$ be the counting loss, $\ell(f(X),Y) = \mathbf{1}_{\{f(X)\neq Y\}}$ and consider a new set of functions $\mathcal G \coloneq \left\{ \mathbf{1}_{\{f(X)\neq Y\}} - \mathbf{1}_{\{f_\mathrm{opt}(X)\neq Y\}}\vert f\in\cH\right\}$ where $f_\mathrm{opt} \in \argmin_{f\in\cH} R(f)$ (this is indicated by $\mathcal F$ in the paper). We will indicate the elements of $\mathcal G$ as  $g_f$ for each $f\in\cH$. Then, $\expv[g_f] = \expv[\ell(f)] - \expv[\ell(f_\mathrm{opt})] = R(f) - R(f_\mathrm{opt})$. 
 
 \begin{theorem}[Bound with noise]
     Consider the setting above. Assuming that 
     \begin{equation}
-        \Var(f - f^*) \le {\left(\frac{R(f)-R(f^*)}{h}\right)}^\alpha
+        \Var(f - f_\mathrm{opt}) \le {\left(\frac{R(f)-R(f_\mathrm{opt})}{h}\right)}^\alpha
     \end{equation}
     for some $h>0$, $\alpha \in (0,1]$, we have
     \begin{empheq}[box=\fcolorbox{black}{white}]{equation}
@@ -585,17 +585,17 @@ Let $\ell:\Y\times\Y\to\{0,1\}$ be the counting loss, $\ell(f(X),Y) = \mathbf{1}
     \begin{proof}
         First, we apply Bernstein's inequality~(\ref{ineq: boundvar}) plus a union bound over $\mathcal G$ to the random variables $g_f(f(X_i),Y_i)$. We obtain that with probability at least $1-\delta$, $\forall g\in \mathcal G$ it holds
         \begin{equation}
-           R(f)-R(f^*) - \left(\hat R_D (f) - \hat R_D (f^*)\right)
+           R(f)-R(f_\mathrm{opt}) - \left(\hat R_D (f) - \hat R_D (f_\mathrm{opt})\right)
            \le
-           \sqrt{\frac{2 {\left(\left(R(f)-R(f^*)\right)/h\right)}^\alpha \log\frac{\vert \cH\vert}{\delta}}{n}} + \frac{4 \log \frac{\vert\cH\vert}{\delta}}{3n}
+           \sqrt{\frac{2 {\left(\left(R(f)-R(f_\mathrm{opt})\right)/h\right)}^\alpha \log\frac{\vert \cH\vert}{\delta}}{n}} + \frac{4 \log \frac{\vert\cH\vert}{\delta}}{3n}
         \end{equation}
         where we assume that $f\mapsto g_f$ is bijective.\footnote{$\star$ this assumption is a great source of improvements, as instead of $\vert \cH\vert$ the bound presents more in general $\vert \mathcal G\vert$ which might be smaller than the hypotheses set.}
-        Then, we apply this bound to $f = \hat f_D$. Using that $\hat R_D (\hat f_D) - \hat R_D (f^*) \le 0$, we obtain that with probability at least $1-\delta$,
+        Then, we apply this bound to $f = \hat f_D$. Using that $\hat R_D (\hat f_D) - \hat R_D (f_\mathrm{opt}) \le 0$, we obtain that with probability at least $1-\delta$,
         \begin{equation}
-            R(\hat f_D)-R(f^*) \le 
-           \sqrt{\frac{2 {\left(\left(R(\hat f_D)-R(f^*)\right)/h\right)}^\alpha \log\frac{\vert \cH\vert}{\delta}}{n}} + \frac{4 \log \frac{\vert\cH\vert}{\delta}}{3n}.
+            R(\hat f_D)-R(f_\mathrm{opt}) \le 
+           \sqrt{\frac{2 {\left(\left(R(\hat f_D)-R(f_\mathrm{opt})\right)/h\right)}^\alpha \log\frac{\vert \cH\vert}{\delta}}{n}} + \frac{4 \log \frac{\vert\cH\vert}{\delta}}{3n}.
         \end{equation}
-        Now let $Z \coloneq R(\hat f_D)-R(f^*)\ge 0$ and $l \coloneq \log \frac{\vert\cH\vert}{\delta}$, obtaining
+        Now let $Z \coloneq R(\hat f_D)-R(f_\mathrm{opt})\ge 0$ and $l \coloneq \log \frac{\vert\cH\vert}{\delta}$, obtaining
         \begin{align}
             Z &\le \sqrt{\frac{2Z^\alpha l}{nh^\alpha}} + \frac{4l}{3n}
             = Z^{\alpha/2} A + B
@@ -617,13 +617,13 @@ Let $\ell:\Y\times\Y\to\{0,1\}$ be the counting loss, $\ell(f(X),Y) = \mathbf{1}
         \end{equation}
         Finally, $\alpha\in(0,1]$ implies $2-\alpha\ge 1$, so the last term is at most $\frac{8l}{3n}$. Hence, with probability at least $1-\delta$, 
         \begin{equation}
-            R(\hat f_D) - R(f^*) \le {\left(\frac{2\log\frac{\vert\cH\vert}{\delta}}{nh^\alpha}\right)}^{\frac{1}{2-\alpha}} + \frac{8\log\frac{\vert\cH\vert}{\delta}}{3n}.
+            R(\hat f_D) - R(f_\mathrm{opt}) \le {\left(\frac{2\log\frac{\vert\cH\vert}{\delta}}{nh^\alpha}\right)}^{\frac{1}{2-\alpha}} + \frac{8\log\frac{\vert\cH\vert}{\delta}}{3n}.
         \end{equation}
         The second term is of order $\frac{l}{n}$, which is of lower order than the first one when $\alpha<1$ (as $\frac{1}{2-\alpha}<1$), while for $\alpha=1$ they are of the same order and the bound is $O\left(\frac{l}{n}\right)$: the fast rate.
     \end{proof}
 \end{theorem}
 
-It remains to discuss the assumption that $ \Var(f - f^*) \le {\left(\frac{R(f)-R(f^*)}{h}\right)}^\alpha$. 
+It remains to discuss the assumption that $ \Var(f - f_\mathrm{opt}) \le {\left(\frac{R(f)-R(f_\mathrm{opt})}{h}\right)}^\alpha$. 
 
 % CHIACCHIERATA CON LOZ:
 % per i bound, hanno senso i risultati in high probability perché così si statano di solito. anche perché integrando si perde dell’informazione. 
