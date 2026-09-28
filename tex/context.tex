@@ -56,18 +56,28 @@ Literature:
     \item Boucheron et al.:\ la survey di diversi bound proposta da Loz. Sincera, mi sembra scritta malissimo anche rispetto a Jiang per esempio. 
 \end{itemize}
 
+\bigskip
 
-{\bf Setting}
+{\bf\Large Setting}
+\\
 
 Io ho dei dati che vivono in $\mathcal X$ e sono distribuiti con una certa probabilità $p_{\mathcal X}$ con cui io campiono. Poi, genero 
 \[
 Y = f^*(X) + \varepsilon
 \]
 dove $f^*$ è la mia data-generating function, che posso scegliere, e $\varepsilon \sim \mathcal N(0, \sigma^2)$. 
+Io poi voglio cercare di imparare $f^*$ vedendo solo un dataset di taglia $n$ di $x$ e $y$. Cerco $f^*$ in un insieme di ipotesi, $\mathcal H$. Quindi le cose con cui posso giocare sono  $p_X$, la funzione generatrice $f^*$, la distribuzione di $\varepsilon$ e la scelta di $\mathcal H$. 
 
-Io poi voglio cercare di imparare $f^*$ vedendo solo un dataset di taglia $n$ di $x$ e $y$. Cerco $f^*$ in un insieme di ipotesi, $\mathcal H$. 
+Ora, nell'influenzare come riesco ad imparare a predire le $Y$, $f^*$, la probabilità $p_{\mathcal X}$, e il mio set di ipotesi si parlano molto. Per esempio, se genero i dati con una funzione seno, ma poi la mia probabilità sulle $X$ è concentrata in una zona in cui la derivata del seno non cambia segno, allora un insieme di ipotesi che guarda alle parabole sarà un buon insieme, perché quella funzione lì per quelle x si può approssimare bene con una parabola. 
 
-Ora, nell'influenzare quanto riesco ad imparare questa funzione, la forma della funzione, la probabilità $p_{\mathcal X}$, e il mio set di ipotesi si parlano bene. Infatti, se genero i dati con una funzione seno, ma poi la mia probabilità sulle $X$ è concentrata in una zona in cui la derivata del seno non cambia segno, allora un insieme di ipotesi che guarda alle parabole sarà un buon insieme, perché quella funzione lì per quelle x si può approssimare bene con una parabola. Quindi, nell'obiettivo di spiegare come impariamo questa funzione, è probabile che la complessità della funzione generatrice (rappresentata e.g.\ dal numero di volte che questa cambia segno) e la distirbuzione sulle $X$ giocheranno un ruolo. 
+Quindi, siccome il nostro obiettivo è spiegare come impariamo, è probabile che la complessità della funzione generatrice (rappresentata e.g.\ dal numero di volte che questa cambia segno) e la distirbuzione sulle $X$ giocheranno un ruolo. 
 
-% N.B. qui uso X in modo poco preciso
+\bigskip
+
+Alcuni commenti:
+\begin{itemize}
+    \item[$\cdot$] qui sopra uso $X$ o $x$ in modo poco preciso
+    \item[$\cdot$] dai primi esperimenti sulla noise structure viene fuori che un noise Gaussiano e uno Bernoulliano non cambiano il risultato, anzi l'unica cosa imp è la porzione di input misclassificati a causa del noise (cioè che cambiano segno rispetto a quello di $f^*(x)$)
+\end{itemize}
+
 \end{document}
