@@ -59,3 +59,31 @@ N.B.: we also implement the bounds disregarding all the constants that do not ho
 After plotting the bound in equation~(\ref{bound: vartrainerror}) with the adjustments discussed above, we make the following observations. The bound is arguably worse than the ``naive'' one, because it remains uncertain until the value of $\vert\cH\vert$ where the training error goes to 0 in expectation, and then it grows linearly in $\vert\cH\vert$, which bounds really badly the behavior of the test error, that instead grows slowly and anzi stabilizes after a while. So, the theoretical gain of having a bound that grows more slowly in $n$ is not reflected from our experiments, because the dependence on $\vert \cH\vert$ is actually worse (square root vs.\ linear). 
 % bah questa è una osservazione abbastanza scema... 
 % plottare against la n? capire cosa ci andrebbe nella asse x? 
+
+{\bf Noise bound}
+
+i ruoli di $h$ e $\alpha$ non li ho ben chiari, però comunque sono costanti prima e dopo del threshold $2^d = m$ dove $m$ è il numero di volte che la mia funzione generatrice cambia segno. 
+
+questo bound alla fine è sempre $O(\log \vert\mathcal H\vert)$ e quindi si comporta più o meno come quello naive. 
+
+{\bf Overall}
+
+Overall, i bound dipendono sempre da altre quantità che non variano con la depth su tutto l'intervallo (cioè $\hat R$ e $\inf R$ sono $0$ quasi subito, $\alpha$ e $h$ sono piecewise constant). Quindi alla fine ottengo sempre dei bound che sono o lineari nella depth o sqrt della depth. Per noi, meglio con sqrt perché assomiglia di più all'andamento del gap/ del test error (come theoretical guarantees, peggio perché poi c'è $n$ al denominatore). La saturazione non è prevista da nessuno. 
+
+{\bf Che fare ora?}
+
+Ora o plotto il bound con la localized Rademacher, sempre un po' blindly come sopra, oppure ragiono su cosa si potrebbe fare di diverso. In questo riguardo, le opzioni sono (A) leggere un paper non sulle theoretical guarantees ma più sulla parte empirica, (B) cercare un bound con delle quantità che varino insieme alla depth, (C) mettere qualcosa di diverso sull'asse x invece di $\vert \mathcal H \vert$. Negli ultimi due casi, questo qualcosa vorrei che prevedesse la saturazione. In questo riguardo, partirei da un ragionamento a priori e mi chiedo: perché l'errore di test satura? che cos'è il valore a cui stabilizza? che cos'è il threshold (valore di depth) dal quale in poi è stabile?
+
+Post chiacchierata con Pie: ora facciamo due cose
+\begin{enumerate}
+    \item guardare e plottare la localized Rademacher
+    \item fare un bel file di codice nuovo in cui faccio tutti gli esperimentini variando 
+     \begin{itemize}
+        \item noise
+        \item p di x
+        \item m (complessità funzione sotto)
+        \item n
+    \end{itemize}
+    e vediamo come varia l'errore di test per avere una qualche intuizione
+\end{enumerate}
+
