@@ -652,6 +652,12 @@ It remains to discuss the assumption that $ \Var(f - f_\mathrm{opt}) \le {\left(
 
 % quindi noi vogliamo ottenere dei bound che dipendano da tutte queste cose qui, per es se avessimo una misura della complessità di f e un bound che include questa cosa sarebbe molto fico 
 
+The equation from the paper, (18), gives the following bound:
+\begin{equation}\label{eq: tail_noise}
+\Pr\left[R(\hat f_D)-\inf_{f\in\cH}R(f)\ge\varepsilon\right]
+\le \min\left\{1,\ \vert\mathcal H\vert \exp\left(-\frac{n h^\alpha \varepsilon^{2-\alpha}}{2}\right)\right\}.
+\end{equation}
+we try and implement this, and I will discuss it if it's useful. 
 \newpage
 \subsection{Pensieri notturni}
 Let
