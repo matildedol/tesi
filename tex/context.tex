@@ -63,9 +63,9 @@ Literature:
 
 Io ho dei dati che vivono in $\mathcal X$ e sono distribuiti con una certa probabilità $p_{\mathcal X}$ con cui io campiono. Poi, genero 
 \[
-Y = f^*(X) + \varepsilon
+Y = f^*(X) + \sigma\varepsilon
 \]
-dove $f^*$ è la mia data-generating function, che posso scegliere, e $\varepsilon \sim \mathcal N(0, \sigma^2)$. 
+dove $f^*$ è la mia data-generating function, che posso scegliere, e $\varepsilon \sim \mathcal N(0, 1)$. 
 Io poi voglio cercare di imparare $f^*$ vedendo solo un dataset di taglia $n$ di $x$ e $y$. Cerco $f^*$ in un insieme di ipotesi, $\mathcal H$. Quindi le cose con cui posso giocare sono  $p_X$, la funzione generatrice $f^*$, la distribuzione di $\varepsilon$ e la scelta di $\mathcal H$. 
 
 Ora, nell'influenzare come riesco ad imparare a predire le $Y$, $f^*$, la probabilità $p_{\mathcal X}$, e il mio set di ipotesi si parlano molto. Per esempio, se genero i dati con una funzione seno, ma poi la mia probabilità sulle $X$ è concentrata in una zona in cui la derivata del seno non cambia segno, allora un insieme di ipotesi che guarda alle parabole sarà un buon insieme, perché quella funzione lì per quelle x si può approssimare bene con una parabola. 
