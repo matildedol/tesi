@@ -54,7 +54,7 @@ Three remarks are in order.
 
 {\bf Variance bound (con $\inf_{f\in\cH} R(f)$):} non ho idea di come implementare il minimo del errore di test su tutti gli alberi possibili
 
-N.B.: we also implement the bounds disregarding all the constants that do not hold a meaning in our setting.
+N.B.: we also implement the bounds disregarding all the constants that do not hold a meaning in our setting, which we usually do also in the main pdf. 
 
 After plotting the bound in equation~(\ref{bound: vartrainerror}) with the adjustments discussed above, we make the following observations. The bound is arguably worse than the ``naive'' one, because it remains uncertain until the value of $\vert\cH\vert$ where the training error goes to 0 in expectation, and then it grows linearly in $\vert\cH\vert$, which bounds really badly the behavior of the test error, that instead grows slowly and anzi stabilizes after a while. So, the theoretical gain of having a bound that grows more slowly in $n$ is not reflected from our experiments, because the dependence on $\vert \cH\vert$ is actually worse (square root vs.\ linear). 
 % bah questa è una osservazione abbastanza scema... 
