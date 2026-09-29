@@ -499,16 +499,15 @@ We obtain the following bounds:
 (R - \hat R_D) (\hat f_D) > \varepsilon
 ]
 \le
-4\exp\left[
-\log\vert\cH\vert
--
+\vert\cH\vert \exp
+\left(-
 \frac{n}{16}
 {\left(
 \sqrt{\hat R_D(\hat f_D)+4\varepsilon}
 -
 \sqrt{\hat R_D(\hat f_D)}
 \right)}^2
-\right].
+\right).
 \end{empheq}
 and
 \begin{empheq}[box=\fcolorbox{black}{white}]{equation}\label{bound: varinftesterror}
@@ -516,18 +515,19 @@ and
 R(\hat f_D) - \inf_{f\in\cH} R(f)> \varepsilon
 ]
 \le
-\exp\left[
-\log \vert \cH\vert
+\vert\cH\vert
+\exp\left(
 -
 \frac{n}{4}
 {\left(
-\sqrt{\inf_{f\in\cH} R(f)+\frac{4\varepsilon}{C}}
+\sqrt{\inf_{f\in\cH} R(f)+4\varepsilon}
 -
 \sqrt{\inf_{f\in\cH} R(f)}
 \right)}^2
-\right]
+\right)
 \end{empheq}
-where we see that the first bound simplifies when the training error goes to $0$ and the second bound when there is an $f$ that achieves zero test error. I.e., in the former we need a long enough training or enough parameters, in the latter we need the right model (possibly, one with few parameters) to be included in the hypotheses class. 
+where we arbitrarily set the constant $C$ to 1. 
+The first bound simplifies when the training error goes to $0$ and the second bound when there is an $f$ that achieves zero test error. I.e., in the former we need a long enough training or enough parameters, in the latter we need the right model (possibly, one with few parameters) to be included in the hypotheses class. 
 
 % CHIACCHIERATA CON CHRI: non solo a me non sono chiare le proof, che il paper scrive in buona parte in plain English, sed etiam non mi è chiaro come l'obiettivo di aggiungere la varianza al bound sia raggiunto, e quindi quale sia la logica di ottenere questi risultati. Quindi, guardiamo al secondo risultato e cerchiamo di capire come viene usato Bernstein lì. Poi a ritroso ricostruiamo il ragionamento, per quanto possibile, e poi andiamo avanti. Anche vorrei ricordarmi che senso ha fare simmetrizzaizone e Rademacher. 
 
@@ -577,9 +577,9 @@ Let $\ell:\Y\times\Y\to\{0,1\}$ be the counting loss, $\ell(f(X),Y) = \mathbf{1}
         \Var(f - f_\mathrm{opt}) \le {\left(\frac{R(f)-R(f_\mathrm{opt})}{h}\right)}^\alpha
     \end{equation}
     for some $h>0$, $\alpha \in (0,1]$, we have
-    \begin{empheq}[box=\fcolorbox{black}{white}]{equation}
+    \begin{equation}
         R(\hat f_D) -\inf_{f \in \cH} R(f) \le {\left(2\frac{\log \frac{\vert\mathcal H\vert}{\delta} }{nh^\alpha}\right)}^{\frac{1}{2-\alpha}} + \frac{8\log \frac{\vert\mathcal H\vert}{\delta}}{3n}
-    \end{empheq}
+    \end{equation}
     with probability at least $1-\delta$.
 
     \begin{proof}
@@ -653,11 +653,17 @@ It remains to discuss the assumption that $ \Var(f - f_\mathrm{opt}) \le {\left(
 % quindi noi vogliamo ottenere dei bound che dipendano da tutte queste cose qui, per es se avessimo una misura della complessità di f e un bound che include questa cosa sarebbe molto fico 
 
 The equation from the paper, (18), gives the following bound:
-\begin{equation}\label{eq: tail_noise}
+\begin{empheq}[box=\fcolorbox{black}{white}]{equation}\label{eq: tail_noise}
 \Pr\left[R(\hat f_D)-\inf_{f\in\cH}R(f)\ge\varepsilon\right]
-\le \min\left\{1,\ \vert\mathcal H\vert \exp\left(-\frac{n h^\alpha \varepsilon^{2-\alpha}}{2}\right)\right\}.
-\end{equation}
+\le \vert\mathcal H\vert \exp\left(-\frac{n}{2}h^\alpha \varepsilon^{2-\alpha}\right).
+\end{empheq}
 we try and implement this, and I will discuss it if it's useful. 
+
+Let's consider a simple case to grasp an intuition. If we assume that the best predictor (the Bayes classifier,~\cite{boucheron2005theory}) is included in $\cH$, then the constant $h$ is such that the a posteriori probability is
+\[
+\vert 2 \Pr[Y \vert X=\bar x] - 1 \vert > h \qquad \forall \bar x \in \X.
+\]
+This means that $h$ controls how distant the a posteriori probability is from $1/2$: if $h$ is small, then this probability may be close to $1/2$ which means we have a large noise in the data, if $h$ is large we have less noise. 
 \newpage
 \subsection{Pensieri notturni}
 Let
