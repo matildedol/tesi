@@ -15,7 +15,7 @@
 \usepackage{amsmath}
 \usepackage{empheq}
 \definecolor{benred}{HTML}{8B0000}
-\definecolor{bluette}{RGB}{0, 123, 255} % bright bluish tone
+\definecolor{bluette}{RGB}{0,100,255} % bright bluish tone
 \definecolor{darkorange}{RGB}{255, 140, 0}
 \definecolor{pink}{RGB}{255, 130, 190}
 \definecolor{acquagreen}{RGB}{0,230,255} % verde acqua
@@ -58,7 +58,7 @@ with joint law $p$, which is a cathegorical probability distribution over  $\X\t
 Since we want to obtain a collection of observations, we define an additional random variable.
 
 \begin{definition}[Dataset]
-    Given a size $n$, a sample space $\Omega$, and value spaces $\X,\Y$, a dataset $D$ is a random variable 
+     Given a size $n$, a sample space $\Omega$, and value spaces $\X,\Y$, a dataset $D$ is a random variable 
     \[
     \begin{gathered}
         D:\Omega^n \to \X^n\times\Y^n, \qquad D\coloneq {(X_i, Y_i)}_{i=1}^n, \\
@@ -665,7 +665,10 @@ Let's consider a simple case to grasp an intuition. If we assume that the best p
 \]
 This means that $h$ controls how distant the a posteriori probability is from $1/2$: if $h$ is small, then this probability may be close to $1/2$ which means we have a large noise in the data, if $h$ is large we have less noise. This whole reasoning is valid when $\alpha = 1$. More generally, the correct interpretation of these two values is given by the assumption on the variance. 
 \newpage
-\subsection{Pensieri notturni}
+
+\subsection{Localized Rademacher complexity}
+
+\paragraph{Pensieri notturni}
 Let
 \[
 D=((X_1,Y_1),\ldots,(X_n,Y_n))
@@ -727,6 +730,8 @@ h\in\mathcal H_d,\;
 \le r
 \right\}.
 \]
+
+hence we can compute the empirical Rademacher complexity of the empirical localized loss class, which is a measure of complexity only for a subset of the potential predictors $h\in\cH$. 
 
 % we create a class of functions that are the prediction function composed with the loss such that the loss for each datapoint is bounded 
 % empirical because it depends on the data 
