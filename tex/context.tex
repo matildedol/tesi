@@ -80,4 +80,37 @@ Alcuni commenti:
     \item[$\cdot$] dai primi esperimenti sulla noise structure viene fuori che un noise Gaussiano e uno Bernoulliano non cambiano il risultato, anzi l'unica cosa imp è la porzione di input misclassificati a causa del noise (cioè che cambiano segno rispetto a quello di $f^*(x)$)
 \end{itemize}
 
+\bigskip
+
+{\bf\Large Recap al 1 ottobre}
+\\
+
+
+The situation until now is that we have an initial bound, $O(\sqrt{\log \vert\mathcal H\vert \ n})$, which does not capture the saturation of the test error. Then, we use another technic that is symmetrization and Rademacher complexity, and we observe that the Rademacher complexity bounds the gap, and that if we apply the Massart Lemma we obtain the same bound as above. Ora, la parte che non capisco:
+
+- a luglio Loz mi aveva detto che il bound con la Rademacher non serve, e invece dovevo applicare il Massart Lemma
+
+- allo stesso tempo però dice che quel bound saturava e che quindi quelle tecniche le potremmo riusare
+
+$>$ credo che il punto sia che dall'unione del bound con Rademacher e del Massart Lemma ottieni che boundi il gap con il minimo tra i due (mentre io consideravo il primo step solo come tool per ottenere il bound finale), e quindi ottieni un bound che satura. 
+
+btw, questo si motiva con il fatto che la Rademacher è sempre minore di 1. 
+
+Quindi, abbiamo un bound che satura, ma che non è sensibile nè al noise nè alla complessità della funzione sotto, perché infatti la Rademacher satura ad 1 per questioni strutturali sue di come è definita, non per questioni legate alla struttura del problema. 
+Poi, proviamo a fare i bound del paper che includono la varianza e il noise. Anche questi non saturano, però sono sensibili a questi due fatti (devo ancora capire quello del noise come, e penso che questa noise condition sia usata spesso e quindi potrebbe essere interessante fare un bound che satura utilizzando questa $\star$).
+
+Dunque, il nostro obiettivo sarebbe combinare le tecniche della rademacher e i bound sensibili a noise e complessità della funzione (quest'ultima non so come) per ottenere un bound che saturi e sia sensibile a questi fatti. 
+
+Una struttura secondo me sensata della tesi / presentazione:
+
+questo è il setting
+
+questo è il primo bound facile che vedi bene non include nulla della struttura del problema e non satura
+Rademacher in qualche modo $\rightarrow$ vedi che non si muove cambiando il rumore? (cioè fai dei plot con rumore diverso e fai vedere come cambia solo il test error empirico)
+
+questi sono i bound con il noise la varianza ecc che non saturano 
+
+questo è quello che abbiamo provato a fare
+
+
 \end{document}
