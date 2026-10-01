@@ -313,11 +313,11 @@ In this section, we present a different bound from the one in Theorem~\ref{thm: 
 % We follow~\cite{bach2024learning}.
 
 \begin{definition}[Rademacher complexity]\label{def: rademacher}
-    Given a data size $n$, a dataset $D = {(X_i, Y_i)}_{i=1}^n$, a loss function $\ell:\Y\to\Y$, and an hypotheses space $\cH=\{f \vert f:\X\to\Y\}$, let $\varepsilon$ be a $n$-dimensional vector of i.i.d. Rademacher random variables (i.e.\ taking values $1$ and $-1$ with equal probability). The Rademacher complexity measure $\mathfrak R_n$ is
+    Given a data size $n$, a dataset $D = {(X_i, Y_i)}_{i=1}^n$, a loss function $\ell:\Y\to\Y$, and an hypotheses space $\cH=\{f \vert f:\X\to\Y\}$, let $\xi$ be a $n$-dimensional vector of i.i.d. Rademacher random variables (i.e.\ taking values $1$ and $-1$ with equal probability). The Rademacher complexity measure $\mathfrak R_n$ is
     \begin{equation}
-        \mathfrak R_n(\cH) \coloneq \expv_{\varepsilon,D} [\sup_{f\in\cH} \frac{1}{n}\sum_{i=1}^n \varepsilon_i\ell(Y_i, f(X_i))] = \expv_{\varepsilon,D} \sup_{f\in\cH} \langle \varepsilon, \ell(f(X),Y)\rangle
+        \mathfrak R_n(\cH) \coloneq \expv_{\xi,D} [\sup_{f\in\cH} \frac{1}{n}\sum_{i=1}^n \xi_i\ell(Y_i, f(X_i))] = \expv_{\xi,D} \sup_{f\in\cH} \langle \xi, \ell(f(X),Y)\rangle
     \end{equation}
-    and it is a deterministic object depending on $n, \cH$, and the distributions of $\varepsilon$ and $D$. 
+    and it is a deterministic object depending on $n, \cH$, and the distributions of $\xi$ and $D$. 
 \end{definition}
 
 % \begin{remark}
@@ -327,7 +327,7 @@ Notice that to be precise we should call this quantity $\mathfrak{R}_n(\ell\circ
 
 
 \begin{remark}
-    The Rademacher complexity measures the highest possible alignment between the function $(x,y)\mapsto \ell(f(x),y)$ and the Rademacher random variable $\varepsilon$. Since the loss function is given, it is a measure of the ``flexibility'' of $\cH$, hence its complexity.
+    The Rademacher complexity measures the highest possible alignment between the function $(x,y)\mapsto \ell(f(x),y)$ and the Rademacher random variable $\xi$. Since the loss function is given, it is a measure of the ``flexibility'' of $\cH$, hence its complexity.
 \end{remark}
 
 The Rademacher complexity controls the maximal deviation of the empirical risk $\hat R(f)$ from the true risk $R(f)$ through a symmetrization property (this is Proposition $4.2$ in~\cite{bach2024learning}). 
@@ -387,18 +387,18 @@ The Rademacher complexity controls the maximal deviation of the empirical risk $
         Hence, we obtain
         \begin{align}
             \expv_{D,D^\prime} \bigg[\sup_{h\in(\ell\circ\mathcal H)}\frac{1}{n} \sum_i h({Z_i}^\prime)-h(Z_i)\bigg] &= \expv_{D,D^\prime} \bigg[\sup_{h\in(\ell\circ\mathcal H)}\frac{1}{n}\sum_i e_i(h({Z_i}^\prime)-h(Z_i))\bigg]\\
-            &= \expv_{D,D^\prime\vert\varepsilon} \bigg[\sup_{h\in(\ell\circ\mathcal H)}\frac{1}{n}\sum_i \varepsilon_i(h({Z_i}^\prime)-h(Z_i))\big\vert \varepsilon = e\bigg]\\
-            &= \expv_{D,D^\prime,\varepsilon}\bigg[  \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i \varepsilon_i(h(Z_i')-  h(Z_i)) \bigg].
+            &= \expv_{D,D^\prime\vert\xi} \bigg[\sup_{h\in(\ell\circ\mathcal H)}\frac{1}{n}\sum_i \xi_i(h({Z_i}^\prime)-h(Z_i))\big\vert \xi = e\bigg]\\
+            &= \expv_{D,D^\prime,\xi}\bigg[  \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i \xi_i(h(Z_i')-  h(Z_i)) \bigg].
         \end{align}
-        where in the last row we take the expected value over the disorder of $\varepsilon$ and use the tower law.
+        where in the last row we take the expected value over the disorder of $\xi$ and use the tower law.
         Plugging this into inequality (\ref{eq: 26}), we obtain
         \begin{align*}
-            \expv_D[\sup_{f\in\cH} (R-\hat R) (f)] &\le \expv_{D,D^\prime,\varepsilon}\bigg[  \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i \varepsilon_i(h(Z_i')-  h(Z_i)) \bigg]\\
-            &\le \expv_{D^\prime,\varepsilon}\bigg[  \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i \varepsilon_i h(Z_i') \bigg] + \expv_{D,\varepsilon}\bigg[ \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i - \varepsilon_i h(Z_i) \bigg]\\
-            &= \expv_{D^\prime,\varepsilon}\bigg[  \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i \varepsilon_i h(Z_i') \bigg] + \expv_{D,\varepsilon}\bigg[ \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i \varepsilon_i h(Z_i) \bigg]\\
+            \expv_D[\sup_{f\in\cH} (R-\hat R) (f)] &\le \expv_{D,D^\prime,\xi}\bigg[  \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i \xi_i(h(Z_i')-  h(Z_i)) \bigg]\\
+            &\le \expv_{D^\prime,\xi}\bigg[  \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i \xi_i h(Z_i') \bigg] + \expv_{D,\xi}\bigg[ \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i - \xi_i h(Z_i) \bigg]\\
+            &= \expv_{D^\prime,\xi}\bigg[  \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i \xi_i h(Z_i') \bigg] + \expv_{D,\xi}\bigg[ \sup_{h\in(\ell\circ\mathcal H)} \frac{1}{n} \sum_i \xi_i h(Z_i) \bigg]\\
             &= 2 \mathfrak R_n(\cH)
         \end{align*}
-        because $\varepsilon h(Z) \overset{d}{=} -\varepsilon h(Z)$.
+        because $\xi h(Z) \overset{d}{=} -\xi h(Z)$.
     \end{proof}
 \end{proposition}
 
@@ -408,31 +408,31 @@ The following result gives us an explicit bound on the Rademacher complexity. Th
     Let $\ell:\Y\to\Y$ be as in Assumption~\ref{ass: lipsch loss}, so that $\ell(\cdot) \le M$ by Proposition~\ref{prop: suff assump 2.2}. Then, the Rademacher complexity of $\cH$ satisfies
 
     \begin{equation}
-        \mathfrak R_n(\cH) = \expv_{\varepsilon,D} \bigg[\sup_{f\in\cH} \frac{1}{n}\sum_{i=1}^n \varepsilon_i\ell(Y_i, f(X_i))\bigg] \le M\sqrt{\frac{2\log \vert \cH \vert}{n}}.
+        \mathfrak R_n(\cH) = \expv_{\xi,D} \bigg[\sup_{f\in\cH} \frac{1}{n}\sum_{i=1}^n \xi_i\ell(Y_i, f(X_i))\bigg] \le M\sqrt{\frac{2\log \vert \cH \vert}{n}}.
     \end{equation}
 
     \begin{proof}
         For any $t>0$,
         \begin{align}
-            \exp\bigg(t\, \expv_{\varepsilon,D} \Big[\sup_{f\in\cH}\sum_{i=1}^n \varepsilon_i \ell(Y_i,f(X_i))\Big]\bigg)
-            &\le \expv_{\varepsilon,D}\bigg[\exp\Big(t\sup_{f\in\cH}\sum_{i=1}^n \varepsilon_i \ell(Y_i,f(X_i))\Big)\bigg]\notag\\
-            &= \expv_{\varepsilon,D}\bigg[\sup_{f\in\cH}\exp\Big(t\sum_{i=1}^n \varepsilon_i \ell(Y_i,f(X_i))\Big)\bigg]\notag\\
-            &\le \expv_{\varepsilon,D}\bigg[\sum_{f\in\cH}\exp\Big(t\sum_{i=1}^n \varepsilon_i \ell(Y_i,f(X_i))\Big)\bigg]\notag\\
-            &= \sum_{f\in\cH}\prod_{i=1}^n \expv_{\varepsilon_i}\Big[\exp\big(t\varepsilon_i \ell(Y_i,f(X_i))\big)\Big].\label{eq: massart-start}
+            \exp\bigg(t\, \expv_{\xi,D} \Big[\sup_{f\in\cH}\sum_{i=1}^n \xi_i \ell(Y_i,f(X_i))\Big]\bigg)
+            &\le \expv_{\xi,D}\bigg[\exp\Big(t\sup_{f\in\cH}\sum_{i=1}^n \xi_i \ell(Y_i,f(X_i))\Big)\bigg]\notag\\
+            &= \expv_{\xi,D}\bigg[\sup_{f\in\cH}\exp\Big(t\sum_{i=1}^n \xi_i \ell(Y_i,f(X_i))\Big)\bigg]\notag\\
+            &\le \expv_{\xi,D}\bigg[\sum_{f\in\cH}\exp\Big(t\sum_{i=1}^n \xi_i \ell(Y_i,f(X_i))\Big)\bigg]\notag\\
+            &= \sum_{f\in\cH}\prod_{i=1}^n \expv_{\xi_i}\Big[\exp\big(t\xi_i \ell(Y_i,f(X_i))\big)\Big].\label{eq: massart-start}
         \end{align}
-        where we use Jensen's inequality on the convex function $\exp$ in the first inequality, we trivially bound the supremum with the sum, and we use the independence of the $\varepsilon_i$'s across $i=1,\ldots,n$ in the last equality. 
+        where we use Jensen's inequality on the convex function $\exp$ in the first inequality, we trivially bound the supremum with the sum, and we use the independence of the $\xi_i$'s across $i=1,\ldots,n$ in the last equality. 
 
-        Now, we want to apply Hoeffding's lemma (Theorem~\ref{app: hoeffdinglemma} in the appendix) to each factor. Notice that we can do so because each $\varepsilon_i \ell(Y_i,f(X_i))$ is a centered random variable, since $\expv[\varepsilon_i]=0$ and $\varepsilon_i$ is independent of $\ell(Y_i,f(X_i))$, and it satisfies $\vert \varepsilon_i \ell(Y_i,f(X_i)) \vert \le M$ by assumption. We obtain
+        Now, we want to apply Hoeffding's lemma (Theorem~\ref{app: hoeffdinglemma} in the appendix) to each factor. Notice that we can do so because each $\xi_i \ell(Y_i,f(X_i))$ is a centered random variable, since $\expv[\xi_i]=0$ and $\xi_i$ is independent of $\ell(Y_i,f(X_i))$, and it satisfies $\vert \xi_i \ell(Y_i,f(X_i)) \vert \le M$ by assumption. We obtain
         \begin{equation}
-            \expv_{\varepsilon_i}\Big[\exp\big(t\varepsilon_i \ell(Y_i,f(X_i))\big)\Big] \le e^{t^2M^2/2}.
+            \expv_{\xi_i}\Big[\exp\big(t\xi_i \ell(Y_i,f(X_i))\big)\Big] \le e^{t^2M^2/2}.
         \end{equation}
         Plugging this back into (\ref{eq: massart-start}), we obtain
         \begin{equation}\label{eq: massart-hoeffding}
-            \exp\bigg(t\, \expv_{\varepsilon,D} \Big[\sup_{f\in\cH}\sum_{i=1}^n \varepsilon_i \ell(Y_i,f(X_i))\Big]\bigg) \le \sum_{f\in\cH}\prod_{i=1}^n e^{t^2M^2/2} = \vert \cH \vert e^{nt^2M^2/2},
+            \exp\bigg(t\, \expv_{\xi,D} \Big[\sup_{f\in\cH}\sum_{i=1}^n \xi_i \ell(Y_i,f(X_i))\Big]\bigg) \le \sum_{f\in\cH}\prod_{i=1}^n e^{t^2M^2/2} = \vert \cH \vert e^{nt^2M^2/2},
         \end{equation}
         Now take the log of both sides
         \begin{equation}
-            t\, \expv_{\varepsilon,D} \Big[\sup_{f\in\cH}\sum_{i=1}^n \varepsilon_i \ell(Y_i,f(X_i))\Big] \le \log \vert \cH \vert + \frac{nt^2M^2}{2}.
+            t\, \expv_{\xi,D} \Big[\sup_{f\in\cH}\sum_{i=1}^n \xi_i \ell(Y_i,f(X_i))\Big] \le \log \vert \cH \vert + \frac{nt^2M^2}{2}.
         \end{equation}
         and divide  by $tn>0$, obtaining
         \begin{equation}\label{eq: massart-opt}
@@ -731,7 +731,7 @@ h\in\mathcal H_d,\;
 \right\}.
 \]
 
-hence we can compute the empirical Rademacher complexity of the empirical localized loss class, which is a measure of complexity only for a subset of the potential predictors $h\in\cH$. 
+hence we can compute the empirical Rademacher complexity of the empirical localized loss class, which is a measure of complexity only for a subset of the potential predictors $h\in\cH_d$. 
 
 % we create a class of functions that are the prediction function composed with the loss such that the loss for each datapoint is bounded 
 % empirical because it depends on the data 
