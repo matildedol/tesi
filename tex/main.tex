@@ -668,6 +668,32 @@ This means that $h$ controls how distant the a posteriori probability is from $1
 
 \subsection{Localized Rademacher complexity}
 
+Until now, we have seen that we have a bound \[\min \left\{\mathcal R_n(\mathcal H_d), O\left(\sqrt{\frac{d}{n}}\right)\right\}\] that saturates, but is not sensitive to the noise, the ratio $n/N$, or the complexity of the data-generating function. Then, in the last two sections we saw bounds capturing the variance of the predictor or the noise, but which do not saturate, instead they grow linearly in the depth $d$. In this section, we look for a bound that saturates and is aware of the structure of the learning problem.
+
+The motivating idea comes from the observation that the Rademacher complexity measures the expressiveness of the whole hypotheses set $\cH$, as the supremum runs over all the functions in this set. However, we know that while learning, we will focus on a subset of the functions in $\cH$ that are close to the true function $f^*$, and this happens after a few splits. Therefore, it makes sense to try to consider a $\it local\/$ measure of complexity. 
+% bo non son sicura
+
+Hence, we define a localized loss class for a radius $r>0$ as 
+\begin{equation}
+   {(\ell\circ\mathcal H_d)}_n(r) \coloneq \left\{ f\in\cH_d \vert \expv_D \left[ \frac{1}{n}\sum_i \ell(f(X_i),Y_i) \le r \right]\right \}
+\end{equation}
+
+\begin{definition}[Localized Rademacher complexity]
+    Given our usual setting and a radius $r>0$, the localized Rademacher complexity is
+    \begin{equation}
+        \mathcal R_n(\mathcal H_d (r)) \coloneq \expv_{\xi,D} \left[ \sup_{f\in{\cH_d}(r)} \frac{1}{n}\sum_i \xi_i \ell(f(X_i),Y_i) \right]
+    \end{equation}
+    which is just a Rademacher complexity where the sup runs over all the function with expected average loss in the ball of radius $r$. 
+\end{definition}
+
+Then, the following result holds.
+
+\begin{theorem}[Fixed Point Theorem]
+    
+\end{theorem}
+
+
+\newpage
 \paragraph{Pensieri notturni}
 Let
 \[
