@@ -1,0 +1,269 @@
+\documentclass[reqno]{amsart}
+\usepackage{fullpage}
+\usepackage{parskip}
+\usepackage{graphicx}
+\usepackage{float}
+\input{../math.tex}
+\linespread{1.2}
+
+\title{Thesis Recap}
+\author{October 2026}
+\begin{document}
+\maketitle
+
+{\bf Setting}
+
+
+Given a sample space $\Omega$, we have data $D = (X,Y)$, $X:\Omega \to \mathcal X = \{\bar x_1,\ldots,\bar x_N\}$ and $Y: \Omega \to \mathcal Y = \{-1, 1\}$,
+\begin{equation}
+    Y = \mathrm{sign}\left( h^* (X) + \varepsilon \right)
+\end{equation}
+with $\varepsilon \sim \mathcal N(0,\sigma^2)$. We want to predict $Y$ from $X$ by observing a sample of $n$ identical realizations of the data, sampled with a probability measure $p_{\mathcal X}$. We have $n \ll N$. We look for a predictor $h\in\mathcal H$, the hypotheses set. We choose a loss function $\ell: \mathcal X \to \mathbb R^+$
+% and call $f = \ell \circ h$
+and a learning algorithm to learn the best predictor. 
+
+Recall that the expected risk of a predictor $h\in\mathcal H$ is
+\begin{equation}
+    R(h) = \mathbb E_D(\ell(h(X), Y)) = \sum_{\bar x\in\mathcal X} \sum_{\bar y \in\{-1,1\}} \ell(h(\bar x), \bar y) p(\bar x, \bar y)
+\end{equation}
+with $p(x,y) = p_{\mathcal X}(x) \cdot p(y \vert x)$ the joint law of $(X,Y) = D$ (in our setting, $p(y\vert x)$ is a Gaussian centered at $h^*(x)$ with variance $\sigma^2$). 
+Since we do not know the joint law in general, we use the empirical risk
+\begin{equation}
+    \hat R_D (h) = \frac{1}{n}\sum_{i=1}^n \ell(h(x_i), y_i)
+\end{equation}
+and select the predictor that minimizes this quantity (ERM), 
+\begin{equation}
+    \hat h_D = \argmin_{h\in \mathcal H} \hat R_D (h)
+\end{equation}
+which, importantly, is a random variable of the data $D$. 
+
+Specifically, in this thesis 
+\begin{itemize}
+    \item[$\cdot$] $\ell$ is the counting loss $\ell(h(x), y) = \mathbf{1} (h(x)\neq y) = \frac{1 - h(x)y}{2}$,
+    \item[$\cdot$] $\mathcal H_d$ is the set of binary decision trees of depth at most $d$.
+\end{itemize}
+\bigskip 
+
+{\bf Research question}
+
+We want to describe the behavior of the test error curve of decision trees as complexity of the hypotheses space, measured by the depth $d$, increases.
+To do so, we look for a bound on the gap between the expected and empirical risk that captures the behavior of the curve qualitatively and that is aware of the structure of the learning problem (e.g.\ is sensitive to the noise, or to the complexity of the data-generating function).
+\bigskip 
+
+Initial observation: the test error curve changes with different structural specifications like the complexity (number of sign changes) of the data-generating function or the noise. 
+
+\begin{figure}[h!]
+  \centering
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{../../outputs/recap/pic7.png}
+    \caption{Different noise levels}
+    \label{fig:pic7}
+  \end{minipage}\hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{../../outputs/recap/pic8.png}
+    \caption{Different sine oscillations}
+    \label{fig:pic8}
+  \end{minipage}
+\end{figure}
+
+\newpage
+{\bf Results}
+
+
+{\bf Theorem 2.5.} 
+\begin{equation}
+    \expv_D[R(\hat h_D) - \hat R_D (\hat h_D)] \,\, \le \,\, O\left(\sqrt{\frac{d}{n}}\right)
+\end{equation}
+
+
+The proof follows by Hoeffding inequality (Markov inequality + Hoeffding lemma) and a union bound on all $h \in \mathcal H$ to obtain a bound for $\hat h_D$. 
+
+We plot this bound to compare it with the empirical behavior of the test error. 
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\textwidth]{../../outputs/recap/pic1.png}
+  \caption{$n = 50, N = 10,000, n_{\text{test}} = 200,000, \sigma = 5$, $h^*$ = sine with $10$ sign changes}
+  \label{fig:pic1}
+\end{figure}
+
+Observations:
+\begin{itemize}
+    \item[$\triangleright$] the bound is correct,
+    \item[$\triangleright$] it diverges when instead the empirical test error saturates.
+\end{itemize}
+
+{\bf Rademacher Complexity + Massart's lemma} 
+\begin{equation}
+    \expv_D[R(\hat h_D) - \hat R_D (\hat h_D)] \le 2\mathcal R_n(\mathcal H_d) \le  O\left(\sqrt{\frac{d}{n}}\right)
+\end{equation}
+
+% The proof follows by bounding the supremum of the expected gap with the rademacher complexity via a symmetrization trick, and then applying Massart's lemma (Hoeffding lemma + $\expv \sup \le \sup \expv$ + bounding the sup with the sum). 
+
+the Rademacher complexity is
+\begin{equation}
+    \mathcal R_n(\mathcal H_d) = \expv_{D,\xi} \left[\sup_{h\in\mathcal H}\frac{1}{n}\sum_{i=1}^n \xi_i \ell(h(x_i), y_i)\right] \le 0.5
+\end{equation}
+
+for $\xi_i \in \{1,-1\}$ Rademacher variables. 
+Since the Rademacher complexity is naturally bounded by $0.5$ in our setting, we plot the following bound (the code for computing $\mathcal R_n(\mathcal H_d)$ the code is 100\% by LLMs, it is computed with MC like the LHS)
+\begin{equation}
+\expv_D[R(\hat h_D) - \hat R_D (\hat h_D)]\,\, \le \,\, \min \left\{\mathcal R_n(\mathcal H_d), O\left(\sqrt{\frac{d}{n}}\right)\right\}.
+\end{equation}
+
+\begin{figure}[H]
+  \centering
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{../../outputs/recap/pic2.png}
+    \caption{Identical parameters as Fig.1}
+    \label{fig:pic2}
+  \end{minipage}\hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{../../outputs/recap/pic3.png}
+    \caption{Different noise levels}
+    \label{fig:pic3}
+  \end{minipage}
+\end{figure}
+
+Observations:
+\begin{itemize}
+    \item[$\triangleright$] the bound saturates;
+    \item[$\triangleright$] the theoretical result shows a factor of $2$ which is not mirrored by the experiments;
+    \item[$\triangleright$] the bound does not move with the error (nor with the complexity of $h^*$), indeed this was expected because the Rademacher is completely blind to our learning problem.
+\end{itemize}
+
+\bigskip 
+
+{\bf Bounds with noise and variance}
+
+Disclaimers:
+
+\begin{itemize}
+    \item I am uncertain about the mathematics of bound (9) which presents a random variable in the RHS;
+    \item the code for computing $\inf_{h\in\mathcal H} R(h)$ is my idea completed by LLMs;
+    \item the roles of $\alpha$ and $\beta$ in (11) are unclear to me, hence their values in the plot are suggested by LLMs;
+    \item also, I used LLMs to obtain the formulas in terms of $\varepsilon$ from the high-probability results of the paper, I only checked the dependncy on $\vert \mathcal H \vert$ was correct.
+\end{itemize}
+
+Following [Boucheron, Bousquet, Lugosi, 2005], we obtain the following bounds that capture the variance of the estimator and the noise in the data.
+
+\begin{equation}
+    \Pr[
+(R - \hat R_D) (\hat h_D) > \varepsilon
+]
+\le
+\vert\cH\vert \exp
+\left(-
+\frac{n}{16}
+{\left(
+\sqrt{\hat R_D(\hat h_D)+4\varepsilon}
+-
+\sqrt{\hat R_D(\hat h_D)}
+\right)}^2
+\right),
+\end{equation}
+
+\begin{equation}
+    \Pr[
+R(\hat h_D) - \inf_{h\in\cH} R(h)> \varepsilon
+]
+\le
+\vert\cH\vert
+\exp\left(
+-
+\frac{n}{4}
+{\left(
+\sqrt{\inf_{h\in\cH} R(h)+4\varepsilon}
+-
+\sqrt{\inf_{h\in\cH} R(h)}
+\right)}^2
+\right),
+\end{equation}
+
+and
+
+\begin{equation}
+    \Pr[
+R(\hat h_D) - \inf_{h\in\cH} R(h) > \varepsilon
+]
+\le
+\vert\cH\vert
+\exp\left(
+-
+\frac{n \beta^\alpha \varepsilon^{2-\alpha}}{2}
+\right),
+\end{equation}
+under the assumption that $ \Var(h - h_\mathrm{opt}) \le {\left(\frac{R(h)-R(h_\mathrm{opt})}{\beta}\right)}^\alpha$ where $h_\mathrm{opt} = \argmin_{h \in \cH} R(h)$. 
+
+We plot these bounds. We do the tail integration step with numerical functions from sklearn (\texttt{brenqt()} for finding roots and \texttt{quad()} for integrating) as suggested by LLMs.
+
+\begin{figure}[H]
+  \centering
+  \begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{../../outputs/recap/pic4.png}
+    \caption{\small Bound (9)}
+    \label{fig:pic4}
+  \end{minipage}\hfill
+  \begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{../../outputs/recap/pic5.png}
+    \caption{\small Bound (10)}
+    \label{fig:pic5}
+  \end{minipage}\hfill
+  \begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{../../outputs/recap/pic6.png}
+    \caption{\small Bound (11)}
+    \label{fig:pic6}
+  \end{minipage}
+\end{figure}
+
+Observation:
+\begin{itemize}
+    \item[$\triangleright$] the bounds grow linearly in $d$, they do not saturate at all.
+\end{itemize}
+
+\bigskip 
+
+{\bf Going on}
+
+Given these reuslts, we want to apply the techniques of the Rademacher complexity to bounds that are sensitive to the noise and other structural elements of the learning problem. 
+
+Idee:
+\begin{enumerate}
+    \item nella proof del teorema $2.5$, se io avessi un modo di misurare la cardinalità del sottoinsieme di $\mathcal H$ in cui di solito cade l'algoritmo, potrei fare uno union bound sulle $h$ lì dentro, e la cardinalità di questo insieme stabilizzerebbe una volta che ho solo leaf pure, quando non esploro più nuove soluzioni (saturation)
+    \item utilizzare la localized Rademacher complexity (discussione con Chat)
+    \item vedere se il bound con il noise effettivamente si muove con esso (capire ruoli $\alpha$ e $\beta$)
+\end{enumerate}
+
+\bigskip 
+
+{\bf Localized Rademacher}
+
+Until now, we have seen that we have a bound \[\min \left\{\mathcal R_n(\mathcal H_d), O\left(\sqrt{\frac{d}{n}}\right)\right\}\] that saturates, but is not sensitive to the noise, the ratio $n/N$, or the complexity of the data-generating function. Then, in the last two sections we saw bounds capturing the variance of the predictor or the noise, but which do not saturate, instead they grow linearly in the depth $d$. In this section, we look for a bound that saturates and is aware of the structure of the learning problem.
+
+The motivating idea comes from the observation that the Rademacher complexity measures the expressiveness of the whole hypotheses set $\cH$, as the supremum runs over all the functions in this set. However, we know that while learning, we will focus on a subset of the functions in $\cH$ that are close to the true function $f^*$, and this happens after a few splits. Therefore, it makes sense to try to consider a $\it local\/$ measure of complexity. 
+% bo non son sicura
+
+Hence, we define a localized loss class for a radius $r>0$ as 
+\begin{equation}
+   {(\ell\circ\mathcal H_d)}_n(r) := \left\{ f\in\cH_d \vert \expv_D \left[ \frac{1}{n}\sum_i \ell(f(X_i),Y_i) \le r \right]\right \}
+\end{equation}
+
+\begin{definition}[Localized Rademacher complexity]
+    Given our usual setting and a radius $r>0$, the localized Rademacher complexity is
+    \begin{equation}
+        \mathcal R_n(\mathcal H_d (r)) := \expv_{\xi,D} \left[ \sup_{f\in{\cH_d}(r)} \frac{1}{n}\sum_i \xi_i \ell(f(X_i),Y_i) \right]
+    \end{equation}
+    which is just a Rademacher complexity where the sup runs over all the function with expected average loss in the ball of radius $r$. 
+\end{definition}
+
+
+Fixed Point Theorem + Massart's Lemma + usare un conto con $L^*$ per la cardinalità di H
+
+\end{document}
