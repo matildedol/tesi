@@ -14,19 +14,18 @@
 {\bf Setting}
 
 
-Given a sample space $\Omega$, we have data $D = (X,Y)$, $X:\Omega \to \mathcal X = \{\bar x_1,\ldots,\bar x_N\}$ and $Y: \Omega \to \mathcal Y = \{-1, 1\}$,
-\begin{equation}
+Given a sample space $\Omega$, we have $X:\Omega \to \mathcal X = \{\bar x_1,\ldots,\bar x_N\}$ and $Y: \Omega \to \mathcal Y = \{-1, 1\}$,
+\begin{equation}\label{eq: y = f(x)}
     Y = \mathrm{sign}\left( h^* (X) + \varepsilon \right)
 \end{equation}
-with $\varepsilon \sim \mathcal N(0,\sigma^2)$. We want to predict $Y$ from $X$ by observing a sample of $n$ identical realizations of the data, sampled with a probability measure $p_{\mathcal X}$. We have $n \ll N$. We look for a predictor $h\in\mathcal H$, the hypotheses set. We choose a loss function $\ell: \mathcal X \to \mathbb R^+$
+with $\varepsilon \sim \mathcal N(0,\sigma^2)$. We want to predict $Y$ from $X$ by observing a sample of $n\ll N$ identical realizations given by $D = {(X_i,Y_i)}_{i=1}^n$. We indicate the realizations of the data with lower-case $x$ and $y$. The data is sampled with a probability measure $p_{\mathcal X}$ and the law of $D$ is the joint law $p(x,y) = p_{\mathcal X}(x) \cdot p(y \vert x)$, where $p(y\vert x)$ is a Gaussian centered at $h^*(x)$ with variance $\sigma^2$. We look for a predictor $h\in\mathcal H$, the hypotheses set. We choose a loss function $\ell: \mathcal X \to \mathbb R^+$
 % and call $f = \ell \circ h$
 and a learning algorithm to learn the best predictor. 
 
 Recall that the expected risk of a predictor $h\in\mathcal H$ is
 \begin{equation}
-    R(h) = \mathbb E_D(\ell(h(X), Y)) = \sum_{\bar x\in\mathcal X} \sum_{\bar y \in\{-1,1\}} \ell(h(\bar x), \bar y) p(\bar x, \bar y)
-\end{equation}
-with $p(x,y) = p_{\mathcal X}(x) \cdot p(y \vert x)$ the joint law of $(X,Y) = D$ (in our setting, $p(y\vert x)$ is a Gaussian centered at $h^*(x)$ with variance $\sigma^2$). 
+    R(h) = \mathbb E_D(\ell(h(X), Y)) = \sum_{\bar x\in\mathcal X} \sum_{\bar y \in\{-1,1\}} \ell(h(\bar x), \bar y) p(\bar x, \bar y).
+\end{equation} 
 Since we do not know the joint law in general, we use the empirical risk
 \begin{equation}
     \hat R_D (h) = \frac{1}{n}\sum_{i=1}^n \ell(h(x_i), y_i)
@@ -46,45 +45,61 @@ Specifically, in this thesis
 
 {\bf Research question}
 
-We want to describe the behavior of the test error curve of decision trees as complexity of the hypotheses space, measured by the depth $d$, increases.
-To do so, we look for a bound on the gap between the expected and empirical risk that captures the behavior of the curve qualitatively and that is aware of the structure of the learning problem (e.g.\ is sensitive to the noise, or to the complexity of the data-generating function).
+In machine learning, there exists a large number of algorithms, notably neural networks trained with gradient descent, which achieve great performances at prediction tasks on unseen data. We want to understand the relationship between the behavior of such algorithms on the available data (training set) and their future behavior on unseen data (test set). How can we predict how this future behavior will look like? 
+
+This is the big question in learning theory, which a number of results have tried to answer. Recent works claim that the less sophisticated, classical results fail to describe qualitatively the performance of learning algorihtms on unseen data. This thesis seeks to understand whether this is true or not by challenging simple to more technical theoretical results against experimental evidences. 
+
+We start from the relatively simple setting of an arbitrarily big but finite hypotheses set and binary decision trees. 
+
+As most of the results in the literature study the performance of a learning algorithm as the complexity of the hypotheses space increases, we align to this and aim to describe the behavior of the test error curve of decision trees as their depth increases.
+We look for a bound on the gap between the expected and empirical risk that captures the behavior of the curve qualitatively and that is aware of the structure of the learning problem (e.g.\ is sensitive to the noise $\varepsilon$, or to the complexity of the data-generating function $h^*$).
 \bigskip 
 
-Initial observation: the test error curve changes with different structural specifications like the complexity (number of sign changes) of the data-generating function or the noise. 
-
-\begin{figure}[h!]
-  \centering
-  \begin{minipage}{0.48\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{../../outputs/recap/pic7.png}
-    \caption{Different noise levels}
-    \label{fig:pic7}
-  \end{minipage}\hfill
-  \begin{minipage}{0.48\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{../../outputs/recap/pic8.png}
-    \caption{Different sine oscillations}
-    \label{fig:pic8}
-  \end{minipage}
-\end{figure}
-
-\newpage
 {\bf Results}
 
+The first result we inspect uses Hoeffding inequality for the random variable $(R - \hat R)(h)$ and a union bound over $\mathcal H$ to obtain a bound for $\hat h_D$, which depends on the stochasticity of the data $D$. 
 
-{\bf Theorem 2.5.} 
+
+{\bf Union bound.} 
 \begin{equation}
     \expv_D[R(\hat h_D) - \hat R_D (\hat h_D)] \,\, \le \,\, O\left(\sqrt{\frac{d}{n}}\right)
 \end{equation}
 
 
-The proof follows by Hoeffding inequality (Markov inequality + Hoeffding lemma) and a union bound on all $h \in \mathcal H$ to obtain a bound for $\hat h_D$. 
-
 We plot this bound to compare it with the empirical behavior of the test error. 
 
-\begin{figure}[H]
+{\bf Experimental design.} The support $\mathcal X$ is a discretization over $N$ numbers of the interval $[0,10]$ with a uniform measure. The law to generate the $y$s is~(\ref{eq: y = f(x)}). Our first choice of $h^*$ is a parabola centered horizontally at $5$, the midpoint of the support $\mathcal X$, and vertically so that roughly half of the points fall above the $x$-axis and half below.  Then, for the sake of flexibility, we pick a more complex function, a sinusoid. We maintain this choice throughout our experiments. Hence, we generate the $y$s with 
+\begin{equation}
+    %  c = (np.pi * (num_crossings +1)) / u
+    %  return 5*np.sin(c*x)
+    h^*: x \mapsto 5\, \sin\left(\frac{\pi \,( m  +1)}{10}\, x\right)
+\end{equation}
+where $m$ is the number of times $h^*$ crosses the $x$-axis in the open interval $(0,10)$, yielding $m+1$ contiguous blocks of $1s$ and $-1s$. 
+ Also, we test a Bernoullian noise instead of a Gaussian, concluding that there is no interesting difference in the performance of the algorithm as long as the portion of misclassified inputs due to the noise is the same. Hence, we stick to $\varepsilon = \sigma e$, where $e \sim \mathcal N(0, 1)$ is generated with Python built-in function with seed 4. All in all, our law is
+ \begin{equation}
+    y \leftarrow \mathrm{sign}\left(5\, \sin\left(\frac{\pi \,( m  +1)}{10}\, x\right) + \sigma e\right).
+ \end{equation}
+ Default values are $\sigma = 5$ and $m = 10$. Notice also that our $\mathrm{sign}(\cdot)$ maps to $1$ a value of $0$. 
+
+We proceed as follows. We generate a test set with size $n_\text{test} = 200,000$. Then, for each depth $d \in [1, \lceil{\log_2 n}\rceil] \subset \mathbb N$ we do the following. For a number $T=100$ of iterations, we 
+\begin{itemize}
+    \item[$\cdot$] generate a train set ($n= 50$);
+    \item[$\cdot$] fit a decision tree with depth at most $d$;
+    \item[$\cdot$] compute the train error, the test error, and the gap between the two.
+\end{itemize}
+Then, we average the resulting quantities over the $T$ samples, obtaining empirical estimates of their expected values over the disorder of the data. 
+
+Finally, we do the following plots:
+\begin{enumerate}
+    \item the train vs.\ the test error as $d$ increases;
+    \item the gap vs.\ the theoretical bound $\sqrt{d/n}$;
+    \item the test error vs.\ the train error + the bound.
+\end{enumerate}
+
+
+\begin{figure}[h!]
   \centering
-  \includegraphics[width=0.6\textwidth]{../../outputs/recap/pic1.png}
+  \includegraphics[width=0.5\textwidth]{../../outputs/recap/pic1.png}
   \caption{$n = 50, N = 10,000, n_{\text{test}} = 200,000, \sigma = 5$, $h^*$ = sine with $10$ sign changes}
   \label{fig:pic1}
 \end{figure}
@@ -94,6 +109,10 @@ Observations:
     \item[$\triangleright$] the bound is correct,
     \item[$\triangleright$] it diverges when instead the empirical test error saturates.
 \end{itemize}
+
+Because the bound does not predict the saturation of the test error, we try a different theroetical result which uses the Rademacher complexity. 
+
+% guardare massart as sent by Pie e scrivere questa parte meglio 
 
 {\bf Rademacher Complexity + Massart's lemma} 
 \begin{equation}
@@ -108,12 +127,14 @@ the Rademacher complexity is
 \end{equation}
 
 for $\xi_i \in \{1,-1\}$ Rademacher variables. 
-Since the Rademacher complexity is naturally bounded by $0.5$ in our setting, we plot the following bound (the code for computing $\mathcal R_n(\mathcal H_d)$ the code is 100\% by LLMs, it is computed with MC like the LHS)
+Since the Rademacher complexity is naturally bounded by $0.5$ in our setting, we plot the following bound
 \begin{equation}
 \expv_D[R(\hat h_D) - \hat R_D (\hat h_D)]\,\, \le \,\, \min \left\{\mathcal R_n(\mathcal H_d), O\left(\sqrt{\frac{d}{n}}\right)\right\}.
 \end{equation}
 
-\begin{figure}[H]
+The experimental design is the same as above. The code for computing $\mathcal R_n(\mathcal H_d)$ the code is 100\% by LLMs, it is computed with MC like the LHS. 
+
+\begin{figure}[h!]
   \centering
   \begin{minipage}{0.48\textwidth}
     \centering
@@ -201,7 +222,7 @@ under the assumption that $ \Var(h - h_\mathrm{opt}) \le {\left(\frac{R(h)-R(h_\
 
 We plot these bounds. We do the tail integration step with numerical functions from sklearn (\texttt{brenqt()} for finding roots and \texttt{quad()} for integrating) as suggested by LLMs.
 
-\begin{figure}[H]
+\begin{figure}[h!]
   \centering
   \begin{minipage}{0.32\textwidth}
     \centering
