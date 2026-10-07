@@ -1,6 +1,7 @@
 \documentclass{amsart}
 \usepackage{fullpage}
 \usepackage{parskip}
+\input{math.tex}
 
 \title{The Mathematics of Generalization -- Context}
 \author{Matilde, September 2026}
@@ -115,7 +116,7 @@ questo è quello che abbiamo provato a fare
 {\bf\Large Recap al 6 ottobre}
 
 
-allora noi abbiamo un primo bound che va banalmente come $O\left(\sqrt{d/n}\right)$ e si ottiene con la diseguaglianza di Hoeffding applicata alla variabile aleatoria che sto studiando (il gap tra l'errore vero e quello empirico), quindi solo un risultato di concentrazione di una qualsiasi variabile aleatoria, e poi si fa un bellissimo upper bound con la somma per tutte tutte le funzioni in H per poter trarre la conclusione per qualsiasi funzione in H, e quindi il mio stimatore. 
+allora noi abbiamo un primo bound che va banalmente come $O\left(\sqrt{d/n}\right)$ e si ottiene con la diseguaglianza di Hoeffding applicata alla variabile aleatoria che sto studiando (il gap tra l'errore vero e quello empirico), quindi solo un risultato di concentrazione di una qualsiasi variabile aleatoria, e poi si fa un bellissimo upper bound con la somma per tutte tutte le funzioni in H per poter trarre la conclusione per qualsiasi funzione in H, e quindi il mio stimatore. (e poi tail integration)
 
 
 ripetiamo qui un attimo il ragionamento dello union bound: se un risultato di probabilità vale fissata una funzione $f$, vuol dire che ogni f ha un insieme di misura piccola $I_f$ in cui quel risultato non vale. quello che sto facendo è: fissare una $f \rightarrow$ calcolare il valore di $Z(f)$ con dei dati $\rightarrow$ osservare che la probabilità (perché i dati sono aleatori) che i dati siano tali che $Z(f) > \varepsilon$ è è minore di un certo valore. 
@@ -128,10 +129,9 @@ per dire questo, io voglio che anche l'unione $U_f(I_f)$ abbia misura piccola, p
 
 ora, il ragionamento della localized Rademacher complexity è che a me non interessa che quel risultato holda per tutte le f per davvero, perché so che il mio estimatore cadrà in una certa zona di H qualsiasi siano i dati, cioè in un intorno di $f^*$ (ovviamente assumendo un problema ben definito ecc ecc)
 
+$\triangleright$ se io avessi un modo di misurare la caridnalità dell'insieme in cui di solito cade l'algoritmo potrei fare uno union bound sulle f lì dentro, e la cardinalità di questo insieme stabilizzerebbe una volta che ho solo leaf pure, quando non esploro più nuove soluzioni (saturation)
 
-se io avessi un modo di misurare la caridnalità dell'insieme in cui di solito cade l'algoritmo potrei fare uno union bound sulle f lì dentro, e la cardinalità di questo insieme potrebbe paradossalmente diminuire con la depth, perché seppure aumentino le funzioni che tu hai disponibili, più imparo e più resto in un intorno; inoltre chiaramente non esploro nuovi spazi una volta che ho solo leaf pure, e quindi si stabilizzerebbe a quella depth (saturation)
 
-
-ora, cos'è che fa il teorema con la Rademacher complexity in relazione a questo? ho il dubbio che la parte della localizzazione sia distinta e ortogonale al motivo per cui la Rademacher complexity stabilizza
+$\triangleright$ cos'è che fa il teorema con la Rademacher complexity in relazione a questo? ho il dubbio che la parte della localizzazione sia distinta e ortogonale al motivo per cui la Rademacher complexity stabilizza. forse, il teorema con la Rademacher non migliora rispetto allo union bound (infatti su bounda il sup sempre con la somma su tutto H), ma usa una tecnica diversa rispetto alla Hoeffding inequality
 
 \end{document}
