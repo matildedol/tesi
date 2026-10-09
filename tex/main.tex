@@ -691,7 +691,7 @@ This is equivalent to Proposition~\ref{prop: symmetriz} plus a concentration res
 \]
 For an observed sample, define
 \[
- N(D)=\left|\left\{(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n)):h\in\cH\right\}\right|.
+ N(D)=\left|\left\{(\ell_h(x_1,y_1),\ldots,\ell_h(x_n,y_n)):h\in\cH\right\}\right|.
 \]
 \end{definition}
 
@@ -729,15 +729,15 @@ The same bound holds with $\Pi_{\cH}(n)$ replaced by $N(D)$.
 
 Now let us apply the last inequality of Lemma 2.14 to the bound in (60).  
 \begin{align*}
-2\sqrt{\frac{2\log\Pi_{\cH}(n)}n} &\le \min \left\{ 2\sqrt{\frac{2\log\card}n},2\sqrt{\frac{2\log2^n}n} \right\}\\
-&\le \min \left\{ 2\sqrt{\frac{2\log 2^d}n},2\sqrt{\frac{2n \log2}n} \right\}\\
-& \le \min \left\{ 2\sqrt{\frac{2 d \log2}n},2\sqrt{2\log2} \right\}\\
-&\le \min \left\{ O\left(\sqrt{\frac{d}{n}}\right),O(1) \right\}
+2\sqrt{\frac{2\log\Pi_{\cH}(n)}n} &\le \min \left\{ 2\sqrt{\frac{2\log\card}n},2\sqrt{\frac{2\log2^n}n} \right\}.
+% &\le \min \left\{ 2\sqrt{\frac{2\log }n},2\sqrt{\frac{2n \log2}n} \right\}\\
+% & \le \min \left\{ 2\sqrt{\frac{2 d \log2}n},2\sqrt{2\log2} \right\}\\
+% &\le \min \left\{ O\left(\sqrt{\frac{d}{n}}\right),O(1) \right\}
 \end{align*}
 
 Hence, with probability at least $1-\delta$, 
 \begin{equation}
-    R(\hat h)-\hat R(\hat h)\le \min \left\{ O\left(\sqrt{\frac{d}{n}}\right),O(1) \right\}+3\sqrt{\frac{\log(2/\delta)}{2n}}
+    R(\hat h)-\hat R(\hat h)\le \min \left\{ O\left(\sqrt{\frac{\log\vert\cH_d\vert}{n}}\right),O(1) \right\}+3\sqrt{\frac{\log(2/\delta)}{2n}}
 \end{equation}
 
 \subsection{Refined bound with Massart}
@@ -757,17 +757,21 @@ Then, the application of Massart lemma (Lemma~\ref{lemma: massart's lemma}) can 
 \begin{lemma}[Massart]
     We have
 \[
-\mathcal R_n(\LL) \le M\sqrt{\frac{2\log N(D)}{n}}
+\mathcal R_n(\LL) \le \expv_D\left[M\sqrt{\frac{2\log N(D)}{n}}\right]
 \]
 where  $N(D)=\left|\left\{(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n)):h\in\cH\right\}\right|$.
 \end{lemma}
 
-Then, using Lemma 2.14 and the computations above, 
+Then, using Lemma 2.14 
 \[
-\expv_D[(R-\hat R) (\hat h)] \le 2M\sqrt{\frac{2\min\{\log \card, \log 2^n\}}{n}} \le \min\left\{O\left(\sqrt\frac{d}{n}\right), O(1)\right\}
+N(D) \le \min\{\card, 2^n\}
+\] 
+or simply because given a dataset, the realizations of it through $\ell_h$ are surely less than or equal than those through $h$, which are less than or equal $\card$. On the other hand, $N(D)\le 2^n$ because we have at most $2^n$ $n$-long sequences of $0s$ and $1s$. 
+Substituting
+\[
+\expv_D[(R-\hat R) (\hat h_d)] \le 2M\sqrt{\frac{2\min\{\log \card, \log 2^n\}}{n}} \le \min\left\{O\left(\sqrt\frac{\log\vert\cH_d\vert}{n}\right), O(1)\right\}.
 \]
-
-
+where $\hat h_d$ is the ERM among trees of depth at most $d$.
 
 \begin{thebibliography}{9}
 \bibitem{MRT2018}
