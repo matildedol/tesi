@@ -404,7 +404,7 @@ The Rademacher complexity controls the maximal deviation of the empirical risk $
 
 The following result gives us an explicit bound on the Rademacher complexity. This is Theorem $3.3$ in~\cite{mohri2018foundations}. 
 
-\begin{proposition}[Massart's lemma]\label{prop: massart's lemma}
+\begin{lemma}[Massart's lemma]\label{lemma: massart's lemma}
     Let $\ell:\Y\to\Y$ be as in Assumption~\ref{ass: lipsch loss}, so that $\ell(\cdot) \le M$ by Proposition~\ref{prop: suff assump 2.2}. Then, the Rademacher complexity of $\cH$ satisfies
 
     \begin{equation}
@@ -452,8 +452,9 @@ The following result gives us an explicit bound on the Rademacher complexity. Th
         \end{equation}
   
     \end{proof}
-\end{proposition}
-Hence, putting together Propositions~\ref{prop: symmetriz} and~\ref{prop: massart's lemma}, we obtain the following bound on the deviation of the empirical risk from the true risk
+\end{lemma}
+
+Hence, putting together Proposition~\ref{prop: symmetriz} and Lemma~\ref{lemma: massart's lemma}, we obtain the following bound on the deviation of the empirical risk from the true risk
 \begin{empheq}[box=\fcolorbox{black}{white}]{equation}\label{bound: rademacher}
     \expv_D[\sup_{f\in\cH} (R-\hat R_D) (f)] \le 2 M\sqrt{\frac{2\log\vert\cH\vert}{n}}.
 \end{empheq}
@@ -666,6 +667,124 @@ Let's consider a simple case to grasp an intuition. If we assume that the best p
 This means that $h$ controls how distant the a posteriori probability is from $1/2$: if $h$ is small, then this probability may be close to $1/2$ which means we have a large noise in the data, if $h$ is large we have less noise. This whole reasoning is valid when $\alpha = 1$. More generally, the correct interpretation of these two values is given by the assumption on the variance. 
 \newpage
 
+\subsection{Bounds with growth function}
+% This notes are written with the file from Loz which he sent on Oct 8 in Slack
+We try here a different approach to obtaining the bounds above, using the growth function. Let us recall the first useful result. 
+
+{\color{red} Notation fix}: Let us use $h$ to indicate functions in $\cH$ and $\ell_h:\X\times\Y \to \{0,1\}$ to indicate functions in $\LL \coloneq \ell \circ \cH$, with $\ell_h(x,y) = \ell(h(x),y)$.
+\begin{theorem}[Empirical Rademacher bound]\label{thm:rad}
+\cite[Theorem~3.3, equation~(3.4)]{MRT2018}
+With probability at least $1-\delta$,
+\begin{equation}\label{eq:rad-bound}
+ R(\hat h)-\hat R(\hat h)\le 2\Rad(\LL)
+ +3\sqrt{\frac{\log(2/\delta)}{2n}}.
+\end{equation}
+\end{theorem}
+
+This is equivalent to Proposition~\ref{prop: symmetriz} plus a concentration result, just take the expectation over $D$. 
+
+\begin{definition}[Growth function]
+    The growth function of $\cH$ is
+\[
+ \Pi_{\cH}(n)\coloneq\sup_{x_1,\ldots,x_n\in\mathcal X}
+ \left|\left\{(h(x_1),\ldots,h(x_n)):h\in\cH\right\}\right|.
+\]
+For an observed sample, define
+\[
+ N(D)=\left|\left\{(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n)):h\in\cH\right\}\right|.
+\]
+\end{definition}
+
+\begin{lemma}[Growth function]\label{lem:growth}
+For every sample $D$ of size $n$,
+\[
+ 1\le N(D)\le\Pi_{\cH}(n)\le\min\{|\cH|,2^n\}.
+\]
+% qui D è la realizzazione forse, otherwise come la confronti con \Pi ? 
+
+\begin{proof}
+    $N(D) \le \Pi_\cH(n)$ because the map from predictors $h$ to losses $\ell_h$ is a bijection. $\Pi_\cH(n)\le \card$ because the realizations of functions in $h$ are at most as much as the functions in $h$ (equality when functions in $h$ are bijective). $\Pi_\cH(n)\le 2^n$ because we have at most $2^n$ sequences of $n$ $1$s and $-1$s. 
+\end{proof}
+\end{lemma}
+
+\begin{corollary}[Growth-function bound]\label{cor:growth}
+\cite[Section~3.2, Corollaries~3.8--3.9]{MRT2018}
+For every sample,
+\begin{equation}\label{eq: corollary1}
+ \Rad(\LL)\le\sqrt{\frac{2\log N(D)}n}
+ \le\sqrt{\frac{2\log\Pi_{\cH}(n)}n}.
+\end{equation}
+Consequently, with probability at least $1-\delta$,
+\begin{equation}\label{eq: corollary2}
+ R(\hat h)-\hat R(\hat h)\le
+ 2\sqrt{\frac{2\log\Pi_{\cH}(n)}n}
+ +3\sqrt{\frac{\log(2/\delta)}{2n}}.
+\end{equation}
+The same bound holds with $\Pi_{\cH}(n)$ replaced by $N(D)$.
+
+\begin{proof}
+    Inequaility~(\ref{eq: corollary1}) is Massart's lemma applied to the set $\LL$. Inequaility~(\ref{eq: corollary2}) is Theorem 2.12 + (59). 
+\end{proof}
+\end{corollary}
+
+Now let us apply the last inequality of Lemma 2.14 to the bound in (60).  
+\begin{align*}
+2\sqrt{\frac{2\log\Pi_{\cH}(n)}n} &\le \min \left\{ 2\sqrt{\frac{2\log\card}n},2\sqrt{\frac{2\log2^n}n} \right\}\\
+&\le \min \left\{ 2\sqrt{\frac{2\log 2^d}n},2\sqrt{\frac{2n \log2}n} \right\}\\
+& \le \min \left\{ 2\sqrt{\frac{2 d \log2}n},2\sqrt{2\log2} \right\}\\
+&\le \min \left\{ O\left(\sqrt{\frac{d}{n}}\right),O(1) \right\}
+\end{align*}
+
+Hence, with probability at least $1-\delta$, 
+\begin{equation}
+    R(\hat h)-\hat R(\hat h)\le \min \left\{ O\left(\sqrt{\frac{d}{n}}\right),O(1) \right\}+3\sqrt{\frac{\log(2/\delta)}{2n}}
+\end{equation}
+
+\subsection{Refined bound with Massart}
+Let us consider an alternative road. Recall 
+\[
+\mathcal R_n(\LL) = \expv_{\xi,D} \left[\sup_{\ell_h\in\LL}\frac{1}{n}\sum_{i=1}^n \xi_i \ell(h(X_i), Y_i)\right]
+\]
+and
+\[
+\expv_D[(R-\hat R) (\hat h)] 
+% \le \expv_D[\sup_{h \in \cH}(R-\hat R) (h)] 
+\le 2 \mathcal R_n(\LL)
+\]
+which holds because the bound is true for the supremum of the gap over $h\in\cH$ (Proposition~\ref{prop: symmetriz}), hence it is true for $\hat h$ whatever this function is. 
+
+Then, the application of Massart lemma (Lemma~\ref{lemma: massart's lemma}) can be refined by counting functions in $\LL$ instead of $\cH$. 
+\begin{lemma}[Massart]
+    We have
+\[
+\mathcal R_n(\LL) \le M\sqrt{\frac{2\log N(D)}{n}}
+\]
+where  $N(D)=\left|\left\{(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n)):h\in\cH\right\}\right|$.
+\end{lemma}
+
+Then, using Lemma 2.14 and the computations above, 
+\[
+\expv_D[(R-\hat R) (\hat h)] \le 2M\sqrt{\frac{2\min\{\log \card, \log 2^n\}}{n}} \le \min\left\{O\left(\sqrt\frac{d}{n}\right), O(1)\right\}
+\]
+
+
+
+\begin{thebibliography}{9}
+\bibitem{MRT2018}
+Mehryar Mohri, Afshin Rostamizadeh, and Ameet Talwalkar.
+\newblock \emph{Foundations of Machine Learning}.
+\newblock Second edition, MIT Press, 2018.
+\newblock \url{https://cs.nyu.edu/~mohri/mlbook/}.
+
+\bibitem{BL1999}
+Peter L. Bartlett and G\'abor Lugosi.
+\newblock An inequality for uniform deviations of sample averages from their means.
+\newblock \emph{Statistics \& Probability Letters}, 44(1):55--62, 1999.
+\newblock \href{https://doi.org/10.1016/S0167-7152(98)00291-0}{doi:10.1016/S0167-7152(98)00291-0}.
+\newblock Author manuscript: \url{https://econ-papers.upf.edu/papers/280.pdf}.
+\end{thebibliography}
+
+\newpage
 \subsection{Localized Rademacher complexity}
 
 Until now, we have seen that we have a bound \[\min \left\{\mathcal R_n(\mathcal H_d), O\left(\sqrt{\frac{d}{n}}\right)\right\}\] that saturates, but is not sensitive to the noise, the ratio $n/N$, or the complexity of the data-generating function. Then, in the last two sections we saw bounds capturing the variance of the predictor or the noise, but which do not saturate, instead they grow linearly in the depth $d$. In this section, we look for a bound that saturates and is aware of the structure of the learning problem.
