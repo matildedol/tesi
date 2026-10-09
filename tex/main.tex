@@ -769,7 +769,7 @@ N(D) \le \min\{\card, 2^n\}
 or simply because given a dataset, the realizations of it through $\ell_h$ are surely less than or equal than those through $h$, which are less than or equal $\card$. On the other hand, $N(D)\le 2^n$ because we have at most $2^n$ $n$-long sequences of $0s$ and $1s$. 
 Substituting
 \[
-\expv_D[(R-\hat R) (\hat h_d)] \le 2M\sqrt{\frac{2\min\{\log \card, \log 2^n\}}{n}} \le \min\left\{O\left(\sqrt\frac{\log\vert\cH_d\vert}{n}\right), O(1)\right\}.
+\expv_D[(R-\hat R) (\hat h_d)] \le 2M\sqrt{\frac{2\min\{\log \vert\cH_d\vert, \log 2^n\}}{n}} \le \min\left\{O\left(\sqrt\frac{\log\vert\cH_d\vert}{n}\right), O(1)\right\}.
 \]
 where $\hat h_d$ is the ERM among trees of depth at most $d$.
 
