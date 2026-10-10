@@ -3,6 +3,7 @@
 \usepackage{parskip}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage{xcolor}
 \input{../math.tex}
 \linespread{1.2}
 
@@ -62,7 +63,7 @@ The first result we inspect uses Hoeffding inequality for the random variable $(
 
 {\bf Union bound.} 
 \begin{equation}
-    \expv_D[R(\hat h_D) - \hat R_D (\hat h_D)] \,\, \le \,\, O\left(\sqrt{\frac{d}{n}}\right)
+    \expv_D[R(\hat h_D) - \hat R_D (\hat h_D)] \,\, \le \,\, O\left(\sqrt{\frac{\log \vert \mathcal H_d \vert}{n}}\right)
 \end{equation}
 
 
@@ -92,10 +93,11 @@ Then, we average the resulting quantities over the $T$ samples, obtaining empiri
 Finally, we do the following plots:
 \begin{enumerate}
     \item the train vs.\ the test error as $d$ increases;
-    \item the gap vs.\ the theoretical bound $\sqrt{d/n}$;
+    \item the gap vs.\ the theoretical bound $\sqrt{\log \vert \mathcal H_d \vert/n}$;
     \item the test error vs.\ the train error + the bound.
 \end{enumerate}
 
+{\color{red} Disclaimer: all the plots below have been obtained substituting $\vert \mathcal H_d\vert \le 2^d$ which is not correct. The dependence on $d$ is more complicated and I need to fix that.}
 
 \begin{figure}[h!]
   \centering
@@ -116,7 +118,7 @@ Because the bound does not predict the saturation of the test error, we try a di
 
 {\bf Rademacher Complexity + Massart's lemma} 
 \begin{equation}
-    \expv_D[R(\hat h_D) - \hat R_D (\hat h_D)] \le 2\mathcal R_n(\mathcal H_d) \le  O\left(\sqrt{\frac{d}{n}}\right)
+    \expv_D[R(\hat h_D) - \hat R_D (\hat h_D)] \le 2\mathcal R_n(\mathcal H_d) \le  O\left(\sqrt{\frac{\log \vert \mathcal H_d \vert}{n}}\right)
 \end{equation}
 
 % The proof follows by bounding the supremum of the expected gap with the rademacher complexity via a symmetrization trick, and then applying Massart's lemma (Hoeffding lemma + $\expv \sup \le \sup \expv$ + bounding the sup with the sum). 
@@ -129,7 +131,7 @@ the Rademacher complexity is
 for $\xi_i \in \{1,-1\}$ Rademacher variables. 
 Since the Rademacher complexity is naturally bounded by $0.5$ in our setting, we plot the following bound
 \begin{equation}
-\expv_D[R(\hat h_D) - \hat R_D (\hat h_D)]\,\, \le \,\, \min \left\{\mathcal R_n(\mathcal H_d), O\left(\sqrt{\frac{d}{n}}\right)\right\}.
+\expv_D[R(\hat h_D) - \hat R_D (\hat h_D)]\,\, \le \,\, \min \left\{\mathcal R_n(\mathcal H_d), O\left(\sqrt{\frac{\log \vert \mathcal H_d \vert}{n}}\right)\right\}.
 \end{equation}
 
 The experimental design is the same as above. The code for computing $\mathcal R_n(\mathcal H_d)$ the code is 100\% by LLMs, it is computed with MC like the LHS. 
@@ -266,7 +268,7 @@ Idee:
 
 {\bf Localized Rademacher}
 
-Until now, we have seen that we have a bound \[\min \left\{\mathcal R_n(\mathcal H_d), O\left(\sqrt{\frac{d}{n}}\right)\right\}\] that saturates, but is not sensitive to the noise, the ratio $n/N$, or the complexity of the data-generating function. Then, in the last two sections we saw bounds capturing the variance of the predictor or the noise, but which do not saturate, instead they grow linearly in the depth $d$. In this section, we look for a bound that saturates and is aware of the structure of the learning problem.
+Until now, we have seen that we have a bound \[\min \left\{\mathcal R_n(\mathcal H_d), O\left(\sqrt{\frac{\log\vert \mathcal H_d \vert}{n}}\right)\right\}\] that saturates, but is not sensitive to the noise, the ratio $n/N$, or the complexity of the data-generating function. Then, in the last two sections we saw bounds capturing the variance of the predictor or the noise, but which do not saturate, instead they grow linearly in the depth $d$. In this section, we look for a bound that saturates and is aware of the structure of the learning problem.
 
 The motivating idea comes from the observation that the Rademacher complexity measures the expressiveness of the whole hypotheses set $\cH$, as the supremum runs over all the functions in this set. However, we know that while learning, we will focus on a subset of the functions in $\cH$ that are close to the true function $f^*$, and this happens after a few splits. Therefore, it makes sense to try to consider a $\it local\/$ measure of complexity. 
 % bo non son sicura
