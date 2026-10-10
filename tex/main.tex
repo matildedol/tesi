@@ -703,7 +703,7 @@ For every sample $D$ of size $n$,
 % qui D è la realizzazione forse, otherwise come la confronti con \Pi ? 
 
 \begin{proof}
-    $N(D) \le \Pi_\cH(n)$ because the map from predictors $h$ to losses $\ell_h$ is a bijection. $\Pi_\cH(n)\le \card$ because the realizations of functions in $h$ are at most as much as the functions in $h$ (equality when functions in $h$ are bijective). $\Pi_\cH(n)\le 2^n$ because we have at most $2^n$ sequences of $n$ $1$s and $-1$s. 
+    $N(D) \le \Pi_\cH(n)$ because the number of distinct loss vector can at most decrease, given prediction vectors. $\Pi_\cH(n)\le \card$ because the realizations of functions in $h$ are at most as much as the functions in $h$ (equality when functions in $h$ are bijective). $\Pi_\cH(n)\le 2^n$ because we have at most $2^n$ sequences of $n$ $1$s and $-1$s. 
 \end{proof}
 \end{lemma}
 
