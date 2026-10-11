@@ -134,4 +134,37 @@ $\triangleright$ se io avessi un modo di misurare la caridnalità dell'insieme i
 
 $\triangleright$ cos'è che fa il teorema con la Rademacher complexity in relazione a questo? ho il dubbio che la parte della localizzazione sia distinta e ortogonale al motivo per cui la Rademacher complexity stabilizza. forse, il teorema con la Rademacher non migliora rispetto allo union bound (infatti su bounda il sup sempre con la somma su tutto H), ma usa una tecnica diversa rispetto alla Hoeffding inequality
 
+\bigskip 
+
+{\bf\Large Rademacher complexity}
+
+Si capisce meglio così.
+
+Definition. The Rademacher complexity of a set of functions $f\in\mathcal F$ is 
+\[
+\mathcal R_n(\mathcal F) = \mathbb E_{x_1,\ldots,x_n} \left[\mathbb E_{\xi_1,\ldots,\xi_n} \left[ \sup_{f\in \mathcal F} \frac{1}{n}\sum_i \xi_i f(x_i) \right]\right]
+\]
+where $\frac{1}{n}\sum_i \xi_i f(x_i)$ is the correlation between $\xi$ and $f(x)$. A high complexity means that for most values of $\xi$ we can find a function $f$ that is similar to the pattern. It is the highest when we can find a function $f$ that correlates with any possible pattern. 
+
+In general, the following result holds
+\[
+\mathbb E_{x_1,\ldots,x_n} \left[ \sup_{f\in\mathcal F}\frac{1}{n}\sum_i f(x_i) - \mathbb E_x[f(x)]\right] \le 2 \mathcal R_n(\mathcal F)
+\]
+where we look at the highest possible deviation of the empirical mean from the expectation, and find it is bounded by twice the Rademacher. This is in general. In particular if we apply this to $f = \ell \circ h$ and $\mathcal F = \mathcal L$ for $h \in \mathcal H$ our set of binary classifiers and $\ell$ the counting loss, this says that {\bf the generalization gap is bounded by twice the Rademacher complexity},
+\[
+\mathbb E_{(x_1,y_1),\ldots,(x_n,y_n)} \left[ \sup_{\ell_h\in\mathcal L}\frac{1}{n}\sum_i \ell(h(x_i),y_i) - \mathbb E_{(x,y)}[\ell(h(x),y)]\right] \le 2 \mathcal R_n(\mathcal L)
+\]
+
+which is exactly our result.
+
+Moreover, it holds that
+\[
+\mathcal R_n(\mathcal L) = \frac{1}{2} \mathcal R_n(\mathcal H)
+\]
+
+So our result is not magical, it just says that the average deviation of a random variable from its expected value (over a sample) is bounded by twice the Rademacher. Think of functions with outputs $1$ and $-1$: il risultato sopra ci dice che se per ogni sample $x_1,\ldots,x_n$ noi prendiamo la funzione che massimizza la deviazione della media empirica dal valore atteso, e poi facciamo il valore atteso sui dati, la quantità che otteniamo è bounded dalla Rademacher. In altri termini, invece di guardare alla deviazione dal valore atteso posso guardare alla differenza tra le realizzazioni di una funzione su due campioni indipendenti, e cerco la funzione che mi massimizza questa differenza. La capacità di massimizzare questa differenza è bounded dalla Rademacher. Questa è la tecnica della simmetrizzazione. 
+
+
+Andando avanti, il Massart lemma mi dice poi che la Rademacher è maggiorata da $O(\sqrt{\log N(D) / n})$. 
+
 \end{document}
