@@ -418,7 +418,7 @@ The following result gives us an explicit bound on the Rademacher complexity. Th
             &\le \expv_{\xi,D}\bigg[\exp\Big(t\sup_{f\in\cH}\sum_{i=1}^n \xi_i \ell(Y_i,f(X_i))\Big)\bigg]\notag\\
             &= \expv_{\xi,D}\bigg[\sup_{f\in\cH}\exp\Big(t\sum_{i=1}^n \xi_i \ell(Y_i,f(X_i))\Big)\bigg]\notag\\
             &\le \expv_{\xi,D}\bigg[\sum_{f\in\cH}\exp\Big(t\sum_{i=1}^n \xi_i \ell(Y_i,f(X_i))\Big)\bigg]\notag\\
-            &= \sum_{f\in\cH}\prod_{i=1}^n \expv_{\xi_i}\Big[\exp\big(t\xi_i \ell(Y_i,f(X_i))\big)\Big].\label{eq: massart-start}
+            &= \expv_D\left[\sum_{f\in\cH}\prod_{i=1}^n \expv_{\xi_i}\left[\exp\left(t\xi_i \ell\left(Y_i,f(X_i)\right)\right)\right]\right].\label{eq: massart-start}
         \end{align}
         where we use Jensen's inequality on the convex function $\exp$ in the first inequality, we trivially bound the supremum with the sum, and we use the independence of the $\xi_i$'s across $i=1,\ldots,n$ in the last equality. 
 
@@ -697,6 +697,9 @@ Then, the application of Massart lemma (Lemma~\ref{lemma: massart's lemma}) can 
 \mathcal R_n(\LL) \le \expv_D\left[M\sqrt{\frac{2\log N(D)}{n}}\right]
 \]
 where  $N(D)=\left|\left\{(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n)):h\in\cH\right\}\right|$.
+    \begin{proof}
+        This is Lemma~\ref{lemma: massart's lemma} with the observation that we can take the supremum over loss vectors $\ell_h(X_i,Y_i)$ instead of over functions $h$. 
+    \end{proof}
 \end{lemma}
 
 \begin{lemma}[Counting inequalities]\label{lemma: counting}
@@ -709,9 +712,9 @@ Given a dataset, its realizations through $\ell_h$ are less than or equal to tho
 \end{lemma} 
 
 Combining Theorem 2.13, Lemma 2.14 and Lemma 2.15, we obtain
-\[
+\begin{equation}
 \expv_D[(R-\hat R) (\hat h_d)] \le 2M\sqrt{\frac{2\min\{\log \vert\cH_d\vert, \log 2^n\}}{n}} \le \min\left\{O\left(\sqrt\frac{\log\vert\cH_d\vert}{n}\right), O(1)\right\}.
-\]
+\end{equation}
 where $\hat h_d$ is the ERM among trees of depth at most $d$.
 
 \subsection{Growth function}
@@ -754,6 +757,10 @@ Consequently,
     Inequality~(\ref{eq: corollary1}) is Lemma~\ref{lemma: refined massart} combined with Lemma~\ref{lem:growth}. Inequality~(\ref{eq: corollary2}) follows similarly, from Theorem~\ref{thm: rad bound} and~(\ref{eq: corollary1}).
 \end{proof}
 \end{corollary}
+
+Applying Lemma 2.17 to (\ref{eq: corollary2}) yields the saturating bound (58). 
+
+\subsection{Relative bounds and dependence on the best risk (Excess risk bounds)}
 
 
 \begin{thebibliography}{9}
