@@ -761,6 +761,74 @@ Consequently,
 Applying Lemma 2.17 to (\ref{eq: corollary2}) yields the saturating bound (58). 
 
 \subsection{Relative bounds and dependence on the best risk (Excess risk bounds)}
+Set 
+\[
+R^*_\cH = \min_{h\in\cH} R(h).
+\]
+We aim at obtaining a bound on the gap at $\hat h$ in terms of the best risk $R^*_\cH$. 
+
+\begin{theorem}[Bound with empirical risk]\label{thm: bound emprisk}
+    With probability at least $1-\delta$,
+    \[
+    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{\hat R(\hat h)\log(2\Pi_\cH(2n)/\delta)}{n}} + 16\frac{\log(2\Pi_\cH(2n)/\delta)}{n}
+    \]
+    \begin{proof}
+        Apply the relative deviation inequality,
+        \[
+        \Pr\left[\exists h\in\cH : R(h)-\hat R(h) > \varepsilon \sqrt{R(h)}\right] \le 2\Pi_\cH (2n) e^{-2\varepsilon^2/16}
+        \]
+        with the suitable $\varepsilon$ and then isolate $\hat R(\hat h)$ on the RHS.\@ The same result holds using $N(D)$ instead of the growth function. 
+        % I have not looked precisely at the proof of the rel dev ineq
+    \end{proof}
+\end{theorem}
+
+\begin{corollary}[Bound with best risk]
+    With probability at least $1-\delta$,
+    \[
+    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{R^*_{\cH}\log(4\Pi_\cH(2n)/\delta)}{n}} + 20\frac{\log(4\Pi_\cH(2n)/\delta)}{n}
+    \]
+    \begin{proof}
+        Set $h_0 = \argmin_{h\in\cH} R(h)$, so that $R(h_0) = R^*_{\cH}$. Then,
+        \begin{equation}\label{eq: hatR h le hat R h0}
+        \hat R(\hat h) \le \hat R(h_0).
+        \end{equation}
+        Since $h_0$ is independent of the data, $\expv_D[\hat R(h_0)] = R(h_0)$ and hence Bernstein gives, with probability at least $1-\delta/2$,
+        \[
+        \hat R(h_0) \le R^*_{\cH} + \sqrt{\frac{2R*_\cH \log (2/\delta)}{n}} + \frac{\log(2/\delta)}{3n}.
+        \]
+        Since $\Pi_\cH(2n)\ge 1$ and thus $\frac{\log (2/\delta)}{n}\le \frac{\log(4\Pi_\cH(2n)/\delta)}{n}$,
+        \begin{equation}\label{eq: bound hatR h0}
+        \hat R(h_0) \le \left(\sqrt{R^*_\cH} + \sqrt{\frac{4\log(\Pi_\cH(2n)/\delta)}{n}}\right)^2
+        \end{equation}
+        Substitute~(\ref{eq: hatR h le hat R h0}) into~(\ref{eq: bound hatR h0}), and apply the bound to $\hat R(\hat h)$ in the RHS of Theorem~\ref{thm: bound emprisk} at confidence $1-\delta/2$. This yields the desired bound, which holds with probability at least $1-\delta$ by a union bound on the events ((62) and Theorem 2.19) which we require to hold simultaneously.
+    \end{proof}
+    
+\end{corollary}
+
+\begin{definition}[Bayes risk]
+    \[
+     R^*\coloneq\inf_{h:\X\to\Y} R(h) 
+    \]
+    % btw per definizione il bayes risk è il minimo rischio che una funzione misurabile puo attain, e turns out che in questo caso di classification task con 0-1 loss il bayes classifier così definito attains questo rischio.
+\end{definition}
+
+\begin{definition}[Approximation error]
+    \[
+    A_\cH = R^*_\cH - R^*
+    \]
+\end{definition}
+Let $\sigma^2 = R^*$ and notice $R^*_\cH = A_\cH + \sigma^2$. Corollary 2.20 gives, with probability $1-\delta$,
+\begin{equation}
+    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{(A_\cH + \sigma^2)\log(4\Pi_\cH(2n)/\delta)}{n}} + 20\frac{\log(4\Pi_\cH(2n)/\delta)}{n}
+\end{equation}
+
+Where
+\begin{itemize}
+    \item $\sigma^2$ measures the irreducible classification error due to noise;
+    \item $A_\cH$ measures the approximation error of the hypotheses class;
+    \item $\Pi_\cH(2n)$ can be substituted by $N(D)$ as in the proof of Theorem 2.19. 
+\end{itemize}
+
 
 
 \begin{thebibliography}{9}
