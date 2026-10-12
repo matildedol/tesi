@@ -63,7 +63,7 @@ The first result we inspect uses Hoeffding inequality for the random variable $(
 
 {\bf Union bound.} 
 \begin{equation}
-    \expv_D[R(\hat h_D) - \hat R_D (\hat h_D)] \,\, \le \,\, O\left(\sqrt{\frac{\log \vert \mathcal H_d \vert}{n}}\right)
+    \expv_D[R(\hat h_D) - \hat R_D (\hat h_D)] \,\, \le \,\, O\left(\sqrt{\frac{\log \vert \mathcal H \vert}{n}}\right)
 \end{equation}
 
 
@@ -93,11 +93,18 @@ Then, we average the resulting quantities over the $T$ samples, obtaining empiri
 Finally, we do the following plots:
 \begin{enumerate}
     \item the train vs.\ the test error as $d$ increases;
-    \item the gap vs.\ the theoretical bound $\sqrt{\log \vert \mathcal H_d \vert/n}$;
+    \item the gap vs.\ the theoretical bound $\sqrt{\log \vert \mathcal H \vert/n}$;
     \item the test error vs.\ the train error + the bound.
 \end{enumerate}
 
-{\color{red} Disclaimer: all the plots below have been obtained substituting $\vert \mathcal H_d\vert \le 2^d$ which is not correct. The dependence on $d$ is more complicated and I need to fix that.}
+To plot the bound, we need to find the number of trees for a given maximum depth. Since the exact computation is complex  we use
+\[
+\vert \mathcal H_d \vert \le N^{2^d} 2^{2^d}
+\]
+hence 
+\[
+\log \vert \mathcal H \vert \le 2^d \log 2N.
+\]
 
 \begin{figure}[h!]
   \centering
@@ -112,20 +119,17 @@ Observations:
     \item[$\triangleright$] it diverges when instead the empirical test error saturates.
 \end{itemize}
 
-Because the bound does not predict the saturation of the test error, we try a different theroetical result which uses the Rademacher complexity. 
+Because the bound does not predict the saturation of the test error, we try a different theoretical result which uses the Rademacher complexity. 
 
 % guardare massart as sent by Pie e scrivere questa parte meglio 
 
-{\bf Rademacher Complexity + Massart's lemma} 
-\begin{equation}
-    \expv_D[R(\hat h_D) - \hat R_D (\hat h_D)] \le 2\mathcal R_n(\mathcal H_d) \le  O\left(\sqrt{\frac{\log \vert \mathcal H_d \vert}{n}}\right)
-\end{equation}
+{\bf Rademacher Complexity bound} 
 
 % The proof follows by bounding the supremum of the expected gap with the rademacher complexity via a symmetrization trick, and then applying Massart's lemma (Hoeffding lemma + $\expv \sup \le \sup \expv$ + bounding the sup with the sum). 
 
-the Rademacher complexity is
+The Rademacher complexity is
 \begin{equation}
-    \mathcal R_n(\mathcal H_d) = \expv_{D,\xi} \left[\sup_{h\in\mathcal H}\frac{1}{n}\sum_{i=1}^n \xi_i \ell(h(x_i), y_i)\right] \le 0.5
+    \mathcal R_n(\mathcal H_d) = \expv_{D,\xi} \left[\sup_{\in\mathcal H}\frac{1}{n}\sum_{i=1}^n \xi_i \ell(h(x_i), y_i)\right] \le 0.5
 \end{equation}
 
 for $\xi_i \in \{1,-1\}$ Rademacher variables. 
@@ -159,134 +163,6 @@ Observations:
     \item[$\triangleright$] the bound does not move with the error (nor with the complexity of $h^*$), indeed this was expected because the Rademacher is completely blind to our learning problem.
 \end{itemize}
 
-\bigskip 
 
-{\bf Bounds with noise and variance}
-
-Disclaimers:
-
-\begin{itemize}
-    \item I am uncertain about the mathematics of bound (9) which presents a random variable in the RHS;
-    \item the code for computing $\inf_{h\in\mathcal H} R(h)$ is my idea completed by LLMs;
-    \item the roles of $\alpha$ and $\beta$ in (11) are unclear to me, hence their values in the plot are suggested by LLMs;
-    \item also, I used LLMs to obtain the formulas in terms of $\varepsilon$ from the high-probability results of the paper, I only checked the dependncy on $\vert \mathcal H \vert$ was correct.
-\end{itemize}
-
-Following [Boucheron, Bousquet, Lugosi, 2005], we obtain the following bounds that capture the variance of the estimator and the noise in the data.
-
-\begin{equation}
-    \Pr[
-(R - \hat R_D) (\hat h_D) > \varepsilon
-]
-\le
-\vert\cH\vert \exp
-\left(-
-\frac{n}{16}
-{\left(
-\sqrt{\hat R_D(\hat h_D)+4\varepsilon}
--
-\sqrt{\hat R_D(\hat h_D)}
-\right)}^2
-\right),
-\end{equation}
-
-\begin{equation}
-    \Pr[
-R(\hat h_D) - \inf_{h\in\cH} R(h)> \varepsilon
-]
-\le
-\vert\cH\vert
-\exp\left(
--
-\frac{n}{4}
-{\left(
-\sqrt{\inf_{h\in\cH} R(h)+4\varepsilon}
--
-\sqrt{\inf_{h\in\cH} R(h)}
-\right)}^2
-\right),
-\end{equation}
-
-and
-
-\begin{equation}
-    \Pr[
-R(\hat h_D) - \inf_{h\in\cH} R(h) > \varepsilon
-]
-\le
-\vert\cH\vert
-\exp\left(
--
-\frac{n \beta^\alpha \varepsilon^{2-\alpha}}{2}
-\right),
-\end{equation}
-under the assumption that $ \Var(h - h_\mathrm{opt}) \le {\left(\frac{R(h)-R(h_\mathrm{opt})}{\beta}\right)}^\alpha$ where $h_\mathrm{opt} = \argmin_{h \in \cH} R(h)$. 
-
-We plot these bounds. We do the tail integration step with numerical functions from sklearn (\texttt{brenqt()} for finding roots and \texttt{quad()} for integrating) as suggested by LLMs.
-
-\begin{figure}[h!]
-  \centering
-  \begin{minipage}{0.32\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{../../outputs/recap/pic4.png}
-    \caption{\small Bound (9)}
-    \label{fig:pic4}
-  \end{minipage}\hfill
-  \begin{minipage}{0.32\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{../../outputs/recap/pic5.png}
-    \caption{\small Bound (10)}
-    \label{fig:pic5}
-  \end{minipage}\hfill
-  \begin{minipage}{0.32\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{../../outputs/recap/pic6.png}
-    \caption{\small Bound (11)}
-    \label{fig:pic6}
-  \end{minipage}
-\end{figure}
-
-Observation:
-\begin{itemize}
-    \item[$\triangleright$] the bounds grow linearly in $d$, they do not saturate at all.
-\end{itemize}
-
-\bigskip 
-
-{\bf Going on}
-
-Given these reuslts, we want to apply the techniques of the Rademacher complexity to bounds that are sensitive to the noise and other structural elements of the learning problem. 
-
-Idee:
-\begin{enumerate}
-    \item nella proof del teorema $2.5$, se io avessi un modo di misurare la cardinalità del sottoinsieme di $\mathcal H$ in cui di solito cade l'algoritmo, potrei fare uno union bound sulle $h$ lì dentro, e la cardinalità di questo insieme stabilizzerebbe una volta che ho solo leaf pure, quando non esploro più nuove soluzioni (saturation)
-    \item utilizzare la localized Rademacher complexity (discussione con Chat)
-    \item vedere se il bound con il noise effettivamente si muove con esso (capire ruoli $\alpha$ e $\beta$)
-\end{enumerate}
-
-\bigskip 
-
-{\bf Localized Rademacher}
-
-Until now, we have seen that we have a bound \[\min \left\{\mathcal R_n(\mathcal H_d), O\left(\sqrt{\frac{\log\vert \mathcal H_d \vert}{n}}\right)\right\}\] that saturates, but is not sensitive to the noise, the ratio $n/N$, or the complexity of the data-generating function. Then, in the last two sections we saw bounds capturing the variance of the predictor or the noise, but which do not saturate, instead they grow linearly in the depth $d$. In this section, we look for a bound that saturates and is aware of the structure of the learning problem.
-
-The motivating idea comes from the observation that the Rademacher complexity measures the expressiveness of the whole hypotheses set $\cH$, as the supremum runs over all the functions in this set. However, we know that while learning, we will focus on a subset of the functions in $\cH$ that are close to the true function $f^*$, and this happens after a few splits. Therefore, it makes sense to try to consider a $\it local\/$ measure of complexity. 
-% bo non son sicura
-
-Hence, we define a localized loss class for a radius $r>0$ as 
-\begin{equation}
-   {(\ell\circ\mathcal H_d)}_n(r) := \left\{ f\in\cH_d \vert \expv_D \left[ \frac{1}{n}\sum_i \ell(f(X_i),Y_i) \le r \right]\right \}
-\end{equation}
-
-\begin{definition}[Localized Rademacher complexity]
-    Given our usual setting and a radius $r>0$, the localized Rademacher complexity is
-    \begin{equation}
-        \mathcal R_n(\mathcal H_d (r)) := \expv_{\xi,D} \left[ \sup_{f\in{\cH_d}(r)} \frac{1}{n}\sum_i \xi_i \ell(f(X_i),Y_i) \right]
-    \end{equation}
-    which is just a Rademacher complexity where the sup runs over all the function with expected average loss in the ball of radius $r$. 
-\end{definition}
-
-
-Fixed Point Theorem + Massart's Lemma + usare un conto con $L^*$ per la cardinalità di H
 
 \end{document}
