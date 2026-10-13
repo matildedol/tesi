@@ -48,23 +48,24 @@ Specifically, in this thesis
 
 In machine learning, there exists a large number of algorithms, notably neural networks trained with gradient descent, which achieve great performances at prediction tasks on unseen data. We want to understand the relationship between the behavior of such algorithms on the available data (training set) and their future behavior on unseen data (test set). How can we predict how this future behavior will look like? 
 
-This is the big question in learning theory, which a number of results have tried to answer. Recent works claim that the less sophisticated, classical results fail to describe qualitatively the performance of learning algorihtms on unseen data. This thesis seeks to understand whether this is true or not by challenging simple to more technical theoretical results against experimental evidences. 
+This is the big question in learning theory, which a number of results have tried to answer. Recent works claim that the less sophisticated, classical theory fails to describe qualitatively the performance of learning algorihtms on unseen data. This thesis seeks to understand whether this is true by testing theoretical results against experimental evidences. 
 
 We start from the relatively simple setting of an arbitrarily big but finite hypotheses set and binary decision trees. 
 
-As most of the results in the literature study the performance of a learning algorithm as the complexity of the hypotheses space increases, we align to this and aim to describe the behavior of the test error curve of decision trees as their depth increases.
-We look for a bound on the gap between the expected and empirical risk that captures the behavior of the curve qualitatively and that is aware of the structure of the learning problem (e.g.\ is sensitive to the noise $\varepsilon$, or to the complexity of the data-generating function $h^*$).
+Aligning with works mentioned above, we aim to describe the shape of the test error curve of decision trees as their depth increases.
+To do so, we look for a function that bounds the gap between the expected and the empirical risk of the ERM, \[\expv_D\left[(R - \hat R_D)(\hat h_D)\right]\] We want this bound to capture the behavior of the curve qualitatively as well as changes in the structure of the learning problem (e.g.\ we look for sensitivity to the noise level $\sigma$ or to the complexity of the underlying true function $h^*$). 
 \bigskip 
 
 {\bf Results}
 
-The first result we inspect uses Hoeffding inequality for the random variable $(R - \hat R)(h)$ and a union bound over $\mathcal H$ to obtain a bound for $\hat h_D$, which depends on the stochasticity of the data $D$. 
+The first result that we inspect uses Hoeffding inequality for the random variable $(R - \hat R)(h)$ and a union bound over $\mathcal H$ to obtain a bound for $\hat h_D$, which depends on the stochasticity of the data $D$. 
 
-
-{\bf Union bound.} 
+\section{Union bound} 
+\begin{theorem}[Union bound]
 \begin{equation}
     \expv_D[R(\hat h_D) - \hat R_D (\hat h_D)] \,\, \le \,\, O\left(\sqrt{\frac{\log \vert \mathcal H \vert}{n}}\right)
 \end{equation}
+\end{theorem}
 
 
 We plot this bound to compare it with the empirical behavior of the test error. 
@@ -76,13 +77,13 @@ We plot this bound to compare it with the empirical behavior of the test error.
     h^*: x \mapsto 5\, \sin\left(\frac{\pi \,( m  +1)}{10}\, x\right)
 \end{equation}
 where $m$ is the number of times $h^*$ crosses the $x$-axis in the open interval $(0,10)$, yielding $m+1$ contiguous blocks of $1s$ and $-1s$. 
- Also, we test a Bernoullian noise instead of a Gaussian, concluding that there is no interesting difference in the performance of the algorithm as long as the portion of misclassified inputs due to the noise is the same. Hence, we stick to $\varepsilon = \sigma e$, where $e \sim \mathcal N(0, 1)$ is generated with Python built-in function with seed 4. All in all, our law is
+ Also, we test a Bernoullian noise instead of a Gaussian, concluding that there is no interesting difference in the performance of the algorithm as long as the portion of misclassified inputs due to the noise is the same. Hence, we stick to $\varepsilon = \sigma e$, with $e \sim \mathcal N(0, 1)$. All in all, our law is
  \begin{equation}
     y \leftarrow \mathrm{sign}\left(5\, \sin\left(\frac{\pi \,( m  +1)}{10}\, x\right) + \sigma e\right).
  \end{equation}
  Default values are $\sigma = 5$ and $m = 10$. Notice also that our $\mathrm{sign}(\cdot)$ maps to $1$ a value of $0$. 
 
-We proceed as follows. We generate a test set with size $n_\text{test} = 200,000$. Then, for each depth $d \in [1, \lceil{\log_2 n}\rceil] \subset \mathbb N$ we do the following. For a number $T=100$ of iterations, we 
+We proceed as follows. We generate a test set with size $n_\text{test} = 200,000$. Then, for each depth $d \in [1, 7\lceil{\log_2 n}\rceil] \subset \mathbb N$ we do the following. For a number $T=100$ of iterations, we 
 \begin{itemize}
     \item[$\cdot$] generate a train set ($n= 50$);
     \item[$\cdot$] fit a decision tree with depth at most $d$;
@@ -97,14 +98,12 @@ Finally, we do the following plots:
     \item the test error vs.\ the train error + the bound.
 \end{enumerate}
 
-To plot the bound, we need to find the number of trees for a given maximum depth. Since the exact computation is complex  we use
+To plot the bound, we need to find the number of trees for a given maximum depth. The exact computation gives
 \[
-\vert \mathcal H_d \vert \le N^{2^d} 2^{2^d}
-\]
-hence 
-\[
-\log \vert \mathcal H \vert \le 2^d \log 2N.
-\]
+\vert \mathcal H_d \vert = 2 \sum_{k=0}^{\min{N-1, 2^d-1}} \binom{N-1}{k}
+\] 
+
+{\color{red} Disclaimer}: the plots below have been obtained with $\vert\cH_d\vert \le 2^d$ which is incorrect, I need to fix it. I tried the formula above or something like $\min(2^N, N^{2^d}2^{2^d})$ but dependence on $d$ is awful. 
 
 \begin{figure}[h!]
   \centering
@@ -123,22 +122,48 @@ Because the bound does not predict the saturation of the test error, we try a di
 
 % guardare massart as sent by Pie e scrivere questa parte meglio 
 
-{\bf Rademacher Complexity bound} 
+\section{Rademacher Complexity and Massart Lemma} 
 
 % The proof follows by bounding the supremum of the expected gap with the rademacher complexity via a symmetrization trick, and then applying Massart's lemma (Hoeffding lemma + $\expv \sup \le \sup \expv$ + bounding the sup with the sum). 
 
-The Rademacher complexity is
-\begin{equation}
-    \mathcal R_n(\mathcal H_d) = \expv_{D,\xi} \left[\sup_{\in\mathcal H}\frac{1}{n}\sum_{i=1}^n \xi_i \ell(h(x_i), y_i)\right] \le 0.5
-\end{equation}
 
-for $\xi_i \in \{1,-1\}$ Rademacher variables. 
-Since the Rademacher complexity is naturally bounded by $0.5$ in our setting, we plot the following bound
-\begin{equation}
-\expv_D[R(\hat h_D) - \hat R_D (\hat h_D)]\,\, \le \,\, \min \left\{\mathcal R_n(\mathcal H_d), O\left(\sqrt{\frac{\log \vert \mathcal H_d \vert}{n}}\right)\right\}.
-\end{equation}
+\begin{definition}[Rademacher complexity]
+%Let $\xi_1,\ldots,\xi_n$ be Rademacher variables taking value $1$ or $-1$ with equal probability. The Rademacher complexity of the set $\LL = \{\ell \circ h : h \in \mathcal H \}$ is
+\[
+\mathcal R_n(\LL) = \expv_{\xi,D} \left[\sup_{\ell_h\in\LL}\frac{1}{n}\sum_{i=1}^n \xi_i \ell(h(X_i), Y_i)\right]
+\]
+\end{definition}
 
-The experimental design is the same as above. The code for computing $\mathcal R_n(\mathcal H_d)$ the code is 100\% by LLMs, it is computed with MC like the LHS. 
+\begin{theorem}[Rademacher complexity bound]\label{thm: rad bound}
+%The gap between the expected and empirical risk of the ERM $\hat h$ is
+\[
+\expv_D[(R-\hat R) (\hat h)] 
+% \le \expv_D[\sup_{h \in \cH}(R-\hat R) (h)] 
+\le 2 \mathcal R_n(\LL)
+\]
+\end{theorem}
+
+\begin{lemma}[Massart]\label{lemma: refined massart}
+%We have
+\[
+\mathcal R_n(\LL) \le \expv_D\left[\sqrt{\frac{2\log N_D(\cH)}{n}}\right]
+\]
+where  $N_D(\cH)=\left|\left\{(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n)):h\in\cH\right\}\right|$.
+\end{lemma}
+
+\begin{lemma}[Counting inequalities]\label{lemma: counting}
+\[
+N_D(\cH) \le \min\{\card, 2^n\}.
+\] 
+\end{lemma} 
+
+\begin{theorem}[Rademacher and Massart bound]
+\begin{equation}
+\expv_D[(R-\hat R) (\hat h_d)] \le 2\sqrt{\frac{2\min\{\log \vert\cH_d\vert, \log 2^n\}}{n}} \le \min\left\{O\left(\sqrt\frac{\log\vert\cH_d\vert}{n}\right), O(1)\right\}.
+\end{equation}
+\end{theorem}
+
+We plot the bound in Theorem 2.5, with as constant term $0.5$, in Figures~\ref{fig:pic2} and~\ref{fig:pic3}. The experimental design is the same as before. 
 
 \begin{figure}[h!]
   \centering
@@ -159,9 +184,85 @@ The experimental design is the same as above. The code for computing $\mathcal R
 Observations:
 \begin{itemize}
     \item[$\triangleright$] the bound saturates;
-    \item[$\triangleright$] the theoretical result shows a factor of $2$ which is not mirrored by the experiments;
-    \item[$\triangleright$] the bound does not move with the error (nor with the complexity of $h^*$), indeed this was expected because the Rademacher is completely blind to our learning problem.
+    \item[$\triangleright$] the constant term is set at $0.5$ without any theoretical motivation;
+    \item[$\triangleright$] the bound does not move with the error (nor with the complexity of $h^*$).
 \end{itemize}
+
+\section{Dependence on the Best Risk} 
+We now try to obtain a bound depending on the noise. 
+
+Set 
+\[
+R^*_\cH = \min_{h\in\cH} R(h).
+\]
+We aim at obtaining a bound on the gap at $\hat h$ in terms of the best risk $R^*_\cH$. This is because the best risk can be decomposed as 
+\[
+R^*_\cH = \underbrace{R^*}_{\text{Bayes risk}} + \underbrace{R^*_\cH - R^*}_{\text{Approximation error}} =: \sigma^2 + A_\cH
+\]
+
+\begin{theorem}[Bound with empirical risk]\label{thm: bound emprisk}
+    With probability at least $1-\delta$,
+    \[
+    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{\hat R(\hat h)\log(2\Pi_{2n}(\cH)/\delta)}{n}} + 16\frac{\log(2\Pi_{2n}(\cH)/\delta)}{n}
+    \]
+\end{theorem}
+
+\begin{corollary}[Bound with best risk]
+    With probability at least $1-\delta$,
+    \[
+    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{R^*_{\cH}\log(4\Pi_{2n}(\cH)/\delta)}{n}} + 20\frac{\log(4\Pi_{2n}(\cH)/\delta)}{n}
+    \]
+\end{corollary}
+
+\begin{corollary}[Noise and approximation error bound] With probability $1-\delta$,
+\begin{equation}
+    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{(A_\cH + \sigma^2)\log(4\Pi_{2n}(\cH)/\delta)}{n}} + 20\frac{\log(4\Pi_{2n}(\cH)/\delta)}{n}
+\end{equation}
+\end{corollary}
+
+Where
+\begin{itemize}
+    \item $\sigma^2$ measures the irreducible classification error due to noise;
+    \item $A_\cH$ measures the approximation error of the hypotheses class;
+    \item $\Pi_{2n}(\cH)$ can be substituted by $N_D(\cH)$ as in the proof of Theorem 2.19. 
+\end{itemize}
+
+
+\section{Going on}
+
+Given these reuslts, we want to apply the techniques of the Rademacher complexity to bounds that are sensitive to the noise and other structural elements of the learning problem. 
+
+Idee:
+\begin{enumerate}
+    \item nella proof del teorema $2.5$, se io avessi un modo di misurare la cardinalità del sottoinsieme di $\mathcal H$ in cui di solito cade l'algoritmo, potrei fare uno union bound sulle $h$ lì dentro, e la cardinalità di questo insieme stabilizzerebbe una volta che ho solo leaf pure, quando non esploro più nuove soluzioni (saturation)
+    \item utilizzare la localized Rademacher complexity (discussione con Chat)
+\end{enumerate}
+
+\bigskip 
+
+{\bf Localized Rademacher}
+
+Until now, we have seen that we have a bound \[\min \left\{\mathcal R_n(\mathcal H_d), O\left(\sqrt{\frac{\log\vert \mathcal H_d \vert}{n}}\right)\right\}\] that saturates, but is not sensitive to the noise, the ratio $n/N$, or the complexity of the data-generating function. Then, in the last two sections we saw bounds capturing the variance of the predictor or the noise, but which do not saturate, instead they grow linearly in the depth $d$. In this section, we look for a bound that saturates and is aware of the structure of the learning problem.
+
+The motivating idea comes from the observation that the Rademacher complexity measures the expressiveness of the whole hypotheses set $\cH$, as the supremum runs over all the functions in this set. However, we know that while learning, we will focus on a subset of the functions in $\cH$ that are close to the true function $f^*$, and this happens after a few splits. Therefore, it makes sense to try to consider a $\it local\/$ measure of complexity. 
+% bo non son sicura
+
+Hence, we define a localized loss class for a radius $r>0$ as 
+\begin{equation}
+   {(\ell\circ\mathcal H_d)}_n(r) := \left\{ f\in\cH_d \vert \expv_D \left[ \frac{1}{n}\sum_i \ell(f(X_i),Y_i) \le r \right]\right \}
+\end{equation}
+
+\begin{definition}[Localized Rademacher complexity]
+    Given our usual setting and a radius $r>0$, the localized Rademacher complexity is
+    \begin{equation}
+        \mathcal R_n(\mathcal H_d (r)) := \expv_{\xi,D} \left[ \sup_{f\in{\cH_d}(r)} \frac{1}{n}\sum_i \xi_i \ell(f(X_i),Y_i) \right]
+    \end{equation}
+    which is just a Rademacher complexity where the sup runs over all the function with expected average loss in the ball of radius $r$. 
+\end{definition}
+
+
+Fixed Point Theorem + Massart's Lemma + usare un conto con $L^*$ per la cardinalità di H
+
 
 
 

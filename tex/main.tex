@@ -694,9 +694,9 @@ Then, the application of Massart lemma (Lemma~\ref{lemma: massart's lemma}) can 
 \begin{lemma}[Massart]\label{lemma: refined massart}
 %We have
 \[
-\mathcal R_n(\LL) \le \expv_D\left[M\sqrt{\frac{2\log N(D)}{n}}\right]
+\mathcal R_n(\LL) \le \expv_D\left[M\sqrt{\frac{2\log N_D(\cH)}{n}}\right]
 \]
-where  $N(D)=\left|\left\{(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n)):h\in\cH\right\}\right|$.
+where  $N_D(\cH)=\left|\left\{(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n)):h\in\cH\right\}\right|$.
     \begin{proof}
         This is Lemma~\ref{lemma: massart's lemma} with the observation that we can take the supremum over loss vectors $\ell_h(X_i,Y_i)$ instead of over functions $h$. 
     \end{proof}
@@ -704,10 +704,10 @@ where  $N(D)=\left|\left\{(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n)):h\in\cH\right
 
 \begin{lemma}[Counting inequalities]\label{lemma: counting}
 \[
-N(D) \le \min\{\card, 2^n\}.
+N_D(\cH) \le \min\{\card, 2^n\}.
 \] 
 \begin{proof}
-Given a dataset, its realizations through $\ell_h$ are less than or equal to those through $h$ because applying $\ell$ cannot increase the number of outputs, and the number of images of the functions in $\mathcal H$ are less than or equal to the number of functions $\card$. On the other hand, $N(D)\le 2^n$ because we have at most $2^n$ $n$-long sequences of $0s$ and $1s$.
+Given a dataset, its realizations through $\ell_h$ are less than or equal to those through $h$ because applying $\ell$ cannot increase the number of outputs, and the number of images of the functions in $\mathcal H$ are less than or equal to the number of functions $\card$. On the other hand, $N_D(\cH)\le 2^n$ because we have at most $2^n$ $n$-long sequences of $0s$ and $1s$.
 \end{proof}
 \end{lemma} 
 
@@ -717,75 +717,34 @@ Combining Theorem 2.13, Lemma 2.14 and Lemma 2.15, we obtain
 \end{equation}
 where $\hat h_d$ is the ERM among trees of depth at most $d$.
 
-\subsection{Growth function}
-
-\begin{definition}[Growth function]
-    The growth function of $\cH$ is
-\[
- \Pi_{\cH}(n)\coloneq\sup_{x_1,\ldots,x_n\in\mathcal X}
- \left|\left\{(h(x_1),\ldots,h(x_n)):h\in\cH\right\}\right|.
-\]
-\end{definition}
-
-The following extends Lemma~\ref{lemma: counting}.
-
-\begin{lemma}[Counting inequalities with growth function]\label{lem:growth}
-For every sample $D$ of size $n$,
-\[
- 1\le N(D)\le\Pi_{\cH}(n)\le\min\{|\cH|,2^n\}.
-\]
-% qui D è la realizzazione forse, otherwise come la confronti con \Pi ?
-
-\begin{proof}
-    $N(D) \le \Pi_\cH(n)$ because the number of distinct loss vector can at most decrease, given prediction vectors. $\Pi_\cH(n)\le \card$ because the realizations of functions in $h$ are at most as much as the functions in $h$ (equality when functions in $h$ are bijective). $\Pi_\cH(n)\le 2^n$ because we have at most $2^n$ sequences of $n$ $1$s and $-1$s.
-\end{proof}
-\end{lemma}
-
-\begin{corollary}[Growth-function bound]\label{cor:growth}
-\cite[Section~3.2, Corollary~3.8]{MRT2018}
-\begin{equation}\label{eq: corollary1}
- \mathcal R_n(\LL)\le\expv_D\left[M\sqrt{\frac{2\log N(D)}n}\right]
- \le M\sqrt{\frac{2\log\Pi_{\cH}(n)}n}.
-\end{equation}
-Consequently,
-\begin{equation}\label{eq: corollary2}
- \expv_D[(R-\hat R)(\hat h)]\le
- 2M\sqrt{\frac{2\log\Pi_{\cH}(n)}n}.
-\end{equation}
-
-\begin{proof}
-    Inequality~(\ref{eq: corollary1}) is Lemma~\ref{lemma: refined massart} combined with Lemma~\ref{lem:growth}. Inequality~(\ref{eq: corollary2}) follows similarly, from Theorem~\ref{thm: rad bound} and~(\ref{eq: corollary1}).
-\end{proof}
-\end{corollary}
-
-Applying Lemma 2.17 to (\ref{eq: corollary2}) yields the saturating bound (58). 
-
-\subsection{Relative bounds and dependence on the best risk (Excess risk bounds)}
+\subsection{Dependence on the best risk}
 Set 
 \[
 R^*_\cH = \min_{h\in\cH} R(h).
 \]
-We aim at obtaining a bound on the gap at $\hat h$ in terms of the best risk $R^*_\cH$. 
+We aim at obtaining a bound on the gap at $\hat h$ in terms of the best risk $R^*_\cH$.  
 
 \begin{theorem}[Bound with empirical risk]\label{thm: bound emprisk}
     With probability at least $1-\delta$,
     \[
-    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{\hat R(\hat h)\log(2\Pi_\cH(2n)/\delta)}{n}} + 16\frac{\log(2\Pi_\cH(2n)/\delta)}{n}
+    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{\hat R(\hat h)\log(2N_{2n}(\cH)/\delta)}{n}} + 16\frac{\log(2N_{2n}(\cH)/\delta)}{n}
     \]
+    where $N_{n}(\cH) \coloneq \sup_{(x_1,y_1), \ldots,(x_{n},y_{n}) \in \X \times \Y} N_D(\cH)$.
+
     \begin{proof}
         Apply the relative deviation inequality,
         \[
-        \Pr\left[\exists h\in\cH : R(h)-\hat R(h) > \varepsilon \sqrt{R(h)}\right] \le 2\Pi_\cH (2n) e^{-2\varepsilon^2/16}
+        \Pr\left[\exists h\in\cH : R(h)-\hat R(h) > \varepsilon \sqrt{R(h)}\right] \le 2N_{2n} (\cH) e^{-2\varepsilon^2/16}
         \]
-        with the suitable $\varepsilon$ and then isolate $\hat R(\hat h)$ on the RHS.\@ The same result holds using $N(D)$ instead of the growth function. 
+        with the suitable $\varepsilon$ and then isolate $\hat R(\hat h)$ on the RHS.
         % I have not looked precisely at the proof of the rel dev ineq
     \end{proof}
 \end{theorem}
 
-\begin{corollary}[Bound with best risk]
+\begin{corollary}[Bound with best risk]\label{cor: best risk}
     With probability at least $1-\delta$,
     \[
-    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{R^*_{\cH}\log(4\Pi_\cH(2n)/\delta)}{n}} + 20\frac{\log(4\Pi_\cH(2n)/\delta)}{n}
+    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{R^*_{\cH}\log(4N_{2n}(\cH)/\delta)}{n}} + 20\frac{\log(4N_{2n}(\cH)/\delta)}{n}
     \]
     \begin{proof}
         Set $h_0 = \argmin_{h\in\cH} R(h)$, so that $R(h_0) = R^*_{\cH}$. Then,
@@ -796,11 +755,129 @@ We aim at obtaining a bound on the gap at $\hat h$ in terms of the best risk $R^
         \[
         \hat R(h_0) \le R^*_{\cH} + \sqrt{\frac{2R*_\cH \log (2/\delta)}{n}} + \frac{\log(2/\delta)}{3n}.
         \]
-        Since $\Pi_\cH(2n)\ge 1$ and thus $\frac{\log (2/\delta)}{n}\le \frac{\log(4\Pi_\cH(2n)/\delta)}{n}$,
+        Since $N_{2n}(\cH)\ge 1$ and thus $\frac{\log (2/\delta)}{n}\le \frac{\log(4N_{2n}(\cH)/\delta)}{n}$,
         \begin{equation}\label{eq: bound hatR h0}
-        \hat R(h_0) \le \left(\sqrt{R^*_\cH} + \sqrt{\frac{4\log(\Pi_\cH(2n)/\delta)}{n}}\right)^2
+        \hat R(h_0) \le \left(\sqrt{R^*_\cH} + \sqrt{\frac{4\log(N_{2n}(\cH)/\delta)}{n}}\right)^2
         \end{equation}
-        Substitute~(\ref{eq: hatR h le hat R h0}) into~(\ref{eq: bound hatR h0}), and apply the bound to $\hat R(\hat h)$ in the RHS of Theorem~\ref{thm: bound emprisk} at confidence $1-\delta/2$. This yields the desired bound, which holds with probability at least $1-\delta$ by a union bound on the events ((62) and Theorem 2.19) which we require to hold simultaneously.
+        Substitute~(\ref{eq: hatR h le hat R h0}) into~(\ref{eq: bound hatR h0}), and apply the bound to $\hat R(\hat h)$ in the RHS of Theorem~\ref{thm: bound emprisk} at confidence $1-\delta/2$. This yields the desired bound, which holds with probability at least $1-\delta$ by a union bound on the events ((\ref{eq: bound hatR h0}) and Theorem~\ref{thm: bound emprisk}) which we require to hold simultaneously.
+    \end{proof}
+    
+\end{corollary}
+
+\begin{definition}[Bayes risk]
+    \[
+     R^*\coloneq\inf_{h:\X\to\Y} R(h)  = \sigma^2
+    \]
+    % btw per definizione il bayes risk è il minimo rischio che una funzione misurabile puo attain, e turns out che in questo caso di classification task con 0-1 loss il bayes classifier così definito attains questo rischio.
+\end{definition}
+
+\begin{definition}[Approximation error]
+    \[
+    A_\cH = R^*_\cH - R^*
+    \]
+\end{definition}
+
+\begin{corollary}[Noise and approximation error bound]\label{cor: noiseandappr bound}
+With probability $1-\delta$,
+\begin{equation}
+    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{(A_\cH + \sigma^2)\log(4N_{2n}(\cH)/\delta)}{n}} + 20\frac{\log(4N_{2n}(\cH)/\delta)}{n}
+\end{equation}
+\begin{proof}
+    Substitute $R^*_\cH = A_\cH + \sigma^2$ into Corollary~\ref{cor: best risk}.
+\end{proof}
+\end{corollary}
+
+Where
+\begin{itemize}
+    \item $\sigma^2$ measures the irreducible classification error due to noise;
+    \item $A_\cH$ measures the approximation error of the hypotheses class. 
+\end{itemize}
+
+
+\subsection{Growth function}
+
+\begin{definition}[Growth function]
+    The growth function of $\cH$ is
+\[
+ \Pi_{n}(\cH)\coloneq\sup_{x_1,\ldots,x_n\in\mathcal X}
+ \left|\left\{(h(x_1),\ldots,h(x_n)):h\in\cH\right\}\right|.
+\]
+\end{definition}
+
+The following extends Lemma~\ref{lemma: counting}.
+
+\begin{lemma}[Counting inequalities with growth function]\label{lem:growth}
+For every sample $D$ of size $n$,
+\[
+ 1\le N_D(\cH)\le\Pi_{n}(\cH)\le\min\{|\cH|,2^n\}.
+\]
+% qui D è la realizzazione forse, otherwise come la confronti con \Pi ?
+
+\begin{proof}
+    $N_D(\cH) \le \Pi_{n}(\cH)$ because the number of distinct loss vector can at most decrease, given prediction vectors. $\Pi_{n}(\cH)\le \card$ because the realizations of functions in $h$ are at most as much as the functions in $h$ (equality when functions in $h$ are bijective). $\Pi_{n}(\cH)\le 2^n$ because we have at most $2^n$ sequences of $n$ $1$s and $-1$s.
+\end{proof}
+\end{lemma}
+
+\begin{corollary}[Growth-function bound]\label{cor:growth}
+\cite[Section~3.2, Corollary~3.8]{MRT2018}
+\begin{equation}\label{eq: corollary1}
+ \mathcal R_n(\LL)\le\expv_D\left[M\sqrt{\frac{2\log N_D(\cH)}n}\right]
+ \le M\sqrt{\frac{2\log\Pi_{n}(\cH)}n}.
+\end{equation}
+Consequently,
+\begin{equation}\label{eq: corollary2}
+ \expv_D[(R-\hat R)(\hat h)]\le
+ 2M\sqrt{\frac{2\log\Pi_{n}(\cH)}n}.
+\end{equation}
+
+\begin{proof}
+    Inequality~(\ref{eq: corollary1}) is Lemma~\ref{lemma: refined massart} combined with Lemma~\ref{lem:growth}. Inequality~(\ref{eq: corollary2}) follows similarly, from Theorem~\ref{thm: rad bound} and~(\ref{eq: corollary1}).
+\end{proof}
+\end{corollary}
+
+Applying Lemma~\ref{lem:growth} to (\ref{eq: corollary2}) yields the saturating bound (58). 
+
+\subsection{Dependence on the best risk (growth function)}
+Set 
+\[
+R^*_\cH = \min_{h\in\cH} R(h).
+\]
+We aim at obtaining a bound on the gap at $\hat h$ in terms of the best risk $R^*_\cH$. 
+
+\begin{theorem}[Bound with empirical risk]\label{thm: bound emprisk growth}
+    With probability at least $1-\delta$,
+    \[
+    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{\hat R(\hat h)\log(2\Pi_{2n}(\cH)/\delta)}{n}} + 16\frac{\log(2\Pi_{2n}(\cH)/\delta)}{n}
+    \]
+    \begin{proof}
+        Apply the relative deviation inequality,
+        \[
+        \Pr\left[\exists h\in\cH : R(h)-\hat R(h) > \varepsilon \sqrt{R(h)}\right] \le 2\Pi_{2n}(\cH) e^{-2\varepsilon^2/16}
+        \]
+        with the suitable $\varepsilon$ and then isolate $\hat R(\hat h)$ on the RHS.\@ The same result holds using $N_D(\cH)$ instead of the growth function. 
+        % I have not looked precisely at the proof of the rel dev ineq
+    \end{proof}
+\end{theorem}
+
+\begin{corollary}[Bound with best risk]\label{cor: best risk growth}
+    With probability at least $1-\delta$,
+    \[
+    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{R^*_{\cH}\log(4\Pi_{2n}(\cH)/\delta)}{n}} + 20\frac{\log(4\Pi_{2n}(\cH)/\delta)}{n}
+    \]
+    \begin{proof}
+        Set $h_0 = \argmin_{h\in\cH} R(h)$, so that $R(h_0) = R^*_{\cH}$. Then,
+        \begin{equation}\label{eq: hatR h le hat R h0 growth}
+        \hat R(\hat h) \le \hat R(h_0).
+        \end{equation}
+        Since $h_0$ is independent of the data, $\expv_D[\hat R(h_0)] = R(h_0)$ and hence Bernstein gives, with probability at least $1-\delta/2$,
+        \[
+        \hat R(h_0) \le R^*_{\cH} + \sqrt{\frac{2R*_\cH \log (2/\delta)}{n}} + \frac{\log(2/\delta)}{3n}.
+        \]
+        Since $\Pi_{2n}(\cH)\ge 1$ and thus $\frac{\log (2/\delta)}{n}\le \frac{\log(4\Pi_{2n}(\cH)/\delta)}{n}$,
+        \begin{equation}\label{eq: bound hatR h0 growth}
+        \hat R(h_0) \le \left(\sqrt{R^*_\cH} + \sqrt{\frac{4\log(\Pi_{2n}(\cH)/\delta)}{n}}\right)^2
+        \end{equation}
+        Substitute~(\ref{eq: hatR h le hat R h0 growth}) into~(\ref{eq: bound hatR h0 growth}), and apply the bound to $\hat R(\hat h)$ in the RHS of Theorem~\ref{thm: bound emprisk growth} at confidence $1-\delta/2$. This yields the desired bound, which holds with probability at least $1-\delta$ by a union bound on the events ((\ref{eq: bound hatR h0 growth}) and Theorem~\ref{thm: bound emprisk growth}) which we require to hold simultaneously.
     \end{proof}
     
 \end{corollary}
@@ -817,16 +894,16 @@ We aim at obtaining a bound on the gap at $\hat h$ in terms of the best risk $R^
     A_\cH = R^*_\cH - R^*
     \]
 \end{definition}
-Let $\sigma^2 = R^*$ and notice $R^*_\cH = A_\cH + \sigma^2$. Corollary 2.20 gives, with probability $1-\delta$,
+Let $\sigma^2 = R^*$ and notice $R^*_\cH = A_\cH + \sigma^2$. Corollary~\ref{cor: best risk growth} gives, with probability $1-\delta$,
 \begin{equation}
-    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{(A_\cH + \sigma^2)\log(4\Pi_\cH(2n)/\delta)}{n}} + 20\frac{\log(4\Pi_\cH(2n)/\delta)}{n}
+    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{(A_\cH + \sigma^2)\log(4\Pi_{2n}(\cH)/\delta)}{n}} + 20\frac{\log(4\Pi_{2n}(\cH)/\delta)}{n}
 \end{equation}
 
 Where
 \begin{itemize}
     \item $\sigma^2$ measures the irreducible classification error due to noise;
     \item $A_\cH$ measures the approximation error of the hypotheses class;
-    \item $\Pi_\cH(2n)$ can be substituted by $N(D)$ as in the proof of Theorem 2.19. 
+    \item $\Pi_{2n}(\cH)$ can be substituted by $N_D(\cH)$ as in the proof of Theorem~\ref{thm: bound emprisk growth}. 
 \end{itemize}
 
 
