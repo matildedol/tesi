@@ -713,9 +713,8 @@ Given a dataset, its realizations through $\ell_h$ are less than or equal to tho
 
 Combining Theorem 2.13, Lemma 2.14 and Lemma 2.15, we obtain
 \begin{equation}
-\expv_D[(R-\hat R) (\hat h_d)] \le 2M\sqrt{\frac{2\min\{\log \vert\cH_d\vert, \log 2^n\}}{n}} \le \min\left\{O\left(\sqrt\frac{\log\vert\cH_d\vert}{n}\right), O(1)\right\}.
+\expv_D[(R-\hat R) (\hat h)] \le 2M\sqrt{\frac{2\min\{\log \vert\cH\vert, \log 2^n\}}{n}} \le \min\left\{O\left(\sqrt\frac{\log\vert\cH\vert}{n}\right), O(1)\right\}.
 \end{equation}
-where $\hat h_d$ is the ERM among trees of depth at most $d$.
 
 \subsection{Dependence on the best risk}
 Set 
@@ -793,6 +792,87 @@ Where
     \item $A_\cH$ measures the approximation error of the hypotheses class. 
 \end{itemize}
 
+Notice that when $R^*_\cH = 0$, the bound becomes linear in $\log(N_{2n}(\cH))$.
+
+\begin{corollary}[Noise and approximation error bound in expectation]
+\[
+\expv_D\left[R(\hat h)-\hat R(\hat h)\right] \le \sqrt{\frac{(A_\cH + \sigma^2)\left(\log(4N_{2n}(\cH)) + 1\right)}{n}} + 20\,\frac{\log(4N_{2n}(\cH)) + 1}{n}
+\]
+\begin{proof}
+    Let $\text{gap} = (R-\hat R(\hat h))$ and $C = \sqrt{\frac{\log(4 N_n(\cH)/\delta)}{n}}$. Corollary~\ref{cor: best risk} gives
+\begin{align*}
+&\Pr\left[\text{gap} \le \sqrt{R^*_\cH}\,C + 20C^2\right] \ge 1-\delta \\
+\implies &\Pr\left[\text{gap} > \sqrt{R^*_\cH}\,C + 20C^2\right] \le \delta
+\end{align*}
+Set $\varepsilon = \sqrt{R^*_\cH}\,C + 20C^2$. Let us now find $\delta(\varepsilon)$:
+\[
+20C^2 + \sqrt{R^*_\cH}\,C - \varepsilon = 0 \implies C = \frac{-\sqrt{R^*_\cH} + \sqrt{R^*_\cH + 80\varepsilon}}{40}
+\]
+So we have
+\begin{align*}
+\frac{\log(4N_{2n}(\cH)/\delta)}{n} &= \left(\frac{\sqrt{R^*_\cH + 80\varepsilon} - \sqrt{R^*_\cH}}{40}\right)^2 \\
+\frac{4N_{2n}(\cH)}{\delta} &= \exp\left(n\left(\frac{\sqrt{R^*_\cH + 80\varepsilon} - \sqrt{R^*_\cH}}{40}\right)^2\right)
+\end{align*}
+and hence
+\[
+\delta(\varepsilon) = 4N_{2n}(\cH)\exp\left(-\frac{n}{1600}\left(\sqrt{R^*_\cH + 80\varepsilon} - \sqrt{R^*_\cH}\right)^2\right).
+\]
+Using that $\expv[X] = \int_0^\infty \Pr[X \ge \varepsilon]\,d\varepsilon$ for $X \ge 0$, applied to $\text{gap}^+ \coloneq \max\{\text{gap}, 0\}$,
+\[
+\expv_D[\text{gap}] \le \expv_D[\text{gap}^+] = \int_0^\infty \Pr[\text{gap} \ge \varepsilon]\,d\varepsilon \le \int_0^\infty \min\{1, \delta(\varepsilon)\}\,d\varepsilon.
+\]
+By a shift of perspective, looking at the integral as a sum of horizontal stripes instead of vertical stripes in the graph of $\varepsilon \mapsto \delta(\varepsilon)$, we obtain
+\[
+\int_0^\infty \min\{1, \delta(\varepsilon)\}\,d\varepsilon = \int_0^1 \delta^{-1}(t)\,dt = \int_0^1 \varepsilon(\delta)\,d\delta
+\]
+Hence, writing $\varepsilon(\delta) = \sqrt{R^*_\cH}\,C + 20C^2$ explicitly,
+\[
+\expv_D[\text{gap}] \le \int_0^1 \varepsilon(\delta)\,d\delta = \sqrt{\frac{R^*_\cH}{n}}\int_0^1 \sqrt{\log\frac{4N_{2n}(\cH)}{\delta}}\,d\delta + \frac{20}{n}\int_0^1 \log\frac{4N_{2n}(\cH)}{\delta}\,d\delta.
+\]
+The logarithm is the only part depending on $\delta$, and its integral is
+\[
+\int_0^1 \log\frac{4N_{2n}(\cH)}{\delta}\,d\delta = \log(4N_{2n}(\cH)) - \int_0^1 \log\delta\,d\delta = \log(4N_{2n}(\cH)) + 1.
+\]
+Applying Jensen's inequality to the square root term,
+\[
+\int_0^1 \sqrt{\log\frac{4N_{2n}(\cH)}{\delta}}\,d\delta \le \sqrt{\int_0^1 \log\frac{4N_{2n}(\cH)}{\delta}\,d\delta} = \sqrt{\log(4N_{2n}(\cH)) + 1},
+\]
+we obtain
+\[
+\expv_D[\text{gap}] \le \sqrt{\frac{R^*_\cH\left(\log(4N_{2n}(\cH)) + 1\right)}{n}} + 20\,\frac{\log(4N_{2n}(\cH)) + 1}{n},
+\]
+which is the claim since $R^*_\cH = A_\cH + \sigma^2$.
+
+\end{proof}
+\end{corollary}
+
+Asymptotically,
+\[
+\expv_D\left[R(\hat h)-\hat R(\hat h)\right] \le O\left(
+\sqrt{\frac{(A_{\mathcal H}+\sigma^2)\,\log N_{2n}(\mathcal H)}{n}} + \frac{\log N_{2n}(\mathcal H)}{n} \right)
+\]
+because, at the numerator,
+\[
+\log (4 N_{2n}(\mathcal H)) + 1 = \log 4 + \log N_{2n}(\mathcal H) + 1 = \log N_{2n}(\mathcal H) + O(1)
+\]
+and for large $x$, 
+\[
+\log x + O(1) \le C \log x
+\] 
+for some constant $C>0$. Plugging in the counting inequality from Lemma~\ref{lemma: counting} with $2n$, we obtain and plot the following bound
+\[
+\expv_D\left[R(\hat h)-\hat R(\hat h)\right] \le \min\left\{ O\left(
+\sqrt{\frac{(A_{\mathcal H}+\sigma^2)\log \card}{n}} + \frac{\log\card}{n} \right), O\left(
+\sqrt{A_{\mathcal H}+\sigma^2}+1  \right)\right\}
+\]
+Remark: recall that $N_{2n}(\cH)$ is the maximum number of loss vectors over the union of two datasets $D, D'$, or equivalently over a dataset with size $2n$. The counting lemma must be applied to $2n$-long loss vectors. Hence, we still have $N_{2n}(\cH) \le \vert \cH\vert$ because the number of functions is still the same, and the bound counting all the possible sequences becomes $N_{2n}(\cH) \le 2^{2n}$. 
+
+The experimental design is the same as before, except for the fact that we use a Bernoulli error with $p=0.8$, i.e. 
+\[
+y = \mathrm{sign}(h^*(x))\cdot b, \qquad b\sim \text{Bernoulli}(p)
+\]
+This eases the computation of the Bayes risk, which is $R^* = p$ since $p\ge0.5$. The minimum risk over our hypotheses set $R^*_\cH$, instead, is computed using dynamic programming. We produce labels using our sine function and the Bernoulli error and we cluster the intervals where labels have the same sign, obtaining $M$ contiguous blocks. We create a dp $k\times 2$ matrix that stores the minimum risk for each number of maximum splits $k$, up to $\min(M-1, 2^d)$ where $d$ is the maximum depth we are considering, when the last assigned label is $1$ or $-1$ (the columns). Then, for each contiguous block we dynamically update the dp matrix summing the minimum risk among all trees with at most $k$ splits. In the end, we select the minimum risk among the tree predicting $1$ or $-1$ in the very last block. 
+
 
 \subsection{Growth function}
 
@@ -836,77 +916,6 @@ Consequently,
 \end{corollary}
 
 Applying Lemma~\ref{lem:growth} to (\ref{eq: corollary2}) yields the saturating bound (58). 
-
-\subsection{Dependence on the best risk (growth function)}
-Set 
-\[
-R^*_\cH = \min_{h\in\cH} R(h).
-\]
-We aim at obtaining a bound on the gap at $\hat h$ in terms of the best risk $R^*_\cH$. 
-
-\begin{theorem}[Bound with empirical risk]\label{thm: bound emprisk growth}
-    With probability at least $1-\delta$,
-    \[
-    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{\hat R(\hat h)\log(2\Pi_{2n}(\cH)/\delta)}{n}} + 16\frac{\log(2\Pi_{2n}(\cH)/\delta)}{n}
-    \]
-    \begin{proof}
-        Apply the relative deviation inequality,
-        \[
-        \Pr\left[\exists h\in\cH : R(h)-\hat R(h) > \varepsilon \sqrt{R(h)}\right] \le 2\Pi_{2n}(\cH) e^{-2\varepsilon^2/16}
-        \]
-        with the suitable $\varepsilon$ and then isolate $\hat R(\hat h)$ on the RHS.\@ The same result holds using $N_D(\cH)$ instead of the growth function. 
-        % I have not looked precisely at the proof of the rel dev ineq
-    \end{proof}
-\end{theorem}
-
-\begin{corollary}[Bound with best risk]\label{cor: best risk growth}
-    With probability at least $1-\delta$,
-    \[
-    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{R^*_{\cH}\log(4\Pi_{2n}(\cH)/\delta)}{n}} + 20\frac{\log(4\Pi_{2n}(\cH)/\delta)}{n}
-    \]
-    \begin{proof}
-        Set $h_0 = \argmin_{h\in\cH} R(h)$, so that $R(h_0) = R^*_{\cH}$. Then,
-        \begin{equation}\label{eq: hatR h le hat R h0 growth}
-        \hat R(\hat h) \le \hat R(h_0).
-        \end{equation}
-        Since $h_0$ is independent of the data, $\expv_D[\hat R(h_0)] = R(h_0)$ and hence Bernstein gives, with probability at least $1-\delta/2$,
-        \[
-        \hat R(h_0) \le R^*_{\cH} + \sqrt{\frac{2R*_\cH \log (2/\delta)}{n}} + \frac{\log(2/\delta)}{3n}.
-        \]
-        Since $\Pi_{2n}(\cH)\ge 1$ and thus $\frac{\log (2/\delta)}{n}\le \frac{\log(4\Pi_{2n}(\cH)/\delta)}{n}$,
-        \begin{equation}\label{eq: bound hatR h0 growth}
-        \hat R(h_0) \le \left(\sqrt{R^*_\cH} + \sqrt{\frac{4\log(\Pi_{2n}(\cH)/\delta)}{n}}\right)^2
-        \end{equation}
-        Substitute~(\ref{eq: hatR h le hat R h0 growth}) into~(\ref{eq: bound hatR h0 growth}), and apply the bound to $\hat R(\hat h)$ in the RHS of Theorem~\ref{thm: bound emprisk growth} at confidence $1-\delta/2$. This yields the desired bound, which holds with probability at least $1-\delta$ by a union bound on the events ((\ref{eq: bound hatR h0 growth}) and Theorem~\ref{thm: bound emprisk growth}) which we require to hold simultaneously.
-    \end{proof}
-    
-\end{corollary}
-
-\begin{definition}[Bayes risk]
-    \[
-     R^*\coloneq\inf_{h:\X\to\Y} R(h) 
-    \]
-    % btw per definizione il bayes risk è il minimo rischio che una funzione misurabile puo attain, e turns out che in questo caso di classification task con 0-1 loss il bayes classifier così definito attains questo rischio.
-\end{definition}
-
-\begin{definition}[Approximation error]
-    \[
-    A_\cH = R^*_\cH - R^*
-    \]
-\end{definition}
-Let $\sigma^2 = R^*$ and notice $R^*_\cH = A_\cH + \sigma^2$. Corollary~\ref{cor: best risk growth} gives, with probability $1-\delta$,
-\begin{equation}
-    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{(A_\cH + \sigma^2)\log(4\Pi_{2n}(\cH)/\delta)}{n}} + 20\frac{\log(4\Pi_{2n}(\cH)/\delta)}{n}
-\end{equation}
-
-Where
-\begin{itemize}
-    \item $\sigma^2$ measures the irreducible classification error due to noise;
-    \item $A_\cH$ measures the approximation error of the hypotheses class;
-    \item $\Pi_{2n}(\cH)$ can be substituted by $N_D(\cH)$ as in the proof of Theorem~\ref{thm: bound emprisk growth}. 
-\end{itemize}
-
-
 
 \begin{thebibliography}{9}
 \bibitem{MRT2018}

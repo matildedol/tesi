@@ -203,20 +203,21 @@ R^*_\cH = \underbrace{R^*}_{\text{Bayes risk}} + \underbrace{R^*_\cH - R^*}_{\te
 \begin{theorem}[Bound with empirical risk]\label{thm: bound emprisk}
     With probability at least $1-\delta$,
     \[
-    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{\hat R(\hat h)\log(2\Pi_{2n}(\cH)/\delta)}{n}} + 16\frac{\log(2\Pi_{2n}(\cH)/\delta)}{n}
+    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{\hat R(\hat h)\log(2N_{2n}(\cH)/\delta)}{n}} + 16\frac{\log(2N_{2n}(\cH)/\delta)}{n}
     \]
 \end{theorem}
 
 \begin{corollary}[Bound with best risk]
     With probability at least $1-\delta$,
     \[
-    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{R^*_{\cH}\log(4\Pi_{2n}(\cH)/\delta)}{n}} + 20\frac{\log(4\Pi_{2n}(\cH)/\delta)}{n}
+    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{R^*_{\cH}\log(4N_{2n}(\cH)/\delta)}{n}} + 20\frac{\log(4N_{2n}(\cH)/\delta)}{n}
     \]
 \end{corollary}
 
-\begin{corollary}[Noise and approximation error bound] With probability $1-\delta$,
+\begin{corollary}[Noise and approximation error bound]
+With probability $1-\delta$,
 \begin{equation}
-    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{(A_\cH + \sigma^2)\log(4\Pi_{2n}(\cH)/\delta)}{n}} + 20\frac{\log(4\Pi_{2n}(\cH)/\delta)}{n}
+    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{(A_\cH + \sigma^2)\log(4N_{2n}(\cH)/\delta)}{n}} + 20\frac{\log(4N_{2n}(\cH)/\delta)}{n}
 \end{equation}
 \end{corollary}
 
@@ -224,45 +225,68 @@ Where
 \begin{itemize}
     \item $\sigma^2$ measures the irreducible classification error due to noise;
     \item $A_\cH$ measures the approximation error of the hypotheses class;
-    \item $\Pi_{2n}(\cH)$ can be substituted by $N_D(\cH)$ as in the proof of Theorem 2.19. 
 \end{itemize}
 
+After performing tail integration, using an asymptotic bound and applying Lemma 2.4 to a data size of $2n$, we obtain 
+\[
+\expv_D\left[R(\hat h)-\hat R(\hat h)\right] \le \min\left\{ O\left(
+\sqrt{\frac{(A_{\mathcal H}+\sigma^2)\log \card}{n}} + \frac{\log\card}{n} \right), O\left(
+\sqrt{A_{\mathcal H}+\sigma^2}+1  \right)\right\}
+\]
+and we plot it in Figure~\ref{fig:pic4} and Figure~\ref{fig:pic5}. 
+
+{\bf Experimental design:} We consider a Bernoullian noise $b\sim\text{Bernoulli}(p)$ and generate
+\[
+y = \sgn(h^*(x))\cdot b
+\]
+flipping the labels of a portion $p$. This makes it easier to estimate the Bayes risk $R^*$, which is 
+\[
+R^* = 1-p
+\]
+for $p\ge 0.5$. We generally use $p=0.8$. $R^*_\cH$ is computed exactly using dynamic programming. 
+
+
+\begin{figure}[h!]
+  \centering
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{../../outputs/recap/pic4.png}
+    \caption{Same setting, with Bernoullian noise at $20\%$}
+    \label{fig:pic4}
+  \end{minipage}\hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{../../outputs/recap/pic5.png}
+    \caption{Different noise levels}
+    \label{fig:pic5}
+  \end{minipage}
+\end{figure}
+
+Figure~\ref{fig:pic6} shows the two terms of the minimum in the bound separately. The Bayes risk, the minimum risk over $\cH$ and the approximation error (their difference) for different noise levels are shown in Figure~\ref{fig:pic7}. 
+
+\begin{figure}[h!]
+  \centering
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{../../outputs/recap/pic6.png}
+    \caption{The two terms of the minimum in the noise and approx. error bound}
+    \label{fig:pic6}
+  \end{minipage}\hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{../../outputs/recap/pic7.png}
+    \caption{Approximation error and Bayes risk}
+    \label{fig:pic7}
+  \end{minipage}
+\end{figure}
 
 \section{Going on}
 
-Given these reuslts, we want to apply the techniques of the Rademacher complexity to bounds that are sensitive to the noise and other structural elements of the learning problem. 
-
-Idee:
-\begin{enumerate}
-    \item nella proof del teorema $2.5$, se io avessi un modo di misurare la cardinalità del sottoinsieme di $\mathcal H$ in cui di solito cade l'algoritmo, potrei fare uno union bound sulle $h$ lì dentro, e la cardinalità di questo insieme stabilizzerebbe una volta che ho solo leaf pure, quando non esploro più nuove soluzioni (saturation)
-    \item utilizzare la localized Rademacher complexity (discussione con Chat)
-\end{enumerate}
-
-\bigskip 
-
-{\bf Localized Rademacher}
-
-Until now, we have seen that we have a bound \[\min \left\{\mathcal R_n(\mathcal H_d), O\left(\sqrt{\frac{\log\vert \mathcal H_d \vert}{n}}\right)\right\}\] that saturates, but is not sensitive to the noise, the ratio $n/N$, or the complexity of the data-generating function. Then, in the last two sections we saw bounds capturing the variance of the predictor or the noise, but which do not saturate, instead they grow linearly in the depth $d$. In this section, we look for a bound that saturates and is aware of the structure of the learning problem.
-
-The motivating idea comes from the observation that the Rademacher complexity measures the expressiveness of the whole hypotheses set $\cH$, as the supremum runs over all the functions in this set. However, we know that while learning, we will focus on a subset of the functions in $\cH$ that are close to the true function $f^*$, and this happens after a few splits. Therefore, it makes sense to try to consider a $\it local\/$ measure of complexity. 
-% bo non son sicura
-
-Hence, we define a localized loss class for a radius $r>0$ as 
-\begin{equation}
-   {(\ell\circ\mathcal H_d)}_n(r) := \left\{ f\in\cH_d \vert \expv_D \left[ \frac{1}{n}\sum_i \ell(f(X_i),Y_i) \le r \right]\right \}
-\end{equation}
-
-\begin{definition}[Localized Rademacher complexity]
-    Given our usual setting and a radius $r>0$, the localized Rademacher complexity is
-    \begin{equation}
-        \mathcal R_n(\mathcal H_d (r)) := \expv_{\xi,D} \left[ \sup_{f\in{\cH_d}(r)} \frac{1}{n}\sum_i \xi_i \ell(f(X_i),Y_i) \right]
-    \end{equation}
-    which is just a Rademacher complexity where the sup runs over all the function with expected average loss in the ball of radius $r$. 
-\end{definition}
-
-
-Fixed Point Theorem + Massart's Lemma + usare un conto con $L^*$ per la cardinalità di H
-
+All these bounds can be applied using the growth function, which has an additional result that
+\[
+ \log\Pi_{\cH}(2n)\le d\log\frac{2en}{d}
+\]
+we need to understand if this is useful. Plus, we mentioned the localized Rademacher sometime this summer. 
 
 
 
