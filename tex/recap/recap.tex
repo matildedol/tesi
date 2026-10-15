@@ -53,7 +53,7 @@ We select the classifier that minimizes the empirical risk (ERM), i.e.
 \begin{equation*}\label{eq: ERM}
     \hat h_D \in \argmin_{h\in \mathcal H} \hat R_D (h)
 \end{equation*}
-which, importantly, is a random variable of the data $D$. Notice that at least one such $\hat h_D$ exists, since $\cH$ is finite and nonempty. 
+which, importantly, is a random variable of the data $D$. Notice that at least one such $\hat h_D$ exists, since $\cH$ is finite and nonempty.
 
 Specifically, in this thesis 
 \begin{itemize}
@@ -65,18 +65,17 @@ Specifically, in this thesis
 
 {\bf Research question}
 
-In machine learning, there exists a large number of algorithms, notably neural networks trained with gradient descent, which achieve great performances at prediction tasks on unseen data. We want to understand the relationship between the behavior of such algorithms on the available data (training set) and their future behavior on unseen data (test set). How can we predict how this future behavior will look like? 
+In machine learning, there exists a large number of algorithms, notably neural networks trained with gradient descent, which achieve great performances at prediction tasks on unseen data. A big question in learning theory is to understand the relationship between the behavior of such algorithms on the available data and their future behavior on unseen data (generalization). How can we predict how this future behavior will look like? 
 
-This is the big question in learning theory, which a number of results have tried to answer. Recent works seem to suggest that the classical theory fails to describe qualitatively the curve of the test error of learning algorihtms as their complexity increases. This thesis seeks to understand whether this is true by testing theoretical results against empirical evidences and looking for a bound that captures the qualitative behavior of the curve. 
+A number of results have tried to answer this question. Recent works seem to suggest that the classical theory fails to explain generalization, in particular they fail to describe the behavior of the test error of learning algorithms as the comlpexity of the hypotheses set increases. This thesis seeks to understand whether this is true by testing theoretical results against empirical evidences. We study the setting of a finite hypotheses set of binary decision trees. We look for a function that reproduces qualitatively the test error as the maximum depth of the decision trees (i.e.\ the complexity of the hypotheses space) increases. The contribution of identifying and empirically validating such a function is two-fold. On the one hand, it explains the shape of the test error curve of decision trees; on the other hand, it may allow to implement the same framework and techniques to study the generalization performance of more complex algorithms, like neural networks trained with gradient descent. 
 
-We start from the setting of a finite hypotheses set and binary decision trees.
-We aim to describe the shape of the test error curve of decision trees as their depth increases.
-To do so, we look for a function that bounds the gap between the expected and the empirical risk of the ERM, \[\expv_D\left[(R - \hat R_D)(\hat h_D)\right]\] We want this bound to capture the behavior of the curve qualitatively as well as changes in the structure of the learning problem (e.g.\ we look for sensitivity to the noise level $\sigma$ or to the complexity of the underlying true function $h^*$). 
+In particular, we study bounds on the expcted gap between the test and train error of the ERM, \[\expv_D\left[(R - \hat R_D)(\hat h_D)\right].\] 
+We want this bound to describe the shape of the empirical test error curve qualitatively as well as to be sensitive to changes in the structure of the learning problem (e.g.\ we look for sensitivity to the noise level $\sigma$ or to the complexity of the underlying true function $h^*$). 
 
 All proofs are in Appendix~\ref{app: proofs}. 
 \bigskip 
 
-\section{Union bound} \label{sec: unionbound}
+\section{Union bound}\label{sec: unionbound}
 The first result that we inspect uses Hoeffding inequality for the random variable $(R - \hat R)(h)$ and a union bound over $\mathcal H$ to obtain a bound for $\hat h_D$, which depends on the stochasticity of the data $D$. 
 
 \begin{theorem}[Union bound]\label{thm: unionbound}
@@ -105,12 +104,12 @@ Also, we test a Gaussian noise instead of a Bernoullian, concluding that there i
  \[
     y \leftarrow \mathrm{sign}\left(5\, \sin\left(\frac{\pi \,( m  +1)}{10}\, x\right)\right)\cdot b.
  \]
- Default values are $p = 0.8$ and $m = 10$. Notice also that our $\mathrm{sign}(\cdot)$ maps $0$ to $1$. Plots of the afore-mentioned experiments are in Appendix~\ref{app: prel exp}.
+ Default values are $p = 0.8$ and $m = 10$. Notice also that our $\mathrm{sign}(\cdot)$ maps $0$ to $1$. Plots of the afore-mentioned preliminary experiments are in Appendix~\ref{app: prel exp}.
 
 We proceed as follows. We generate a test set with size $n_\text{test} = 200,000$ sampling from $\X$ with $p_\X$ and generating the labels as above. Then, for each depth $d \in [1, 7\lceil{\log_2 n}\rceil] \subset \mathbb N$ we do the following. For a number $T=100$ of iterations, we 
 \begin{itemize}
     \item[$\cdot$] generate a train set ($n= 50$);
-    \item[$\cdot$] fit a decision tree with depth at most $d$;
+    \item[$\cdot$] fit a decision tree with depth at most $d$ (DecisionTreeClassifier algorithm from the scikit-learn library);
     \item[$\cdot$] compute the train error, the test error, and the gap between the two.
 \end{itemize}
 Then, we average the resulting quantities over the $T$ samples, obtaining empirical estimates of their expected values over the disorder of the data. 
@@ -346,7 +345,7 @@ Similarly, the disclaimer after bound~(\ref{eq: noiseandappr bound}): I say $O(\
 
 \newpage
 \appendix
-\section{Preliminary experiments}
+\section{Preliminary experiments}\label{app: prel exp}
 
 \section{Proofs}\label{app: proofs}
 \begin{proof}[Proof of Theorem~\ref{thm: unionbound}]
