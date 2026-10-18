@@ -70,15 +70,28 @@ In machine learning, there exists a large number of algorithms, notably neural n
 A number of results have tried to answer this question. Recent works seem to suggest that the classical theory fails to explain generalization, in particular they fail to describe the behavior of the test error of learning algorithms as the comlpexity of the hypotheses set increases. This thesis seeks to understand whether this is true by testing theoretical results against empirical evidences. We study the setting of a finite hypotheses set of binary decision trees. We look for a function that reproduces qualitatively the test error as the maximum depth of the decision trees (i.e.\ the complexity of the hypotheses space) increases. The contribution of identifying and empirically validating such a function is two-fold. On the one hand, it explains the shape of the test error curve of decision trees; on the other hand, it may allow to implement the same framework and techniques to study the generalization performance of more complex algorithms, like neural networks trained with gradient descent. 
 
 In particular, we study bounds on the expcted gap between the test and train error of the ERM, \[\expv_D\left[(R - \hat R_D)(\hat h_D)\right].\] 
-We want this bound to describe the shape of the empirical test error curve qualitatively as well as to be sensitive to changes in the structure of the learning problem (e.g.\ we look for sensitivity to the noise level $\sigma$ or to the complexity of the underlying true function $h^*$). 
+Notice that since $\hat h_D$ and $\hat R_D$ depend on the same dataset $D$, $\expv_D[\hat R_D(\hat h_D)]\neq R(\hat h_D)$, i.e.\ the empirical risk is a biased estimate of the true risk. A proof of this fact is found in Appendix~\ref{app: proofs}.
+
+We look for a bound that reproduces the shape of the empirical test error curve qualitatively. 
+In particular, we want this function to have the same asymptotic behavior as $\expv_D[R(\hat h_D)]$,
+as well as to be sensitive to changes in the structure of the learning problem which affect the test error curve. % For instance, as we will see, the test error changes with the noise level $(1-p)$ and with the complexity of the underlying data-generating function $h^*$, measured as the number of its sign changes in the interval $(0, 10$). 
 
 All proofs are in Appendix~\ref{app: proofs}. 
 \bigskip 
 
-\section{Union bound}\label{sec: unionbound}
-The first result that we inspect uses Hoeffding inequality for the random variable $(R - \hat R)(h)$ and a union bound over $\mathcal H$ to obtain a bound for $\hat h_D$, which depends on the stochasticity of the data $D$. 
 
-\begin{theorem}[Union bound]\label{thm: unionbound}
+% we want to see if theory can explain the shape of the test error curve as model complexity increases, to explain generalization
+
+% to do this, we want to find a function that bounds the test error and that reproduces its qualitative behavior 
+
+% perché questo ci permette di capire quali aspetti del learning problem determinano quell'andamento
+
+% in particular, cerchiamo un bound sul expected gap tra train e test error
+
+\section{Union bound over $\cH$}\label{sec: unionbound}
+Il primo risultato è uses Hoeffding inequality for the random variable $(R - \hat R)(h)$ and a union bound over $\mathcal H$ to obtain a bound for $\hat h_D$, which depends on the stochasticity of the data $D$. 
+
+\begin{theorem}[Union bound over $\cH$]\label{thm: unionbound}
 \begin{equation}\label{eq: union bound}
     \expv_D[R(\hat h_D) - \hat R_D (\hat h_D)] \,\, \le \,\, O\left(\sqrt{\frac{\log \vert \mathcal H \vert}{n}}\right)
 \end{equation}
@@ -110,23 +123,24 @@ We proceed as follows. We generate a test set with size $n_\text{test} = 200,000
 \begin{itemize}
     \item[$\cdot$] generate a train set ($n= 50$);
     \item[$\cdot$] fit a decision tree with depth at most $d$ (DecisionTreeClassifier algorithm from the scikit-learn library);
-    \item[$\cdot$] compute the train error, the test error, and the gap between the two.
+    \item[$\cdot$] compute the train error, the test error, and the differene between the two (the gap).
 \end{itemize}
-Then, we average the resulting quantities over the $T$ samples, obtaining empirical estimates of their expected values over the disorder of the data. 
+Then, we average the resulting quantities over the $T$ samples, obtaining empirical estimates of the expected values of the train error, test error, and gap over the disorder of the data. 
 
-Finally, we do the following plots:
-\begin{enumerate}
-    \item the train vs.\ the test error as $d$ increases;
-    \item the gap vs.\ the theoretical bound $\sqrt{\log \vert \mathcal H \vert/n}$;
-    \item the test error vs.\ the train error + the bound.
-\end{enumerate}
-
-To plot the bound, we need to find the number of trees for a given maximum depth. The exact computation gives
+To plot the theoretical bound, instead, we need to express $\vert \mathcal H_d\vert$ as a function of $d$.
+The exact computation gives
 \[
 \vert \mathcal H_d \vert = 2 \sum_{k=0}^{\min{N-1, 2^d-1}} \binom{N-1}{k}
 \] 
-
 {\color{red} Disclaimer}: the plots below have been obtained with $\vert\cH_d\vert \le 2^d$ which is incorrect, I need to fix it. I tried the formula above or something like $\min(2^N, N^{2^d}2^{2^d})$ but dependence on $d$ is awful. 
+
+We plot, as the maximum depth $d$ increases
+\begin{enumerate}
+    \item[(1)] the train and the test error curves;
+    \item[(2)] the gap and the theoretical bound $\sqrt{\log \vert \mathcal H \vert/n}$;
+    \item[(3)] the test error and the sum of train error and the bound (moving $\hat R_D(\hat h_D)$ to the right).
+\end{enumerate}
+
 
 \begin{figure}[h!]
   \centering
