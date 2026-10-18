@@ -30,3 +30,4 @@ outputs/*
 
 # -- Others --
 *.pdf
+!tex/**/*.pdf
