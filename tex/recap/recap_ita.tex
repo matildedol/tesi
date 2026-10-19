@@ -1,13 +1,13 @@
 Traccia: 
 
-In questa sezione, studiamo la prima funzione maggiorante sulla quantità $\expv_D[(R-\hat R_D)(\hat h_D)]$, a cui ci riferiremo come gap per il resto di questo lavoro (senza specificare ogni volta che è calcolato in $\hat h_D$). 
-Essa è ottenuta partendo da un risultato di concentrazione della random variable $\hat R_D(h)$ per una funzione fissa $h\in\cH$. Questo viene esteso a $\hat h_D$, che dipende dai dati, prendendo uno union bound sulla probabilità che l'evento valga per qualsiasi funzione $h\in\cH$.
+% In questa sezione, studiamo la prima funzione maggiorante sulla quantità $\expv_D[(R-\hat R_D)(\hat h_D)]$, a cui ci riferiremo come gap per il resto di questo lavoro (senza specificare ogni volta che è calcolato in $\hat h_D$). 
+% Essa è ottenuta partendo da un risultato di concentrazione della random variable $\hat R_D(h)$ per una funzione fissa $h\in\cH$. Questo viene esteso a $\hat h_D$, che dipende dai dati, prendendo uno union bound sulla probabilità che l'evento valga per qualsiasi funzione $h\in\cH$.
 
-[teorema union bound]
+% [teorema union bound]
 
-Tracciamo questo risultato per vedere come si relaziona all'evidenza empirica della curva del gap. 
+% Tracciamo questo risultato per vedere come si relaziona all'evidenza empirica della curva del gap. 
 
-[experimental design]
+% [experimental design]
 
 In Appendice:
 
@@ -18,101 +18,100 @@ Quindi, decisione finale di hyperparams
 Osserviamo che in tutti i grafici, l'errore di test a un certo punto stabilizza. Ciò è dato da una proprietà dell'algoritmo degli alberi decisionali bla bla
 In particolare, stabilizza ad un valore diverso da quello previsto teoricamente, perché è una algoritmo greedy bla bla
 
-[grafici con errore gaussiano vs. bernoulli]
-Commenti 
+% [grafici con errore gaussiano vs. bernoulli]
+% Commenti 
 
-[grafici con funzione sotto diversa (metti in appendix funzione sotto con errore bern vs gauss)]
-Commenti
+% [grafici con funzione sotto diversa (metti in appendix funzione sotto con errore bern vs gauss)]
+% Commenti
 
-Decisione finale (che, insieme a decisione sugli hyperparams, viene riportata in [experimental design] nel main text)
+% Decisione finale (che, insieme a decisione sugli hyperparams, viene riportata in [experimental design] nel main text)
 
-[plot gap union bound over H]
+% [plot gap union bound over H]
 
-La prima cosa che salta agli occhi è che il bound diverge, mentre l'errore di test ad un certo punto satura. Questa divergenza è dovuta alla dipendenza da $\vert \cH\vert_d$, cioè il numero di alberi possibili per ogni profondità massima, che chiaramente aumenta con la profondità. Dunque, è chiaro che una misura di complessità del set di ipotesi che conta le funzioni all'interno di questo insieme non soddisfa le nostre richieste per trovare un bound qualitativamente informativo. 
+% La prima cosa che salta agli occhi è che il bound diverge, mentre l'errore di test ad un certo punto satura. Questa divergenza è dovuta alla dipendenza da $\vert \cH\vert_d$, cioè il numero di alberi possibili per ogni profondità massima, che chiaramente aumenta con la profondità. Dunque, è chiaro che una misura di complessità del set di ipotesi che conta le funzioni all'interno di questo insieme non soddisfa le nostre richieste per trovare un bound qualitativamente informativo. 
 
-L'errore di test degli alberi decisionali satura a causa di una precisa caratteristica dell'algoritmo: nel momento in cui l'algoritmo arriva ad avere solamente foglie ``pure'', ossia contenenti inputs che hanno tutti la stessa label nel training set, esso smette di evolversi e dunque ogni livello di profondità aggiuntivo non modifica il modello imparato. Dunque, è chiaro che contare le funzioni nello spazio di ipotesi in modo naive non rispecchia questa proprietà. Invece, un conteggio che tenga conto della finitezza del nostro problema può riprodurre la saturazione della curva. In particolare, la configurazione con solamente foglie pure può essere raggiunta per due motivi: o tutti i possibili valori che gli input possono prendere vengono classificati, oppure tutti gli input del campione vengono classificati. Poiché, nel nostro caso, $n \ll N$, il secondo evento avverrà molto prima del primo. Di conseguenza, una misura di complessità che conti il numero di classificazioni distinte che le funzioni in $\cH$ possono dare, quindi i vettori $h(x_1),\ldots,h(x_n) : h\in \cH$, invece delle funzioni stesse, può più fedelmente rappresentare la complessità reale dello spazio di modelli che l'algoritmo può imparare in pratica. Il seguente capitolo introduce uno strumento teorico, la complessità di Rademacher, che permette di sfruttare questo punto di vista. 
+% L'errore di test degli alberi decisionali satura a causa di una precisa caratteristica dell'algoritmo: nel momento in cui l'algoritmo arriva ad avere solamente foglie ``pure'', ossia contenenti inputs che hanno tutti la stessa label nel training set, esso smette di evolversi e dunque ogni livello di profondità aggiuntivo non modifica il modello imparato. Dunque, è chiaro che contare le funzioni nello spazio di ipotesi in modo naive non rispecchia questa proprietà. Invece, un conteggio che tenga conto della finitezza del nostro problema può riprodurre la saturazione della curva. In particolare, la configurazione con solamente foglie pure può essere raggiunta per due motivi: o tutti i possibili valori che gli input possono prendere vengono classificati, oppure tutti gli input del campione vengono classificati. Poiché, nel nostro caso, $n \ll N$, il secondo evento avverrà molto prima del primo. Di conseguenza, una misura di complessità che conti il numero di classificazioni distinte che le funzioni in $\cH$ possono dare, quindi i vettori $h(x_1),\ldots,h(x_n) : h\in \cH$, invece delle funzioni stesse, può più fedelmente rappresentare la complessità reale dello spazio di modelli che l'algoritmo può imparare in pratica. Il seguente capitolo introduce uno strumento teorico, la complessità di Rademacher, che permette di sfruttare questo punto di vista. 
 
-[definizione Rademacher]
+% [definizione Rademacher]
 
-La Rademacher complexity misura l'espressività di una classe di funzioni. L'argomento del sup $\frac{1}{n}\sum_i\xi_i \ell_h(x_i,y_i) = \langle \xi, \ell_h(x,y)\rangle$ è la correlazione tra $\xi$ e $\ell_h(x,y)$. 
-Essendo la loss function fissata, tale correlazione è una misura di quanto i classifiers possono allienarsi a dei labels randomici. 
-Nota che il supremo sta dentro il valore atteso. Quindi, per ogni dataset e per ogni realizzazione dei Rademacher vectors, possiamo scegliere una funzione diversa $\ell_h \in\LL$ che realizzi il supremo. Dunque, una complessità alta indica che per la maggior parte dei valori di $\xi$ possiamo trovare un modello $h$ che gli è simile. \`E  massima  quando possiamo trovare una funzione che correla con ogni possibile pattern. 
-%A high complexity means that for most values of $\xi$ we can find a model $h$ that is similar to that pattern. It is the highest when we can find a function that correlates with any possible pattern.  
+% La Rademacher complexity misura l'espressività di una classe di funzioni. L'argomento del sup $\frac{1}{n}\sum_i\xi_i \ell_h(x_i,y_i) = \langle \xi, \ell_h(x,y)\rangle$ è la correlazione tra $\xi$ e $\ell_h(x,y)$. 
+% Essendo la loss function fissata, tale correlazione è una misura di quanto i classifiers possono allienarsi a dei labels randomici. 
+% Nota che il supremo sta dentro il valore atteso. Quindi, per ogni dataset e per ogni realizzazione dei Rademacher vectors, possiamo scegliere una funzione diversa $\ell_h \in\LL$ che realizzi il supremo. Dunque, una complessità alta indica che per la maggior parte dei valori di $\xi$ possiamo trovare un modello $h$ che gli è simile. \`E  massima  quando possiamo trovare una funzione che correla con ogni possibile pattern.  
 
-The following results holds.
+% The following results holds.
 
-[teorema gap le 2Rad]
+% [teorema gap le 2Rad]
 
-[teorema Rad le sqrt(log Nn / n)]
+% [teorema Rad le sqrt(log Nn / n)]
 
-Dunque, passare per la complessità di Rademacher ci permette di utilizzare il conteggio sui vettori di perdita $N_n$ invece del conteggio $|\cH|$. Questo è possibile tramite la tecnica della simmetrizzazione, che permette di passare da studiare la deviazione delle variabili aleatorie $\ell_h(X_i,Y_i)$ dal loro valore atteso, il quale non dipende dalle immagini ma dalle funzioni vere, a studiare la differenza tra due variabili aleatorie che prendono due dataset indipendenti $D$ e $D'$ in input. Questo rende possibile, quando si maggiora il supremo con la sommatoria di tale quantità su tutta la classe, effettuare un conteggio sui vettori di perdita, invece che sulle funzioni $\ell_h\in\LL$. Nota che poiché la funzione di perdita $\ell$ è fissa, contare i vettori di perdita è equivalente a contare i vettori di classificazione. Mentre qui ci atteniamo ai vettori di perdita, che emergono più naturalmente dalla complessità di Rademcaher, nella prossima Sezione~\ref{sec: growthf} compieremo il passaggio successivo guardando ai vettori di classificazione. 
+% Dunque, passare per la complessità di Rademacher ci permette di utilizzare il conteggio sui vettori di perdita $N_n$ invece del conteggio $|\cH|$. Infatti, il supremo della definizione~\ref{def: rad} può essere preso sull'insieme dei vettori di perdita invece che sull'insieme delle funzioni. Inoltre, il teorema~\ref{thm: rad bound} maggiora una quantità che dipende dal vero valore atteso della random variable $\ell_h(X,Y)$ con una quantità che dipende solo dai vettori di perdita. Questo è possibile tramite la tecnica della simmetrizzazione, che permette di passare da studiare la deviazione delle variabili aleatorie $\ell_h(X_i,Y_i)$ dal loro valore atteso, il quale non dipende dalle immagini ma dalle funzioni vere, a studiare la differenza tra due variabili aleatorie che prendono due dataset indipendenti $D$ e $D'$ in input. Nota che poiché la funzione di perdita $\ell$ è fissa, contare i vettori di perdita è equivalente a contare i vettori di classificazione. Mentre qui ci atteniamo ai vettori di perdita, che emergono più naturalmente dalla complessità di Rademcaher, nella prossima Sezione~\ref{sec: growthf} compieremo il passaggio successivo guardando ai vettori di classificazione. 
 
-Il seguente risultato racchiude il punto chiave del ragionamento di cui sopra, che porta infine alla saturazione del bound teorico. 
+% Il seguente risultato racchiude il punto chiave del ragionamento di cui sopra, che porta infine alla saturazione del bound teorico. 
 
-[corollario Nn le min(H, 2n)]
+% [corollario Nn le min(H, 2n)]
 
-Sostituendo questo maggioramento di $N_n$ nel risultato del Teorema sopra, otteniamo il bound finale.
+% Sostituendo questo maggioramento di $N_n$ nel risultato del Teorema sopra, otteniamo il bound finale.
 
-[theorem gap le min(log H / n, 1)]
+% [theorem gap le min(log H / n, 1)]
 
-Come sempre, tracciamo questo bound e il gap tra il train e il test error per verificare se descrive la curva empirica.  
+% Come sempre, tracciamo questo bound e il gap tra il train e il test error per verificare se descrive la curva empirica.  
 
-[plot gap rademmassart]
+% [plot gap rademmassart]
 
-Da questi grafici, è evidente come nella prima parte la curva della funzione maggiorante sia la stessa che nella Figura~\ref{fig:pic1}, mentre da una certa depth in poi il minimo diventa il termine costante, che riflette il fatto che da una certa profondità in poi il numero di modelli distinti (quozientando per la loro immagine) non cresce più all'aumentare della profondità massima dell'albero. 
-% Infatti, questo valore critico di profondità sembra corrispondere al valore a cui sia il train error sia il test error iniziano a saturare. -> BISOGNA VERIFICARLO CAMBIANDO LA DIPENDENZA DI |H| DA d 
-Di conseguenza, la funzione maggiorante in~(\ref{eq: rademmassart bound}) satura e dunque descrive meglio l'andamento dell'errore di test rispetto alla funzione in(~\ref{eq: union bound}). 
+% Da questi grafici, è evidente come nella prima parte la curva della funzione maggiorante sia la stessa che nella Figura~\ref{fig:pic1}, mentre da una certa depth in poi il minimo diventa il termine costante, che riflette il fatto che da una certa profondità in poi il numero di modelli distinti (quozientando per la loro immagine) non cresce più all'aumentare della profondità massima dell'albero. 
+% % Infatti, questo valore critico di profondità sembra corrispondere al valore a cui sia il train error sia il test error iniziano a saturare. -> BISOGNA VERIFICARLO CAMBIANDO LA DIPENDENZA DI |H| DA d 
+% Di conseguenza, la funzione maggiorante in~(\ref{eq: rademmassart bound}) satura e dunque descrive meglio l'andamento dell'errore di test rispetto alla funzione in(~\ref{eq: union bound}). 
 
-A questo punto, ci rivolgiamo ad un altro problema. La Figura~\ref{fig:pic3} mostra come, al variare del livello di rumore nei dati, misurato dal coefficiente $\sigma$ (standard deviation), la curva del gap cambia forma. In particolare, è più piatta con poco rumor (5\%), quando la differenza tra i due errori sarà minore, e più curva con molto rumore (40\%). La funzione maggiorante, invece, rimane invariata, fallendo quindi nel catturare l'effetto del rumore presente nei dati sulla capacità di generalizzazione dell'algoritmo. 
+% A questo punto, ci rivolgiamo ad un altro problema. La Figura~\ref{fig:pic3} mostra come, al variare del livello di rumore nei dati, misurato dal coefficiente $\sigma$ (standard deviation), la curva del gap cambia forma. In particolare, è più piatta con poco rumor (5\%), quando la differenza tra i due errori sarà minore, e più curva con molto rumore (40\%). La funzione maggiorante, invece, rimane invariata, fallendo quindi nel catturare l'effetto del rumore presente nei dati sulla capacità di generalizzazione dell'algoritmo. 
 % La stessa cosa vale per la complessità della funzione generatrice dei dati, misurata dal numero di volte che essa cambia segno nello spazio degli input. Nelle prossime sezioni, quindi, cerchiamo una funzione maggiorante che catturi l'effetto di tali iperparametri del problema di learning sulla performance di generalizzazione dell'algoritmo.  
 
-Nella seguente sezione, utilizziamo un altro approccio e strumenti teorici che permettono di ottenere una funzione maggiorante che sia sensibile al rumore. 
+% Nella corrente sezione, utilizziamo un altro approccio e strumenti teorici che permettono di ottenere una funzione maggiorante che sia sensibile al rumore. 
 
-Sia il minimo rischio ottenibile sull'insieme di ipotesi $\cH$ 
-[definizione di R star]
+% Sia il minimo rischio ottenibile sull'insieme di ipotesi $\cH$ 
+% [definizione di R star]
 
-Vogliamo ottenere un bound che dipenda dal miglior rischio $R^*_\cH$. Il primo ingrediente che utilizziamo è una diseguaglianza sulla deviazione relativa, che dà un risultato sulla concentrazione del gap $R-\hat R$ in dipendenza dal rischio atteso $R$.
+% Vogliamo ottenere un bound che dipenda dal miglior rischio $R^*_\cH$. Il primo ingrediente che utilizziamo è una diseguaglianza sulla deviazione relativa, che dà un risultato sulla concentrazione del gap $R-\hat R$ in dipendenza dal rischio atteso $R$.
 
-[relative deviation inequality]
+% [relative deviation inequality]
 
-La dipendenza dal supremo del numero di vettori di perdita $N_n$ emerge naturalmente, poiché la prova di tale risultato utilizza una tecnica di simmetrizzazione. In altà probabilità, ed isolando il rischio empirico $\hat R$ sulla destra, otteniamo il seguente risultato. 
+% La dipendenza dal supremo del numero di vettori di perdita $N_n$ emerge naturalmente, poiché la prova di tale risultato utilizza una tecnica di simmetrizzazione. In altà probabilità, ed isolando il rischio empirico $\hat R$ sulla destra, otteniamo il seguente risultato. 
 
-[theorem bound con emp risk]
+% [theorem bound con emp risk]
 
-Ora, sia 
-\[
-h_0 \in argmin_{h\in\mathcal H} R(h)
-\]
-il modello che realizza $R^*_\cH$. Per definizione di empirical risk minimizer, $\hat R_D(\hat h_D) \le \hat R_D(h_0)$. Applicando la diseguaglianza di Bernstein alla variabile $\hat R_D(h_0)$, otteniamo una funzione maggiorante su $\hat R_D(\hat h_D)$ che dipende da $\expv_D[\hat R_D(h_0)] = R^*_\cH$. Applicando questo risultato al precedente teorema, otteniamo il risultato che cercavamo che dà una funzione maggiorante dipendente dal miglior rischio $R^*_\cH$.
+% Ora, sia 
+% \[
+% h_0 \in argmin_{h\in\mathcal H} R(h)
+% \]
+% il modello che realizza $R^*_\cH$. Per definizione di empirical risk minimizer, $\hat R_D(\hat h_D) \le \hat R_D(h_0)$. Applicando la diseguaglianza di Bernstein alla variabile $\hat R_D(h_0)$, otteniamo una funzione maggiorante su $\hat R_D(\hat h_D)$ che dipende da $\expv_D[\hat R_D(h_0)] = R^*_\cH$. Applicando questo risultato al precedente teorema, otteniamo il risultato che cercavamo che dà una funzione maggiorante dipendente dal miglior rischio $R^*_\cH$.
 
-[corollario bound con best risk]
+% [corollario bound con best risk]
 
-Sia il rischio di Bayes
-\[
-R^* := \inf_{h:\X\to\Y} R(h)
-\] 
-dove l'infimo viene preso su un superinsieme di $\mathcal H$. Il miglior rischio si può decomporre come
+% Sia il rischio di Bayes
+% \[
+% R^* := \inf_{h:\X\to\Y} R(h)
+% \] 
+% dove l'infimo viene preso su un superinsieme di $\mathcal H$. Il miglior rischio si può decomporre come
 
-[decomposizione miglior rischio]
+% [decomposizione miglior rischio]
 
-dove il rischio di Bayes $\sigma^2$ misura l'errore di classificazione dovuto al rumore irriducibile $\varepsilon$, in quanto è il minimo errore che una qualsiasi funzione compirebbe classificando gli input; l'errore di approssimazione $A_\cH$ è l'errore in eccesso che compiamo assumendo una classe di ipotesi ristretta. Nota che se non c'è rumore nei dati, allora $R^* = 0$ ed esso è realizzato dalla funzione generatrcie $h^*$. Inoltre, se il classificatore che realizza $R^*$ è contenuto in $\cH$, allora $A_\cH = 0$. Il Corollario~\ref{coroll: bound bestrisk}, dunque, dà una funzione maggiorante che dipende esplicitamente dal rumore irriducibile e dall'erroe di approssimazione. Il seguente risultato presenta la funzione maggiorante finale, rendendo questa dipendenza esplicita e sostituendo il maggioramento su $N_n$ per garantire la saturazione.
+% dove il rischio di Bayes $\sigma^2$ misura l'errore di classificazione dovuto al rumore irriducibile $\varepsilon$, in quanto è il minimo errore che una qualsiasi funzione compirebbe classificando gli input; l'errore di approssimazione $A_\cH$ è l'errore in eccesso che compiamo assumendo una classe di ipotesi ristretta. Nota che se non c'è rumore nei dati, allora $R^* = 0$ ed esso è realizzato dalla funzione generatrcie $h^*$. Inoltre, se il classificatore che realizza $R^*$ è contenuto in $\cH$, allora $A_\cH = 0$. Il Corollario~\ref{coroll: bound bestrisk}, dunque, dà una funzione maggiorante che dipende esplicitamente dal rumore irriducibile e dall'erroe di approssimazione. Il seguente risultato presenta la funzione maggiorante finale, rendendo questa dipendenza esplicita e sostituendo il maggioramento su $N_n$ per garantire la saturazione.
 
-[teorema bound con noise e approximation error]
+% [teorema bound con noise e approximation error]
 
-Tracciamo questa funzione maggiorante insieme agli errori empirici.
+% Tracciamo questa funzione maggiorante insieme agli errori empirici.
 
-[experimental design (passaggio da $\varepsilon$ a $p$)]
+% [experimental design (passaggio da $\varepsilon$ a $p$)]
 
-[plots noise and approximation errors]
+% [plots noise and approximation errors]
 
-[comments]
+% [comments]
 
-In questa sezione, introduciamo una nuova misura della complessità della classe di ipotesi, che guarda ai vettori di classificazione. Essa permette di rendere più esplicita l'intuizione sulla saturazione discussa nella Sezione~\ref{sec: rademmassart}. 
+% In questa sezione, introduciamo una nuova misura della complessità della classe di ipotesi, che guarda ai vettori di classificazione. Essa permette di rendere più esplicita l'intuizione sulla saturazione discussa nella Sezione~\ref{sec: rademmassart}. 
 
-[definizione growth function]
+% [definizione growth function]
 
-Dato l'insieme immagine di un classificatore $h$, applicarvi la funzione di perdita può al massimo ridurre il numero di vettori nell'insieme. Allo stesso tempo, le immagini delle funzioni in $h$ saranno al massimo tante quante le funzioni in $\cH$, e sempre minori o uguali a $2^n$, il numero massimo possibile di sequenze di $1$ e $-1$ lunghe $n$. Dunque, segue la seguente catena di diseguaglianze. 
+% Dato l'insieme immagine di un classificatore $h$, applicarvi la funzione di perdita può al massimo ridurre il numero di vettori nell'insieme. Allo stesso tempo, le immagini delle funzioni in $h$ saranno al massimo tante quante le funzioni in $\cH$, e sempre minori o uguali a $2^n$, il numero massimo possibile di sequenze di $1$ e $-1$ lunghe $n$. Dunque, segue la seguente catena di diseguaglianze. 
 
-[lemma counting inequalities]
+% [lemma counting inequalities]
 
-Tale risultato ci permette di esprimere in termini della funzione di crescita di $\cH$ tutti i risultati delle Sezioni~\ref{sec: rademmassart} e~\ref{sec: bestrisk}. Le funzioni maggioranti ottenute non cambiano, ma è resa più esplicita l'intuizione che esse saturano perché il numero di classificazioni (vettori di classificatori) distinte è sempre al massimo $2^n$. In altre parole, quando valutiamo la performance di un algoritmo, i modelli $h\in\cH$ che l'algoritmo può imparare sono equivalenti se danno la stessa classificazione, e questo risultato tiene conto di ciò nel misurare la complessità della classe di ipotesi $\cH$. 
+% Tale risultato ci permette di esprimere in termini della funzione di crescita di $\cH$ tutti i risultati delle Sezioni~\ref{sec: rademmassart} e~\ref{sec: bestrisk}. Le funzioni maggioranti ottenute non cambiano, ma è resa più esplicita l'intuizione che esse saturano perché il numero di classificazioni (vettori di classificatori) distinte è sempre al massimo $2^n$. In altre parole, quando valutiamo la performance di un algoritmo, i modelli $h\in\cH$ che l'algoritmo può imparare sono equivalenti se danno la stessa classificazione, e questo risultato tiene conto di ciò nel misurare la complessità della classe di ipotesi $\cH$. 
