@@ -1,128 +1,37 @@
-\section{Preliminary experiments}\label{app: prel exp}
-
-\subsection{Noise structure}
-We generate the labels with a centered parabola (see Section~\ref{app/ sec: datagen}), so that roughly half of them are $1$ and half $-1$ in the interval $[0,10]$. Then, we inspect what happens if we use a Bernoullian noise instead of a Gaussian one, i.e. when data is generated as 
-\[
-y \leftarrow sign(h^*(x))b
-\]
-for $b\sim\mathrm{Bernoulli}(p)$. Notice that this noise flips the labels with a probability of $1-p$. 
-While from the first experiments it seemed that the algorithm achieved a higher test error, we postulate that this may be due to the portion of misclassified inputs, rather than to the noise structure itself. Hence, fixing $p = 0.8$, we look for the value of $\sigma$ that achieves roughly the same portion of mislcassified inputs ($20\%$). Figure~\ref{app/fig: sigmastar parabola} shows that this happens for $\sigma = 5.5$, and Figures~\ref{app/fig: parabola bernoulli} and~\ref{app/fig: parabola gauss} show that the two noise structures then yield essentially the same train and test errors. 
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.8\textwidth]{../../outputs/recap/app_sigmastar_parabola.png}
-  \caption{Average fraction of misclassified inputs against $\sigma$, over $100$ samples of size $n = 50$, $h^*$ = centered parabola}
-  \label{app/fig: sigmastar parabola}
-\end{figure}
-
-\begin{figure}[h!]
-  \centering
-  \begin{minipage}{0.48\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{../../outputs/recap/app_parabola_bernoulli.png}
-    \caption{$n = 50, N = 10,000, n_{\text{test}} = 200,000$, Bernoulli noise with $p = 0.8$}
-    \label{app/fig: parabola bernoulli}
-  \end{minipage}\hfill
-  \begin{minipage}{0.48\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{../../outputs/recap/app_parabola_gauss.png}
-    \caption{$n = 50, N = 10,000, n_{\text{test}} = 200,000$, Gaussian noise with $\sigma = 5.5$}
-    \label{app/fig: parabola gauss}
-  \end{minipage}
-\end{figure}
-
-\subsection{Data-generating function}\label{app/ sec: datagen}
-Our first choice of $h^*$ is a parabola centered horizontally at $5$, the midpoint of the support $\mathcal X$, and vertically so that roughly half of the points fall above the $x$-axis and half below. I.e.,
-\[
-h^*(x) = (x-5)^2 -6.25
-\]
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.7\textwidth]{../../outputs/recap/app_explore_parabola.png}
-  \caption{A sample of size $n = 50$ generated with the centered parabola, for $\sigma \in \{10^{-4}, 1, 5.5, 10\}$}
-  \label{app/fig: explore data parabola}
-\end{figure}
-
-Figure~\ref{app/fig: explore data parabola} shows the data generated with the centered parabola, for different amounts of noise.
-
-Because in theory an algorithm could learn such a classification pattern as soon as it sees $3$ points (one point for each region), we investigate what happens when the underlying function is more complex. We study a sinusoid with varying frequency,
-\[
-    h^*(x) = 5\, \sin\left(\frac{\pi \,( m  +1)}{10}\, x\right)
-\]
-We multiply the sine by $5$ to allow for enough height to properly inspect the data, while the argument of the sine is such that $m$ is the number of times $h^*$ crosses the $x$-axis in the open interval $(0,10)$, yielding $m+1$ contiguous blocks of $1s$ and $-1s$. 
-
-\begin{figure}[h!]
-  \centering
-  \begin{minipage}{0.32\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{../../outputs/recap/app_sine_m10.png}
-    \caption{$m = 10$}
-    \label{app/fig: sine m10}
-  \end{minipage}\hfill
-  \begin{minipage}{0.32\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{../../outputs/recap/app_sine_m100.png}
-    \caption{$m = 100$}
-    \label{app/fig: sine m100}
-  \end{minipage}\hfill
-  \begin{minipage}{0.32\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{../../outputs/recap/app_sine_m1000.png}
-    \caption{$m = 1000$}
-    \label{app/fig: sine m1000}
-  \end{minipage}
-\end{figure}
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.8\textwidth]{../../outputs/recap/app_ratio_sweep.png}
-  \caption{$n = 50, N = 10,000, n_{\text{test}} = 200,000$, $\sigma = 3$, train and test error for different ratios $r = m/n$}
-  \label{app/fig: ratio sweep}
-\end{figure}
-
-We explore how a random sample and the performance of the algorithm change for different sine frequencies. In particular, we expect that for a high frequency the algorithm will not learn, as our datasize is $n=50$.
-In Figures~\ref{app/fig: sine m10}--\ref{app/fig: sine m1000}, we test a function that osciallets $10, 100$, and $1000$ times with a noise level of $\sigma = 3$ (we reduce it compared to $\sigma = 5$, having increased the complexity of the function). We notice that for $m=1000$ the algorithm fails to learn, and the test error stays stable at $0.5$. This is because the labels change so frequently with respect to the number of points in the training dataset $n$ that it is as if we had random labels. Hence, we investigate the relation between the complexity of the underlying function $m$ and the data size $n$. We find that for $\frac{m}{n}>5$, roughly, the algorithm ceases to learn (Figure~\ref{app/fig: ratio sweep}). In the following experiments, we fix $m=10$ and $n=50$, which is very far from the threshold.
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.8\textwidth]{../../outputs/recap/app_misclassified_sine.png}
-  \caption{Fraction of misclassified inputs over $100$ samples of size $n = 50$, $h^*$ = sine with $m = 10$; dashed lines are the averages}
-  \label{app/fig: misclassified sine}
-\end{figure}
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.8\textwidth]{../../outputs/recap/app_sigmastar_sine.png}
-  \caption{Average fraction of misclassified inputs against $\sigma$, over $100$ samples of size $n = 50$, $h^*$ = sine with $m = 10$}
-  \label{app/fig: sigmastar sine}
-\end{figure}
-
-We then verify whether a Gaussian noise with $\sigma = 5.5$ achieves the same portion of misclassified inputs on average as a Bernoullian noise with $p=0.8$, as was the case for data generated with a parabola. Figure~\ref{app/fig: misclassified sine} shows that this is not the case on average ($29\%$ against $20\%$), while Figure~\ref{app/fig: sigmastar sine} shows that the desired value is $\sigma = 3.5$.
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.8\textwidth]{../../outputs/recap/app_simple_function_sigma1.png}
-  \caption{$N = 10,000, n_{\text{test}} = 200,000, \sigma = 1$, $h^*$ = sine with $m = 2$: test error at depth $2$ and $3$ against $n$, averaged over $100$ samples}
-  \label{app/fig: simple function sigma1}
-\end{figure}
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.8\textwidth]{../../outputs/recap/app_simple_function.png}
-  \caption{$N = 10,000, n_{\text{test}} = 200,000, \sigma = 3.5$, $h^*$ = sine with $m = 2$: test error at depth $2$ and $3$ against $n$, averaged over $100$ samples}
-  \label{app/fig: simple function}
-\end{figure}
-
-Finally, we investigate the afore-mentioned intuition about how easy it is for the algorithm to learn a simple function. We take $m=2$ (which corresponds to a parabola, in terms of classification pattern), sample uniformly from $\X$, and look for the training set size $n$ for which the test error gets within $0.01$ of the Bayes risk on average, at depth $2$ and $3$.
-
-We start with little noise, $\sigma = 1$, for which the Bayes risk is $\approx 0.05$ (Figure~\ref{app/fig: simple function sigma1}). Here the algorithm learns the function quickly: with $n = 50$ points the test error is already $\approx 0.07$, within $0.02$ of the Bayes risk, and it gets within $0.01$ with $n = 200$ at depth $2$ and $n = 500$ at depth $3$.
-
-With our noise level, $\sigma = 3.5$, the Bayes risk is $\approx 0.20$ and $n = 1000$ training points are needed on average for the test error to get within $0.01$ of it, both at depth $2$ and $3$ (Figure~\ref{app/fig: simple function}). Hence, although two splits are enough to represent the function, with this amount of noise the algorithm needs many points to place them correctly.
-
-
-\newpage
 \section{Proofs}\label{app: proofs}
+We first recall some basic results that are used throughout, and then give the proofs of the results in the main text.
+
+\begin{theorem}[Hoeffding's inequality]\label{app: hoeffding}
+  Let $Z_1,\ldots,Z_n$ be independent real-valued random variables with $Z_i\in[a_i,b_i]$ almost surely for some $a_i,b_i\in\R$, and let $\mu = \frac1n\sum_{i=1}^n \expv[Z_i]$. Then, for every $\varepsilon>0$,
+  \[
+  \Pr\left[\frac1n\sum_{i=1}^n Z_i - \mu \ge \varepsilon\right] \le \exp\left(-\frac{2n^2\varepsilon^2}{\sum_{i=1}^n (b_i-a_i)^2}\right).
+  \]
+\end{theorem}
+
+\begin{theorem}[Bernstein's inequality]\label{app: bernstein}
+  Let $Z_1,\ldots,Z_n$ be independent real-valued random variables with $\expv[Z_i]=0$ and $Z_i\le M$ almost surely for some $M>0$, and let $v = \frac1n\sum_{i=1}^n \mathrm{Var}(Z_i)$. Then, for every $\varepsilon>0$,
+  \[
+  \Pr\left[\frac1n\sum_{i=1}^n Z_i \ge \varepsilon\right] \le \exp\left(-\frac{n\varepsilon^2}{2(v + M\varepsilon/3)}\right).
+  \]
+\end{theorem}
+
+\begin{proposition}[Union bound]\label{app: unionbound}
+  For any finite or countable collection of events $A_1, A_2, \ldots$,
+  \[
+  \Pr\left[\bigcup_i A_i\right] \le \sum_i \Pr[A_i].
+  \]
+\end{proposition}
+
+\begin{proof}[Proof of Proposition~\ref{prop: suff assump 2.2}] For $a\in A$,
+  \begin{align*}
+            \ell(a) &= \vert \ell(a)\vert \\
+            &= \vert \ell(a)-\ell(0)+\ell(0)\vert \\
+            &\le \vert \ell(a)-\ell(0)\vert + \vert \ell(0)\vert \\
+            &\le C\vert a \vert + C^\prime \\
+            &\le CB + C^\prime \eqqcolon M
+  \end{align*}
+\end{proof} 
+
 \begin{proof}[Proof of Theorem~\ref{thm: unionbound}]
   Apply Hoeffding Lemma and a union bound over the hypotheses set $\mathcal H$. Tail integrate to obtain a result in expected value. 
 \end{proof}
@@ -131,7 +40,7 @@ With our noise level, $\sigma = 3.5$, the Bayes risk is $\approx 0.20$ and $n = 
   Symmetrization technique. 
 \end{proof}
 
-\begin{proof}[Proof of Lemma~\ref{lemma: refined massart}]
+\begin{proof}[Proof of Lemma~\ref{lemma: massart}]
   Pass to the supremum over {\it loss vectors\/} instead of functions $\ell\circ h$, and bound it with the sum, which makes the $N(D)$ term appear. Then, apply the exponential Hoeffding Lemma and optimize for the coefficient in the exponent. 
 \end{proof}
 
@@ -140,7 +49,7 @@ With our noise level, $\sigma = 3.5$, the Bayes risk is $\approx 0.20$ and $n = 
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm: rademmassart bound}]
-  Apply Theorem~\ref{thm: rad bound}, Lemma~\ref{lemma: refined massart} and Lemma~\ref{lemma: counting}. 
+  Apply Theorem~\ref{thm: rad bound}, Lemma~\ref{lemma: massart} and Lemma~\ref{lemma: counting}. 
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm: bound emprisk}]
@@ -159,7 +68,7 @@ With our noise level, $\sigma = 3.5$, the Bayes risk is $\approx 0.20$ and $n = 
         \end{equation}
         Since $h_0$ is independent of the data, $\expv_D[\hat R(h_0)] = R(h_0)$ and hence Bernstein gives, with probability at least $1-\delta/2$,
         \[
-        \hat R(h_0) \le R^*_{\cH} + \sqrt{\frac{2R*_\cH \log (2/\delta)}{n}} + \frac{\log(2/\delta)}{3n}.
+        \hat R(h_0) \le R^*_{\cH} + \sqrt{\frac{2R^*_\cH \log (2/\delta)}{n}} + \frac{\log(2/\delta)}{3n}.
         \]
         Since $N_{2n}(\cH)\ge 1$ and thus $\frac{\log (2/\delta)}{n}\le \frac{\log(4N_{2n}(\cH)/\delta)}{n}$,
         \begin{equation}\label{eq: bound hatR h0}
@@ -173,7 +82,7 @@ With our noise level, $\sigma = 3.5$, the Bayes risk is $\approx 0.20$ and $n = 
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm: bound noiseandappr}]
-    Let $\text{gap} = (R-\hat R(\hat h))$ and $C = \sqrt{\frac{\log(4 N_n(\cH)/\delta)}{n}}$. Corollary~\ref{cor: best risk} gives
+    Let $\text{gap} = (R-\hat R(\hat h))$ and $C = \sqrt{\frac{\log(4 N_n(\cH)/\delta)}{n}}$. Corollary~\ref{coroll: bound bestrisk} gives
 \begin{align*}
 &\Pr\left[\text{gap} \le \sqrt{R^*_\cH}\,C + 20C^2\right] \ge 1-\delta \\
 \implies &\Pr\left[\text{gap} > \sqrt{R^*_\cH}\,C + 20C^2\right] \le \delta
@@ -242,6 +151,130 @@ Remark: recall that $N_{2n}(\cH)$ is the maximum number of loss vectors over the
 \begin{proof}[Proof of Lemma~\ref{lemma: growth}]
     $N_D(\cH) \le \Pi_{n}(\cH)$ because the number of distinct loss vector can at most decrease, given prediction vectors. $\Pi_{n}(\cH)\le \card$ because the realizations of functions in $h$ are at most as much as the functions in $h$ (equality when functions in $h$ are bijective). $\Pi_{n}(\cH)\le 2^n$ because we have at most $2^n$ sequences of $n$ $1$s and $-1$s.
 \end{proof}
+
+\newpage
+
+\newpage\section{Preliminary experiments}\label{app: prel exp}
+
+\subsection{Noise structure}
+We generate the labels with a centered parabola (see Section~\ref{app/ sec: datagen}), so that roughly half of them are $1$ and half $-1$ in the interval $[0,10]$. Then, we inspect what happens if we use a Bernoullian noise instead of a Gaussian one, i.e. when data is generated as 
+\[
+y \leftarrow sign(h^*(x))b
+\]
+for $b\sim\mathrm{Bernoulli}(p)$. Notice that this noise flips the labels with a probability of $1-p$. 
+While from the first experiments it seemed that the algorithm achieved a higher test error, we postulate that this may be due to the portion of misclassified inputs, rather than to the noise structure itself. Hence, fixing $p = 0.8$, we look for the value of $\sigma$ that achieves roughly the same portion of mislcassified inputs ($20\%$). Figure~\ref{app/fig: sigmastar parabola} shows that this happens for $\sigma = 5.5$, and Figures~\ref{app/fig: parabola bernoulli} and~\ref{app/fig: parabola gauss} show that the two noise structures then yield essentially the same train and test errors. 
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\textwidth]{outputs/app_sigmastar_parabola.png}
+  \caption{Calibrating Gaussian noise on the parabola. Average fraction of misclassified inputs against $\sigma$, over $100$ samples of size $n = 50$.}
+  \label{app/fig: sigmastar parabola}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{outputs/app_parabola_bernoulli.png}
+    \caption{Parabola, Bernoulli noise with $p = 0.8$; $n = 50$, $N = 10,000$, $n_{\text{test}} = 200,000$.}
+    \label{app/fig: parabola bernoulli}
+  \end{minipage}\hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{outputs/app_parabola_gauss.png}
+    \caption{Parabola, Gaussian noise with $\sigma = 5.5$; $n = 50$, $N = 10,000$, $n_{\text{test}} = 200,000$.}
+    \label{app/fig: parabola gauss}
+  \end{minipage}
+\end{figure}
+
+\subsection{Data-generating function}\label{app/ sec: datagen}
+Our first choice of $h^*$ is a parabola centered horizontally at $5$, the midpoint of the support $\mathcal X$, and vertically so that roughly half of the points fall above the $x$-axis and half below. I.e.,
+\[
+h^*(x) = (x-5)^2 -6.25
+\]
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{outputs/app_explore_parabola.png}
+  \caption{Samples from the parabola. One sample of size $n = 50$ for $\sigma \in \{10^{-4}, 1, 5.5, 10\}$.}
+  \label{app/fig: explore data parabola}
+\end{figure}
+
+Figure~\ref{app/fig: explore data parabola} shows the data generated with the centered parabola, for different amounts of noise.
+
+Because in theory an algorithm could learn such a classification pattern as soon as it sees $3$ points (one point for each region), we investigate what happens when the underlying function is more complex. We study a sinusoid with varying frequency,
+\[
+    h^*(x) = 5\, \sin\left(\frac{\pi \,( m  +1)}{10}\, x\right)
+\]
+We multiply the sine by $5$ to allow for enough height to properly inspect the data, while the argument of the sine is such that $m$ is the number of times $h^*$ crosses the $x$-axis in the open interval $(0,10)$, yielding $m+1$ contiguous blocks of $1s$ and $-1s$. 
+
+\begin{figure}[h!]
+  \centering
+  \begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{outputs/app_sine_m10.png}
+    \caption{Sine, $m = 10$.}
+    \label{app/fig: sine m10}
+  \end{minipage}\hfill
+  \begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{outputs/app_sine_m100.png}
+    \caption{Sine, $m = 100$.}
+    \label{app/fig: sine m100}
+  \end{minipage}\hfill
+  \begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{outputs/app_sine_m1000.png}
+    \caption{Sine, $m = 1000$.}
+    \label{app/fig: sine m1000}
+  \end{minipage}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\textwidth]{outputs/app_ratio_sweep.png}
+  \caption{Learnability threshold in $m/n$. Train and test error for different ratios $r = m/n$; $n = 50$, $\sigma = 3$, $N = 10,000$, $n_{\text{test}} = 200,000$.}
+  \label{app/fig: ratio sweep}
+\end{figure}
+
+We explore how a random sample and the performance of the algorithm change for different sine frequencies. In particular, we expect that for a high frequency the algorithm will not learn, as our datasize is $n=50$.
+In Figures~\ref{app/fig: sine m10}--\ref{app/fig: sine m1000}, we test a function that osciallets $10, 100$, and $1000$ times with a noise level of $\sigma = 3$ (we reduce it compared to $\sigma = 5$, having increased the complexity of the function). We notice that for $m=1000$ the algorithm fails to learn, and the test error stays stable at $0.5$. This is because the labels change so frequently with respect to the number of points in the training dataset $n$ that it is as if we had random labels. Hence, we investigate the relation between the complexity of the underlying function $m$ and the data size $n$. We find that for $\frac{m}{n}>5$, roughly, the algorithm ceases to learn (Figure~\ref{app/fig: ratio sweep}). In the following experiments, we fix $m=10$ and $n=50$, which is very far from the threshold.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\textwidth]{outputs/app_misclassified_sine.png}
+  \caption{Gaussian against Bernoulli noise on the sine ($m = 10$). Fraction of misclassified inputs over $100$ samples of size $n = 50$; dashed lines are the averages.}
+  \label{app/fig: misclassified sine}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\textwidth]{outputs/app_sigmastar_sine.png}
+  \caption{Calibrating Gaussian noise on the sine ($m = 10$). Average fraction of misclassified inputs against $\sigma$, over $100$ samples of size $n = 50$.}
+  \label{app/fig: sigmastar sine}
+\end{figure}
+
+We then verify whether a Gaussian noise with $\sigma = 5.5$ achieves the same portion of misclassified inputs on average as a Bernoullian noise with $p=0.8$, as was the case for data generated with a parabola. Figure~\ref{app/fig: misclassified sine} shows that this is not the case on average ($29\%$ against $20\%$), while Figure~\ref{app/fig: sigmastar sine} shows that the desired value is $\sigma = 3.5$.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\textwidth]{outputs/app_simple_function_sigma1.png}
+  \caption{Sample size needed for a simple function, $\sigma = 1$. Test error at depth $2$ and $3$ against $n$ for the sine with $m = 2$, averaged over $100$ samples; $N = 10,000$, $n_{\text{test}} = 200,000$.}
+  \label{app/fig: simple function sigma1}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\textwidth]{outputs/app_simple_function.png}
+  \caption{Sample size needed for a simple function, $\sigma = 3.5$. Test error at depth $2$ and $3$ against $n$ for the sine with $m = 2$, averaged over $100$ samples; $N = 10,000$, $n_{\text{test}} = 200,000$.}
+  \label{app/fig: simple function}
+\end{figure}
+
+Finally, we investigate the afore-mentioned intuition about how easy it is for the algorithm to learn a simple function. We take $m=2$ (which corresponds to a parabola, in terms of classification pattern), sample uniformly from $\X$, and look for the training set size $n$ for which the test error gets within $0.01$ of the Bayes risk on average, at depth $2$ and $3$.
+
+We start with little noise, $\sigma = 1$, for which the Bayes risk is $\approx 0.05$ (Figure~\ref{app/fig: simple function sigma1}). Here the algorithm learns the function quickly: with $n = 50$ points the test error is already $\approx 0.07$, within $0.02$ of the Bayes risk, and it gets within $0.01$ with $n = 200$ at depth $2$ and $n = 500$ at depth $3$.
+
+With our noise level, $\sigma = 3.5$, the Bayes risk is $\approx 0.20$ and $n = 1000$ training points are needed on average for the test error to get within $0.01$ of it, both at depth $2$ and $3$ (Figure~\ref{app/fig: simple function}). Hence, although two splits are enough to represent the function, with this amount of noise the algorithm needs many points to place them correctly.
 
 \newpage
 \section{Additional results}\label{app: add res}
