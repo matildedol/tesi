@@ -22,6 +22,27 @@ We first recall some basic results that are used throughout, and then give the p
   \]
 \end{proposition}
 
+\begin{theorem}[Hoeffding's lemma]\label{app: hoeffdinglemma}
+  Let $Z$ be a real-valued random variable with $\expv[Z]=0$ and $\vert Z\vert\le a$ almost surely for some $a\in\R$. Then, for every $t\in\R$,
+  \[
+  \expv\left[e^{tZ}\right] \le e^{t^2a^2/2}.
+  \]
+\end{theorem}
+
+\begin{proposition}[Tail integration]\label{app: tail int}
+  For any non-negative random variable $Z$,
+  \[
+  \expv[Z] = \int_0^\infty \Pr[Z\ge \varepsilon] \de \varepsilon.
+  \]
+\end{proposition}
+
+\begin{proposition}[Gaussian tail bound]\label{app: gtailbound}
+  For every $c>0$ and $x_0>0$,
+  \[
+  \int_{x_0}^\infty e^{-cx^2}\de x \le \frac{1}{2cx_0}e^{-cx_0^2}.
+  \]
+\end{proposition}
+
 \begin{proof}[Proof of Proposition~\ref{prop: suff assump 2.2}] For $a\in A$,
   \begin{align*}
             \ell(a) &= \vert \ell(a)\vert \\
@@ -33,19 +54,173 @@ We first recall some basic results that are used throughout, and then give the p
 \end{proof} 
 
 \begin{proof}[Proof of Theorem~\ref{thm: unionbound}]
-  Apply Hoeffding Lemma and a union bound over the hypotheses set $\mathcal H$. Tail integrate to obtain a result in expected value. 
+We prove the lower bound first. Since $\hat h_D \in \argmin_{h\in\cH} \hat R_D(h)$, we have
+\[
+\hat R_D(\hat h_D) \le \hat R_D(h) \qquad \forall h\in\cH,
+\]
+and taking expectations
+\[
+\expv_D[\hat R_D(\hat h_D)] \le \expv_D[\hat R_D(h)] \qquad \forall h\in\cH.
+\]
+For a fixed $h\in\cH$, which does not depend on $D$, the empirical risk is an unbiased estimate of the true risk, since by linearity and because the $(X_i,Y_i)$ are distributed as $(X,Y)$,
+\[
+\expv_D[\hat R_D(h)] = \frac1n\sum_{i=1}^n \expv\left[\ell(h(X_i),Y_i)\right] = R(h).
+\]
+Hence
+\[
+\expv_D[\hat R_D(\hat h_D)] \le R(h) \qquad \forall h\in\cH.
+\]
+Now take $d$ a realization of $D$ and consider in particular $h=\hat h_d\in\cH$,
+\[
+\expv_D[\hat R_D(\hat h_D)] \le R(\hat h_d).
+\]
+Since this holds for every realization $d$ of $D$, we have $\expv_D[\hat R_D(\hat h_D)] \le R(\hat h_D)$ almost surely and, taking expectations,
+\[
+\expv_D[\hat R_D(\hat h_D)] \le \expv_D[R(\hat h_D)].
+\]
+
+Next, we prove the upper bound. Fix $h\in\cH$ and let $Z_i \coloneq -\ell(h(X_i),Y_i)$, $i=1,\ldots,n$, so that
+\[
+\frac1n\sum_{i=1}^n Z_i - \frac1n\sum_{i=1}^n \expv[Z_i] = R(h) - \hat R_D(h).
+\]
+We want to apply Hoeffding's inequality (Theorem~\ref{app: hoeffding}). The $Z_i$ are independent, since the $(X_i,Y_i)$ are, and $Z_i\in[-M,0]$ by non-negativity of the loss function and Proposition~\ref{prop: suff assump 2.2}. Hence, with $a_i = -M$ and $b_i = 0$, we obtain
+\begin{equation}\label{app/eq: hoeffding fixed h}
+\Pr\left[R(h) - \hat R_D(h) \ge \varepsilon\right] \le e^{-2n\varepsilon^2/M^2}.
+\end{equation}
+Now, to obtain a bound at $\hat h_D$, which depends on $D$, notice that if $(R-\hat R_D)(\hat h_D)\ge\varepsilon$ then $(R - \hat R_D)(h)\ge\varepsilon$ for some $h\in\cH$. Therefore, by the union bound (Proposition~\ref{app: unionbound}) and~(\ref{app/eq: hoeffding fixed h}),
+\begin{equation}\label{app/eq: unionbound prob}
+\Pr\left[(R-\hat R_D)(\hat h_D) \ge \varepsilon\right] \le \Pr\left[\bigcup_{h\in\cH}\left\{(R - \hat R_D)(h)\ge\varepsilon\right\}\right] \le \sum_{h\in\cH} \Pr\left[(R - \hat R_D)(h)\ge\varepsilon\right] \le \card\, e^{-2n\varepsilon^2/M^2}.
+\end{equation}
+
+To obtain a bound in expected value from~(\ref{app/eq: unionbound prob}), we tail integrate. Let $X\coloneq(R-\hat R_D)(\hat h_D)$ and $X^+\coloneq\max\{X,0\}$, which is non-negative, so that by Proposition~\ref{app: tail int}
+\[
+\expv_D[X] \le \expv_D[X^+] = \int_0^\infty \Pr[X^+\ge\varepsilon]\de\varepsilon = \int_0^\infty \Pr[X\ge\varepsilon]\de\varepsilon.
+\]
+Let $\alpha\coloneq\card$ and $c\coloneq 2n/M^2$, so that~(\ref{app/eq: unionbound prob}) reads $\Pr[X\ge\varepsilon]\le\alpha e^{-c\varepsilon^2}$. This bound is good for large values of $\varepsilon$, but for small $\varepsilon$ it exceeds $1$, hence we use instead
+\[
+\Pr[X\ge\varepsilon] \le \min\{1,\alpha e^{-c\varepsilon^2}\}.
+\]
+We split the integral at the threshold $\varepsilon_0$ where $\alpha e^{-c\varepsilon_0^2} = 1$, i.e.\ $\varepsilon_0 = \sqrt{\log\alpha/c}$. Using the Gaussian tail bound (Proposition~\ref{app: gtailbound}) for the second integral, we obtain
+\[
+\expv_D[X] \le \int_0^{\varepsilon_0} 1\de\varepsilon + \int_{\varepsilon_0}^\infty \alpha e^{-c\varepsilon^2}\de\varepsilon
+\le \varepsilon_0 + \frac{\alpha}{2c\varepsilon_0}e^{-c\varepsilon_0^2}
+= \sqrt{\frac{\log\alpha}{c}} + \frac{1}{2\sqrt{c\log\alpha}},
+\]
+where in the last equality we used $\alpha e^{-c\varepsilon_0^2}=1$. Finally, assuming $\alpha\ge e^{1/2}$, which holds as soon as $\card\ge 2$, we have $\frac{1}{2\sqrt{c\log\alpha}}\le\sqrt{\frac{\log\alpha}{c}}$, and hence
+\[
+\expv_D[X] \le 2\sqrt{\frac{\log\alpha}{c}} = 2M\sqrt{\frac{\log\card}{2n}}.
+\]
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm: rad bound}]
-  Symmetrization technique. 
+Let $Z\coloneq(X,Y)$ and $Z_i\coloneq(X_i,Y_i)$, so that
+\[
+R(h) = \expv[\ell_h(Z)] \qquad \text{and} \qquad \hat R_D(h) = \frac1n\sum_{i=1}^n \ell_h(Z_i).
+\]
+The key ingredient of the proof is to introduce an independent copy $D'=(Z_1',\ldots,Z_n')$ of the dataset $D$, and to study the random variables $\ell_h(Z_i')-\ell_h(Z_i)$, which have a symmetric distribution ({\it symmetrization trick}). Since the $Z_i'$ are distributed as $Z$ and are independent of $D$,
+\[
+R(h) = \expv_{D'}\left[\frac1n\sum_{i=1}^n \ell_h(Z_i')\right] = \expv_{D'}\left[\frac1n\sum_{i=1}^n \ell_h(Z_i')\,\Big\vert\, D\right].
+\]
+Then,
+\[
+\expv_D\left[\sup_{h\in\cH}(R-\hat R_D)(h)\right] = \expv_D\left[\sup_{h\in\cH} \expv_{D'}\left[\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\,\Big\vert\, D\right]\right].
+\]
+Since the supremum of expectations is at most the expectation of the supremum, and by the law of total expectation, we obtain
+\begin{equation}\label{app/eq: sym step1}
+\expv_D\left[\sup_{h\in\cH}(R-\hat R_D)(h)\right] \le \expv_{D,D'}\left[\sup_{h\in\cH}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right].
+\end{equation}
+Now we apply the symmetrization trick. Let $\cH = \{h_1,\ldots,h_m\}$, with $m = \card$. For each $i=1,\ldots,n$, since $Z_i$ and $Z_i'$ are independent and identically distributed, swapping them does not change the joint distribution, i.e.
+\[
+\left(\ell_{h_j}(Z_i')-\ell_{h_j}(Z_i)\right)_{j=1}^m \overset{d}{=} \left(\ell_{h_j}(Z_i)-\ell_{h_j}(Z_i')\right)_{j=1}^m.
+\]
+This means that, for any fixed $e=(e_1,\ldots,e_n)\in\{-1,1\}^n$,
+\[
+\left(\ell_{h_j}(Z_i')-\ell_{h_j}(Z_i)\right)_{j=1}^m \overset{d}{=} \left(e_i\left(\ell_{h_j}(Z_i')-\ell_{h_j}(Z_i)\right)\right)_{j=1}^m.
+\]
+Since the pairs $(Z_i,Z_i')$ are independent across $i$, we have
+\[
+\left(\frac1n\sum_{i=1}^n \left(\ell_{h_j}(Z_i')-\ell_{h_j}(Z_i)\right)\right)_{j=1}^m \overset{d}{=} \left(\frac1n\sum_{i=1}^n e_i\left(\ell_{h_j}(Z_i')-\ell_{h_j}(Z_i)\right)\right)_{j=1}^m,
+\]
+and, since the supremum over $\cH$ is a function of this vector,
+\[
+\sup_{h\in\cH}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right) \overset{d}{=} \sup_{h\in\cH}\frac1n\sum_{i=1}^n e_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right).
+\]
+Hence, the expected value of the left-hand side is equal to that of the right-hand side for every $e\in\{-1,1\}^n$. Averaging over $e$ with the distribution of $\xi=(\xi_1,\ldots,\xi_n)$, which is independent of $D$ and $D'$, we obtain
+\[
+\expv_{D,D'}\left[\sup_{h\in\cH}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right] = \expv_{\xi,D,D'}\left[\sup_{h\in\cH}\frac1n\sum_{i=1}^n \xi_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right].
+\]
+Plugging this into~(\ref{app/eq: sym step1}) and bounding the supremum of a sum with the sum of the suprema,
+\begin{align*}
+\expv_D\left[\sup_{h\in\cH}(R-\hat R_D)(h)\right] &\le \expv_{\xi,D'}\left[\sup_{h\in\cH}\frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i')\right] + \expv_{\xi,D}\left[\sup_{h\in\cH}\frac1n\sum_{i=1}^n (-\xi_i)\ell_h(Z_i)\right] \\
+&= 2\mathcal R_n(\LL),
+\end{align*}
+because $D'$ has the same distribution as $D$, and $-\xi$ has the same distribution as $\xi$ and is independent of $D$.
 \end{proof}
 
 \begin{proof}[Proof of Lemma~\ref{lemma: massart}]
-  Bound the supremum in the definition of the Rademacher complexity with a sum over $\cH$. Then, apply the exponential Hoeffding Lemma to each term and optimize for the coefficient in the exponent. 
+Let $Z_i\coloneq(X_i,Y_i)$. For any $t>0$,
+\begin{align}
+\exp\left(t\,\expv_{\xi,D}\left[\sup_{h\in\cH}\sum_{i=1}^n \xi_i\ell_h(Z_i)\right]\right)
+&\le \expv_{\xi,D}\left[\exp\left(t\sup_{h\in\cH}\sum_{i=1}^n \xi_i\ell_h(Z_i)\right)\right] \notag\\
+&= \expv_{\xi,D}\left[\sup_{h\in\cH}\exp\left(t\sum_{i=1}^n \xi_i\ell_h(Z_i)\right)\right] \notag\\
+&\le \expv_{\xi,D}\left[\sum_{h\in\cH}\exp\left(t\sum_{i=1}^n \xi_i\ell_h(Z_i)\right)\right] \notag\\
+&= \expv_D\left[\sum_{h\in\cH}\prod_{i=1}^n \expv_{\xi_i}\left[\exp\left(t\xi_i\ell_h(Z_i)\right)\right]\right], \label{app/eq: massart start}
+\end{align}
+where we use Jensen's inequality for the convex function $\exp$ in the first inequality, that $\exp$ is increasing in the first equality, we bound the supremum with the sum (all terms are positive) in the second inequality, and we use the independence of the $\xi_i$'s, and their independence of $D$, in the last equality.
+
+Now we apply Hoeffding's lemma (Theorem~\ref{app: hoeffdinglemma}) to each factor, conditionally on $D$. We can do so because, for fixed $Z_i$, the random variable $\xi_i\ell_h(Z_i)$ is centered, since $\expv[\xi_i]=0$, and it satisfies $\vert\xi_i\ell_h(Z_i)\vert = \ell_h(Z_i)\le M$ by non-negativity of the loss and Proposition~\ref{prop: suff assump 2.2}. We obtain
+\[
+\expv_{\xi_i}\left[\exp\left(t\xi_i\ell_h(Z_i)\right)\right] \le e^{t^2M^2/2}.
+\]
+Plugging this into~(\ref{app/eq: massart start}),
+\[
+\exp\left(t\,\expv_{\xi,D}\left[\sup_{h\in\cH}\sum_{i=1}^n \xi_i\ell_h(Z_i)\right]\right) \le \sum_{h\in\cH}\prod_{i=1}^n e^{t^2M^2/2} = \card\, e^{nt^2M^2/2}.
+\]
+Taking the logarithm of both sides,
+\[
+t\,\expv_{\xi,D}\left[\sup_{h\in\cH}\sum_{i=1}^n \xi_i\ell_h(Z_i)\right] \le \log\card + \frac{nt^2M^2}{2},
+\]
+and dividing by $tn>0$,
+\begin{equation}\label{app/eq: massart opt}
+\mathcal R_n(\LL) \le \frac{\log\card}{tn} + \frac{tM^2}{2}.
+\end{equation}
+Since~(\ref{app/eq: massart opt}) holds for every $t>0$, we look for the tightest bound. Setting the derivative in $t$ to zero,
+\[
+-\frac{\log\card}{t^2n} + \frac{M^2}{2} = 0 \quad\Longrightarrow\quad t^\star = \sqrt{\frac{2\log\card}{nM^2}},
+\]
+and the second derivative $\frac{2\log\card}{t^3n}\ge0$, hence $t^\star$ is a minimizer (if $\card = 1$, the bound follows by letting $t\to\infty$). Plugging $t^\star$ into~(\ref{app/eq: massart opt}) yields
+\[
+\mathcal R_n(\LL) \le M\sqrt{\frac{2\log\card}{n}}.
+\]
 \end{proof}
 
 \begin{proof}[Proof of Lemma~\ref{lemma: massart loss v}]
-  Pass to the supremum over {\it loss vectors\/} instead of functions $\ell\circ h$ in the definition of the Rademacher complexity, bound it with the sum. The proof is concluded as the proof of Lemma~\ref{lemma: massart}.  
+Let $Z_i\coloneq(X_i,Y_i)$. Since $\xi$ is independent of $D$, by the tower law we can write
+\[
+\mathcal R_n(\LL) = \expv_D\left[\expv_\xi\left[\sup_{h\in\cH}\frac1n\sum_{i=1}^n\xi_i\ell_h(Z_i)\right]\right],
+\]
+where the inner expectation is over $\xi$ only, for a fixed realization of $D$. We bound the inner expectation for each fixed $D$, and then take the expectation over $D$. This is the reason why the expectation over $D$ remains outside of the bound: the number of loss vectors $N_D(\cH)$ depends on $D$, hence, differently from the proof of Lemma~\ref{lemma: massart}, we cannot apply Jensen's inequality and optimize $t$ jointly over $\xi$ and $D$.
+
+Fix $D$ and let $V_D\coloneq\{(\ell_h(Z_1),\ldots,\ell_h(Z_n)) : h\in\cH\}$ be the set of loss vectors, so that $\vert V_D\vert = N_D(\cH)$. The quantity $\sum_i\xi_i\ell_h(Z_i)$ depends on $h$ only through its loss vector, hence
+\[
+\sup_{h\in\cH}\sum_{i=1}^n\xi_i\ell_h(Z_i) = \max_{v\in V_D}\sum_{i=1}^n\xi_i v_i.
+\]
+Then, for any $t>0$, proceeding as in the proof of Lemma~\ref{lemma: massart} with the expectation over $\xi$ only, we have
+\begin{align*}
+\exp\left(t\,\expv_\xi\left[\max_{v\in V_D}\sum_{i=1}^n\xi_i v_i\right]\right)
+&\le \expv_\xi\left[\max_{v\in V_D}\exp\left(t\sum_{i=1}^n\xi_i v_i\right)\right]
+\le \sum_{v\in V_D}\prod_{i=1}^n\expv_{\xi_i}\left[e^{t\xi_i v_i}\right] \\
+&\le \sum_{v\in V_D}\prod_{i=1}^n e^{t^2M^2/2} = N_D(\cH)\,e^{nt^2M^2/2},
+\end{align*}
+where we use Jensen's inequality, we bound the maximum with the sum and use the independence of the $\xi_i$'s, and we apply Hoeffding's lemma (Theorem~\ref{app: hoeffdinglemma}) to $\xi_iv_i$, which is centered and satisfies $\vert\xi_iv_i\vert = v_i\le M$. Taking the logarithm and dividing by $tn$,
+\[
+\expv_\xi\left[\sup_{h\in\cH}\frac1n\sum_{i=1}^n\xi_i\ell_h(Z_i)\right] \le \frac{\log N_D(\cH)}{tn} + \frac{tM^2}{2}.
+\]
+Since $D$ is fixed, we can choose $t$ depending on $D$. Optimizing as in the proof of Lemma~\ref{lemma: massart}, with $t^\star = \sqrt{2\log N_D(\cH)/(nM^2)}$, gives
+\[
+\expv_\xi\left[\sup_{h\in\cH}\frac1n\sum_{i=1}^n\xi_i\ell_h(Z_i)\right] \le M\sqrt{\frac{2\log N_D(\cH)}{n}}
+\]
+(if $N_D(\cH)=1$, the left-hand side is $0$ since $\expv[\xi_i]=0$). Taking the expectation over $D$ yields the result.
 \end{proof}
 
 \begin{proof}[Proof of Lemma~\ref{lemma: counting}]
@@ -53,7 +228,14 @@ We first recall some basic results that are used throughout, and then give the p
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm: rademmassart bound}]
-  Apply Theorem~\ref{thm: rad bound}, Lemma~\ref{lemma: massart} and Lemma~\ref{lemma: counting}. 
+  The result follows by Theorem~\ref{thm: rad bound}, Lemma~\ref{lemma: massart loss v} and Lemma~\ref{lemma: counting}. Moreover,
+  \[
+  \expv_D\left[(R-\hat R_d)(\hat h_d)\right] \le \expv_D\left[\sup_{h\in\cH} (R-\hat R_d)(h)\right]
+  \]
+\end{proof}
+
+\begin{proof}[Proof of Lemma~\ref{lemma: rel dev}]
+  nanna e nanna a 
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm: bound emprisk}]
@@ -66,17 +248,14 @@ We first recall some basic results that are used throughout, and then give the p
 \end{proof}
 
 \begin{proof}[Proof of Corollary~\ref{coroll: bound bestrisk}]
-         Set $h_0 = \argmin_{h\in\cH} R(h)$, so that $R(h_0) = R^*_{\cH}$. Then,
-        \begin{equation}\label{eq: hatR h le hat R h0}
-        \hat R(\hat h) \le \hat R(h_0).
-        \end{equation}
-        Since $h_0$ is independent of the data, $\expv_D[\hat R(h_0)] = R(h_0)$ and hence Bernstein gives, with probability at least $1-\delta/2$,
+        Recall $h_0 = \argmin_{h\in\cH} R(h)$, $R(h_0) = R^*_{\cH}$ by definition of $R^*_\cH$ and $\hat R(\hat h) \le \hat R(h_0)$ by definition of the ERM $\hat h_D$.
+        Since $h_0$ is independent of the data, $\expv_D[\hat R(h_0)] = R(h_0)$. Bernstein inequality (Theorem~\ref{app: bernstein}) gives, with probability at least $1-\delta/2$,
         \[
         \hat R(h_0) \le R^*_{\cH} + \sqrt{\frac{2R^*_\cH \log (2/\delta)}{n}} + \frac{\log(2/\delta)}{3n}.
         \]
-        Since $N_{2n}(\cH)\ge 1$ and thus $\frac{\log (2/\delta)}{n}\le \frac{\log(4N_{2n}(\cH)/\delta)}{n}$,
+        Since $N_{2n}(\cH)\ge 1$, $\frac{\log (2/\delta)}{n}\le \frac{\log(4N_{2n}(\cH)/\delta)}{n}$. Thus
         \begin{equation}\label{eq: bound hatR h0}
-        \hat R(h_0) \le \left(\sqrt{R^*_\cH} + \sqrt{\frac{4\log(N_{2n}(\cH)/\delta)}{n}}\right)^2
+        \hat R(h_0) \le {\left(\sqrt{R^*_\cH} + \sqrt{\frac{4\log(N_{2n}(\cH)/\delta)}{n}}\right)}^2
         \end{equation}
         Substitute~(\ref{eq: hatR h le hat R h0}) into~(\ref{eq: bound hatR h0}), and apply the bound to $\hat R(\hat h)$ in the RHS of Theorem~\ref{thm: bound emprisk} at confidence $1-\delta/2$. This yields the desired bound, which holds with probability at least $1-\delta$ by a union bound on the events ((\ref{eq: bound hatR h0}) and Theorem~\ref{thm: bound emprisk}) that we require to hold simultaneously.
 \end{proof}
@@ -145,11 +324,9 @@ and for large $x$,
 for some constant $C>0$. Plugging in the counting inequality from Lemma~\ref{lemma: counting} with $2n$, we obtain and plot the following bound
 \[
 \expv_D\left[R(\hat h)-\hat R(\hat h)\right] \le \min\left\{ O\left(
-\sqrt{\frac{(A_{\mathcal H}+\sigma^2)\log \card}{n}} + \frac{\log\card}{n} \right), O\left(
-\sqrt{A_{\mathcal H}+\sigma^2}+1  \right)\right\}
+\sqrt{\frac{(A_{\mathcal H}+\sigma^2)\log \card}{n}} + \frac{\log\card}{n} \right), O\left(\sqrt{A_{\mathcal H}+\sigma^2}+1 \right)\right\}
 \]
 Remark: recall that $N_{2n}(\cH)$ is the maximum number of loss vectors over the union of two datasets $D, D'$, or equivalently over a dataset with size $2n$. The counting lemma must be applied to $2n$-long loss vectors. Hence, we still have $N_{2n}(\cH) \le \vert \cH\vert$ because the number of functions is still the same, and the bound counting all the possible sequences becomes $N_{2n}(\cH) \le 2^{2n}$. 
-
 \end{proof}
 
 \begin{proof}[Proof of Lemma~\ref{lemma: growth}]
