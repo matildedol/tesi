@@ -26,7 +26,8 @@
 \definecolor{pink}{RGB}{255, 130, 190}
 \definecolor{acquagreen}{RGB}{0,230,255} % verde acqua
 
-\title{A story of theory and evidence on the generalization of decision trees}
+% \title{A story of theory and evidence on generalization bounds for decision trees}
+\title{Generalization bounds for decision trees in light of empirical evidence}
 \author{mati}
 \begin{document}
 
@@ -240,7 +241,7 @@ Define $N_D(\cH)=\left|\left\{(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n)):h\in\cH\r
 \begin{lemma}[Massart]\label{lemma: massart} [\cite{mohri2018foundations}, Theorem 3.3]
 Let $\ell$ be as in Assumption~\ref{ass: lipsch loss}, so that $\ell(\cdot) \le M$ for some $M\in\R$ by Proposition~\ref{prop: suff assump 2.2}. Then
 \[
-\mathcal R_n(\LL) \le \expv_D\left[M\sqrt{\frac{2\log \card}{n}}\right]
+\mathcal R_n(\LL) \le M\sqrt{\frac{2\log \card}{n}}
 \]
 \end{lemma}
 
@@ -268,7 +269,7 @@ N_D(\cH) \le \min\{\vert\cH\vert, 2^n\}.
 \] 
 \end{lemma} 
 
-Substituting this bound on $N_D$ in Lemma~\ref{lemma: massart} and combining it with Theorem~\ref{thm: rad bound}, we obtain the following bound. 
+Substituting this bound on $N_D$ in Lemma~\ref{lemma: massart loss v} and combining it with Theorem~\ref{thm: rad bound}, we obtain the following bound. 
 
 \begin{theorem}[Rademacher and Massart bound]\label{thm: rademmassart bound} Let $\ell$ be the zero-one loss. Then
 \[
@@ -294,7 +295,7 @@ We set the constant term to $0.5$, because the Rademacher complexity of $\LL$ is
   \begin{minipage}{0.48\textwidth}
     \centering
     \includegraphics[width=\textwidth]{outputs/pic3.png}
-    \caption{Rademacher and Massart bound against the gap for noise levels $40\%$, $20\%$ and $5\%$.}
+    \caption{Rademacher and Massart bound against the gap for different noise levels.}
     \label{fig:pic3}
   \end{minipage}
 \end{figure}
@@ -302,7 +303,7 @@ We set the constant term to $0.5$, because the Rademacher complexity of $\LL$ is
 We plot bound~\ref{eq: rademmassart bound} against the empirical error curve in Figure~\ref{fig:pic2}. In the leften part of the graph, the bound is the same as in Figure~\ref{fig:pic1}. From a depth of $13$ onwards, the minimum is instead attained by the constant term, hence the bound saturates. This reflects the fact that beyond a certain depth, the number of distinct classification vectors no longer increases with $d$, through the mechanism explained above. 
 
 At the same time, this mechanism is myopic to the other aspects of the structure of the learning problem.
-Indeed, Figure~\ref{fig:pic3} shows how the gap curve is sensistive to different levels of noise in the dataset, as measured by the $\sigma$ coefficient (standard deviation). Specifically, it remains flatter with less noise, indicating both that the model performs better and that the difference between train and test error is lower (see the explorative experiments in Appendix~\ref{app: prel exp} showing how the empirical curves change with noise). The bound curve, instead, remains unchanged, failing to capture that the noise present in the data has an effect on the generalization performance of the algorithm. 
+Indeed, Figure~\ref{fig:pic3} shows how the gap curve is sensistive to different levels of noise in the dataset, as measured by the $\sigma$ coefficient (standard deviation). Specifically, it remains flatter with less noise, indicating both that the model performs better and that the difference between train and test error is lower (see the explorative experiments in Appendix~\ref{app: prel exp} showing how the empirical curves change with noise). We use $\sigma \in \{12.5, 3.5, 1\}$, which flip on average $40\%$, $20\%$ and $5\%$ of the labels, the same noise levels as $p\in\{0.6, 0.8, 0.95\}$ in Section~\ref{sec: bestrisk}. The bound curve, instead, remains unchanged, failing to capture that the noise present in the data has an effect on the generalization performance of the algorithm. 
 
 \newpage
 \section{Dependence on the best risk}\label{sec: bestrisk}
@@ -316,14 +317,14 @@ We aim at obtaining a bound on the test error of $\hat h_D$ in terms of the best
 
 Define $N_{n}(\cH) := \sup_{(x_1,y_1), \ldots,(x_{n},y_{n}) \in \X \times \Y} N_D(\cH)$. 
 
-\begin{lemma}[Relative deviation]
+\begin{lemma}[Relative deviation]\label{lemma: rel dev}
   For $\varepsilon>0$ with $n\varepsilon^2 \ge 8$,\mati{forse servono altre assumptions need to check}
   \[
   \Pr\left[\exists h\in\cH : (R-\hat R_D)(h) > \varepsilon\sqrt R(h)\right] \le 2N_{2n}(\cH)e^{-n\varepsilon^2/16}.
   \]
 \end{lemma}
 
-The dependence on the supremum of the number of loss vectors $N_n$ emerges naturally, since the proof of this result uses a symmetrization technique. Using the supremum instead of $\expv_D[N_D(\cH)]$ as in Lemma~\ref{lemma: massart} is only a trick to avoid handling the dependence on the disorder of the dataset. 
+The dependence on the supremum of the number of loss vectors $N_n$ emerges naturally, since the proof of this result uses a symmetrization technique. Using the supremum instead of the expectation over $D$ as in Lemma~\ref{lemma: massart loss v} is only a trick to avoid handling the dependence on the disorder of the dataset. 
 
 In high probability, and isolating the empirical risk $\hat R$ on the right hand side, we obtain the following result. 
 
@@ -400,7 +401,7 @@ Since $p\ge 0.5$, the Bayes risk is
 \[
 R^* = 1-p
 \]
-$R^*_\cH$ is computed exactly using dynamic programming. We produce labels using our sine function and the Bernoulli error and we cluster the intervals where labels have the same sign, obtaining $M$ contiguous blocks. We create a dp $k\times 2$ matrix that stores the minimum risk for each number of maximum splits $k$, up to $\min(M-1, 2^d)$ where $d$ is the maximum depth we are considering, when the last assigned label is $1$ or $-1$ (the columns). Then, for each contiguous block we dynamically update the dp matrix summing the minimum risk among all trees with at most $k$ splits. In the end, we select the minimum risk among the tree predicting $1$ or $-1$ in the very last block. 
+$R^*_\cH$ is computed exactly using dynamic programming. We produce labels using our sine function and the Bernoulli error and we cluster the intervals where labels have the same sign, obtaining $L$ contiguous blocks. We create a dp $k\times 2$ matrix that stores the minimum risk for each number of maximum splits $k$, up to $\min(L-1, 2^d)$ where $d$ is the maximum depth we are considering, when the last assigned label is $1$ or $-1$ (the columns). Then, for each contiguous block we dynamically update the dp matrix summing the minimum risk among all trees with at most $k$ splits. In the end, we select the minimum risk among the tree predicting $1$ or $-1$ in the very last block. 
 
 The rest of the experimental design is as above.
 
@@ -422,7 +423,7 @@ As before, we ignore the constants and plot
   \begin{minipage}{0.48\textwidth}
     \centering
     \includegraphics[width=\textwidth]{outputs/pic7.png}
-    \caption{The two terms in the minimum of the noise and approximation error bound, for $p \in \{0.6, 0.8, 0.95\}$.}
+    \caption{The two terms in the minimum of the noise and approximation error bound, for different noise levels.}
     \label{fig:pic5}
   \end{minipage}
 \end{figure}
@@ -432,13 +433,13 @@ As before, we ignore the constants and plot
   \begin{minipage}{0.48\textwidth}
     \centering
     \includegraphics[width=\textwidth]{outputs/pic6.png}
-    \caption{Noise and approximation error bound against the gap, for $p \in \{0.6, 0.8, 0.95\}$.}
+    \caption{Noise and approximation error bound against the gap, for different noise levels.}
     \label{fig:pic6}
   \end{minipage}\hfill
   \begin{minipage}{0.48\textwidth}
     \centering
     \includegraphics[width=\textwidth]{outputs/pic5.png}
-    \caption{Best risk $R^*_{\cH_d}$ split into Bayes risk $R^* = 1-p$ and approximation error $A_{\cH_d}$, for $p \in \{0.6, 0.8, 0.95\}$.}
+    \caption{Best risk $R^*_{\cH_d}$ split into Bayes risk $R^* = 1-p$ and approximation error $A_{\cH_d}$, for different noise levels.}
     \label{fig:pic7}
   \end{minipage}
 \end{figure}
@@ -475,7 +476,7 @@ Moreover,
 % qui D è la realizzazione forse, otherwise come la confronti con \Pi ?
 \end{lemma}
 
-The relation between $N_D$ and $\Pi_n$ makes it immediate to obtain growth-function versions of the bounds in Sections~\ref{sec: rademmassart} and~\ref{sec: bestrisk} (substitute $N(D)\le\Pi_n$ into Lemma~\ref{lemma: massart} and $N_{2n} = \Pi_{2n}$ into Theorem~\ref{thm: bound emprisk}). Substituting also $\Pi_{n}(\mathcal H)\le\min\{\vert \cH \vert,2^n\}$ yields bounds~(\ref{eq: rademmassart bound}) and (\ref{eq: noiseandappr bound}). The bounds are the same, but the intuition that they saturate because the number of distinct classification vectors is at most $2^n$ is made more explicit. In other words, when we evaluate the performance of an algorithm, the models in $\cH$ that the algorithm can learn are equivalent if they give the same classification. This result takes this into account when measuring the richness of the hypotheses class $\cH$.
+The relation between $N_D$ and $\Pi_n$ makes it immediate to obtain growth-function versions of the bounds in Sections~\ref{sec: rademmassart} and~\ref{sec: bestrisk} (substitute $N(D)\le\Pi_n$ into Lemma~\ref{lemma: massart loss v} and $N_{2n} = \Pi_{2n}$ into Theorem~\ref{thm: bound emprisk}). Substituting also $\Pi_{n}(\mathcal H)\le\min\{\vert \cH \vert,2^n\}$ yields bounds~(\ref{eq: rademmassart bound}) and (\ref{eq: noiseandappr bound}). The bounds are the same, but the intuition that they saturate because the number of distinct classification vectors is at most $2^n$ is made more explicit. In other words, when we evaluate the performance of an algorithm, the models in $\cH$ that the algorithm can learn are equivalent if they give the same classification. This result takes this into account when measuring the richness of the hypotheses class $\cH$.
 
 \newpage
 \section{Going on}
