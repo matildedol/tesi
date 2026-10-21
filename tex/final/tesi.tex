@@ -26,7 +26,7 @@
 \definecolor{pink}{RGB}{255, 130, 190}
 \definecolor{acquagreen}{RGB}{0,230,255} % verde acqua
 
-\title{Towards a structure-aware bound on the test error of decision trees}
+\title{A story of theory and evidence on the generalization of decision trees}
 \author{mati}
 \begin{document}
 
@@ -218,7 +218,7 @@ In this section, we introduce the Rademacher complexity, a tool that allows to l
 Define $\LL =  \{\ell_h : h \in \mathcal H \}$ and $\ell_h(x,y) = \ell(h(x), y)$. 
 
 \begin{definition}[Rademacher complexity]\label{def: rad}
-Let $\xi_1,\ldots,\xi_n$ be Rademacher variables taking value $1$ or $-1$ with equal probability. The Rademacher complexity of the set $\LL$ is
+Let $\xi_1,\ldots,\xi_n$ be independent random variables taking value $1$ or $-1$ with equal probability. The Rademacher complexity of the set $\LL$ is
 \[
 \mathcal R_n(\LL) \coloneq \expv_{\xi,D} \left[\sup_{\ell_h\in\LL}\frac{1}{n}\sum_{i=1}^n \xi_i \ell_h(X_i, Y_i)\right]
 \]
