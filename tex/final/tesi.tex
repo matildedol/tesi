@@ -313,12 +313,12 @@ Let the minimum expected risk achievable in the hypotheses set be
 \[
 R^*_\cH = \min_{h\in\cH} R(h).
 \]
-We aim at obtaining a bound on the test error of $\hat h_D$ in terms of the best risk $R^*_\cH$. The first ingredient is a concentration result for $\hat R$ that depends on the true risk $R$.
+We aim at obtaining a bound on the test error of $\hat h_D$ in terms of the best risk $R^*_\cH$. The first ingredient is a concentration result for $\hat R_D$ that depends on the true risk $R$. The key ingredient is Chebyshev inequality, Theorem~\ref{app: chebyshev} in the Appendix. 
 
-Define $N_{n}(\cH) := \sup_{(x_1,y_1), \ldots,(x_{n},y_{n}) \in \X \times \Y} N_D(\cH)$. 
+Define $N_{n}(\cH) := \sup_{(x_1,y_1), \ldots,(x_{n},y_{n}) \in \X \times \Y} N_D(\cH)$. Let $\ell$ be the zero-one loss for the rest of this section.
 
 \begin{lemma}[Relative deviation]\label{lemma: rel dev}
-  For $\varepsilon>0$ with $n\varepsilon^2 \ge 8$,\mati{forse servono altre assumptions need to check}
+  For $\varepsilon>0$ with $n\varepsilon^2 \ge 8$,
   \[
   \Pr\left[\exists h\in\cH : (R-\hat R_D)(h) > \varepsilon\sqrt R(h)\right] \le 2N_{2n}(\cH)e^{-n\varepsilon^2/16}.
   \]
@@ -326,12 +326,12 @@ Define $N_{n}(\cH) := \sup_{(x_1,y_1), \ldots,(x_{n},y_{n}) \in \X \times \Y} N_
 
 The dependence on the supremum of the number of loss vectors $N_n$ emerges naturally, since the proof of this result uses a symmetrization technique. Using the supremum instead of the expectation over $D$ as in Lemma~\ref{lemma: massart loss v} is only a trick to avoid handling the dependence on the disorder of the dataset. 
 
-In high probability, and isolating the empirical risk $\hat R$ on the right hand side, we obtain the following result. 
+In high probability, and isolating the empirical risk $\hat R_D$ on the right hand side, we obtain the following result. 
 
 \begin{theorem}[Bound with empirical risk]\label{thm: bound emprisk}
     With probability at least $1-\delta$,
     \[
-    (R - \hat R_D)(\hat h_D) \le \sqrt{\frac{\hat R(\hat h)\log(2N_{2n}(\cH)/\delta)}{n}} + 16\frac{\log(2N_{2n}(\cH)/\delta)}{n}
+    (R - \hat R_D)(\hat h_D) \le 4\sqrt{\frac{\hat R_D(\hat h_D)\log(2N_{2n}(\cH)/\delta)}{n}} + 16\frac{\log(2N_{2n}(\cH)/\delta)}{n}
     \]
 \end{theorem}
 
@@ -350,7 +350,7 @@ Then, using that \[\hat R_D(\hat h_D) \le \hat R_D(h_0)\] by definition of empir
 \begin{corollary}[Bound with best risk]\label{coroll: bound bestrisk}
     With probability at least $1-\delta$,
     \[
-    (R - \hat R_D)(\hat h_D) \le \sqrt{\frac{R^*_{\cH}\log(4N_{2n}(\cH)/\delta)}{n}} + 20\frac{\log(4N_{2n}(\cH)/\delta)}{n}
+    (R - \hat R_D)(\hat h_D) \le 4\sqrt{\frac{R^*_{\cH}\log(4N_{2n}(\cH)/\delta)}{n}} + 20\frac{\log(4N_{2n}(\cH)/\delta)}{n}
     \]
 \end{corollary}
 
@@ -372,7 +372,7 @@ Note that if there is no noise, then $R^* = 0$ and the Bayes risk is attained by
 \begin{corollary}\label{coroll: bound noiseandappr}
 With probability $1-\delta$,
 \[
-    R(\hat h) - \hat R(\hat h) \le \sqrt{\frac{(A_\cH + \sigma^2)\log(4N_{2n}(\cH)/\delta)}{n}} + 20\frac{\log(4N_{2n}(\cH)/\delta)}{n}
+    (R - \hat R_D)(\hat h_D) \le 4\sqrt{\frac{(A_\cH + \sigma^2)\log(4N_{2n}(\cH)/\delta)}{n}} + 20\frac{\log(4N_{2n}(\cH)/\delta)}{n}
 \]
 \end{corollary}
 
@@ -382,8 +382,8 @@ Tail integrating and using the counting Lemma~\ref{lemma: counting}, we obtain t
   Let $\ell$ be the zero-one loss. Then
   \begin{equation*}
 \begin{split}
-\expv_D\left[(R-\hat R_D)(\hat h_D)\right] \le \min\Bigg\{ &\sqrt{\frac{(A_{\mathcal H}+\sigma^2)\left(\log (4\card)+1\right)}{n}} + 20\,\frac{\log(4\card)+1}{n}, \\
-&\sqrt{\frac{(A_{\mathcal H}+\sigma^2)\left((2n+2)\log 2+1\right)}{n}} + 20\,\frac{(2n+2)\log 2+1}{n} \Bigg\}
+\expv_D\left[(R-\hat R_D)(\hat h_D)\right] \le \min\Bigg\{ &4\sqrt{\frac{(A_{\mathcal H}+\sigma^2)\left(\log (4\card)+1\right)}{n}} + 20\,\frac{\log(4\card)+1}{n}, \\
+&4\sqrt{\frac{(A_{\mathcal H}+\sigma^2)\left((2n+2)\log 2+1\right)}{n}} + 20\,\frac{(2n+2)\log 2+1}{n} \Bigg\}
 \end{split}
 \end{equation*}
 \end{theorem}

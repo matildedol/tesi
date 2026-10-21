@@ -15,6 +15,13 @@ We first recall some basic results that are used throughout, and then give the p
   \]
 \end{theorem}
 
+\begin{theorem}[Chebyshev's inequality]\label{app: chebyshev}
+  Let $Z$ be a real-valued random variable with finite variance. Then, for every $\varepsilon>0$,
+  \[
+  \Pr\left[\vert Z - \expv[Z]\vert \ge \varepsilon\right] \le \frac{\Var(Z)}{\varepsilon^2}.
+  \]
+\end{theorem}
+
 \begin{proposition}[Union bound]\label{app: unionbound}
   For any finite or countable collection of events $A_1, A_2, \ldots$,
   \[
@@ -70,27 +77,29 @@ Hence
 \[
 \expv_D[\hat R_D(\hat h_D)] \le R(h) \qquad \forall h\in\cH.
 \]
-Now take $d$ a realization of $D$ and consider in particular $h=\hat h_d\in\cH$,
+Now take $D_0$ a realization of $D$ and consider in particular $h=\hat h_{D_0}\in\cH$,
 \[
-\expv_D[\hat R_D(\hat h_D)] \le R(\hat h_d).
+\expv_D[\hat R_D(\hat h_D)] \le R(\hat h_{D_0}).
 \]
-Since this holds for every realization $d$ of $D$, we have $\expv_D[\hat R_D(\hat h_D)] \le R(\hat h_D)$ almost surely and, taking expectations,
+Since this holds for every realization $D_0$ of $D$, we have $\expv_D[\hat R_D(\hat h_D)] \le R(\hat h_D)$ almost surely and, taking expectations,
 \[
 \expv_D[\hat R_D(\hat h_D)] \le \expv_D[R(\hat h_D)].
 \]
 
 Next, we prove the upper bound. Fix $h\in\cH$ and let $Z_i \coloneq -\ell(h(X_i),Y_i)$, $i=1,\ldots,n$, so that
 \[
-\frac1n\sum_{i=1}^n Z_i - \frac1n\sum_{i=1}^n \expv[Z_i] = R(h) - \hat R_D(h).
+\frac1n\sum_{i=1}^n Z_i - \frac1n\sum_{i=1}^n \expv[Z_i] = (R - \hat R_D)(h).
 \]
 We want to apply Hoeffding's inequality (Theorem~\ref{app: hoeffding}). The $Z_i$ are independent, since the $(X_i,Y_i)$ are, and $Z_i\in[-M,0]$ by non-negativity of the loss function and Proposition~\ref{prop: suff assump 2.2}. Hence, with $a_i = -M$ and $b_i = 0$, we obtain
 \begin{equation}\label{app/eq: hoeffding fixed h}
-\Pr\left[R(h) - \hat R_D(h) \ge \varepsilon\right] \le e^{-2n\varepsilon^2/M^2}.
+\Pr\left[(R - \hat R_D)(h) \ge \varepsilon\right] \le e^{-2n\varepsilon^2/M^2}.
 \end{equation}
 Now, to obtain a bound at $\hat h_D$, which depends on $D$, notice that if $(R-\hat R_D)(\hat h_D)\ge\varepsilon$ then $(R - \hat R_D)(h)\ge\varepsilon$ for some $h\in\cH$. Therefore, by the union bound (Proposition~\ref{app: unionbound}) and~(\ref{app/eq: hoeffding fixed h}),
-\begin{equation}\label{app/eq: unionbound prob}
-\Pr\left[(R-\hat R_D)(\hat h_D) \ge \varepsilon\right] \le \Pr\left[\bigcup_{h\in\cH}\left\{(R - \hat R_D)(h)\ge\varepsilon\right\}\right] \le \sum_{h\in\cH} \Pr\left[(R - \hat R_D)(h)\ge\varepsilon\right] \le \card\, e^{-2n\varepsilon^2/M^2}.
-\end{equation}
+\begin{align}\label{app/eq: unionbound prob}
+\Pr\left[(R-\hat R_D)(\hat h_D) \ge \varepsilon\right] &\le \Pr\left[\bigcup_{h\in\cH}\left\{(R - \hat R_D)(h)\ge\varepsilon\right\}\right] \notag \\
+&\le \sum_{h\in\cH} \Pr\left[(R - \hat R_D)(h)\ge \varepsilon\right] \notag \\
+&\le \card e^{-2n\varepsilon^2/M^2}.
+\end{align}
 
 To obtain a bound in expected value from~(\ref{app/eq: unionbound prob}), we tail integrate. Let $X\coloneq(R-\hat R_D)(\hat h_D)$ and $X^+\coloneq\max\{X,0\}$, which is non-negative, so that by Proposition~\ref{app: tail int}
 \[
@@ -230,34 +239,76 @@ Since $D$ is fixed, we can choose $t$ depending on $D$. Optimizing as in the pro
 \begin{proof}[Proof of Theorem~\ref{thm: rademmassart bound}]
   The result follows by Theorem~\ref{thm: rad bound}, Lemma~\ref{lemma: massart loss v} and Lemma~\ref{lemma: counting}. Moreover,
   \[
-  \expv_D\left[(R-\hat R_d)(\hat h_d)\right] \le \expv_D\left[\sup_{h\in\cH} (R-\hat R_d)(h)\right]
+  \expv_D\left[(R-\hat R_D)(\hat h_D)\right] \le \expv_D\left[\sup_{h\in\cH} (R-\hat R_D)(h)\right]
   \]
 \end{proof}
 
 \begin{proof}[Proof of Lemma~\ref{lemma: rel dev}]
-  nanna e nanna a 
+Let $\mathcal F=\{(x,y)\mapsto\ell(y,h(x)):h\in\mathcal H\}$,
+where $\ell$ is the zero-one loss. By Theorem~5.1
+of~\cite{boucheron2005theory}, bounding the number of distinct
+loss vectors on $2n$ observations by $N_{2n}(\mathcal H)$,
+with probability at least $1-\delta$, simultaneously for all
+$h\in\mathcal H$,
+\[
+R(h)-\widehat R_D(h)
+\le
+2\sqrt{\frac{R(h)\log(4N_{2n}(\mathcal H)/\delta)}{n}}.
+\]
+Set
+\[
+\delta_\varepsilon
+=
+4N_{2n}(\mathcal H)e^{-n\varepsilon^2/4}.
+\]
+If $\delta_\varepsilon<1$, applying the preceding inequality
+with $\delta=\delta_\varepsilon$ gives
+\[
+\Pr\!\left[
+\exists h\in\mathcal H:
+R(h)-\widehat R_D(h)>\varepsilon\sqrt{R(h)}
+\right]
+\le
+4N_{2n}(\mathcal H)e^{-n\varepsilon^2/4}.
+\]
+If $\delta_\varepsilon\ge1$, this probability bound holds
+trivially. Finally, since $n\varepsilon^2\ge8$,
+\[
+4e^{-n\varepsilon^2/4}
+\le
+2e^{-n\varepsilon^2/16},
+\]
+which proves the claim.
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm: bound emprisk}]
         Apply the relative deviation inequality (see Loz's file),
         \[
-        \Pr\left[\exists h\in\cH : R(h)-\hat R(h) > \varepsilon \sqrt{R(h)}\right] \le 2N_{2n} (\cH) e^{-2\varepsilon^2/16}
+        \Pr\left[\exists h\in\cH : (R-\hat R_D)(h) > \varepsilon \sqrt{R(h)}\right] \le 2N_{2n} (\cH) e^{-2\varepsilon^2/16}
         \]
-        with the suitable $\varepsilon$ and then isolate $\hat R(\hat h)$ on the RHS.
+        with the suitable $\varepsilon$ and then isolate $\hat R_D(\hat h_D)$ on the RHS.
         % I have not looked precisely at the proof of the rel dev ineq
 \end{proof}
 
 \begin{proof}[Proof of Corollary~\ref{coroll: bound bestrisk}]
-        Recall $h_0 = \argmin_{h\in\cH} R(h)$, $R(h_0) = R^*_{\cH}$ by definition of $R^*_\cH$ and $\hat R(\hat h) \le \hat R(h_0)$ by definition of the ERM $\hat h_D$.
-        Since $h_0$ is independent of the data, $\expv_D[\hat R(h_0)] = R(h_0)$. Bernstein inequality (Theorem~\ref{app: bernstein}) gives, with probability at least $1-\delta/2$,
+        Recall $h_0 = \argmin_{h\in\cH} R(h)$, $R(h_0) = R^*_{\cH}$ by definition of $R^*_\cH$ and $\hat R_D(\hat h_D) \le \hat R_D(h_0)$ by definition of the ERM $\hat h_D$.
+        Since $h_0$ is independent of the data, the variables $\ell(h_0(X_i),Y_i)$ are i.i.d.\ Bernoulli with mean $R^*_\cH$ and variance $R^*_\cH(1-R^*_\cH) \le R^*_\cH$. Bernstein inequality (Theorem~\ref{app: bernstein}) with $M=1$ gives, with probability at least $1-\delta/2$,
         \[
-        \hat R(h_0) \le R^*_{\cH} + \sqrt{\frac{2R^*_\cH \log (2/\delta)}{n}} + \frac{\log(2/\delta)}{3n}.
+        \hat R_D(h_0) \le R^*_{\cH} + \sqrt{\frac{2R^*_\cH \log (2/\delta)}{n}} + \frac{2\log(2/\delta)}{3n}.
         \]
-        Since $N_{2n}(\cH)\ge 1$, $\frac{\log (2/\delta)}{n}\le \frac{\log(4N_{2n}(\cH)/\delta)}{n}$. Thus
+        Let $u\coloneq\log(4N_{2n}(\cH)/\delta)/n$. Since $N_{2n}(\cH)\ge 1$, $\log(2/\delta)/n\le u$. Thus
         \begin{equation}\label{eq: bound hatR h0}
-        \hat R(h_0) \le {\left(\sqrt{R^*_\cH} + \sqrt{\frac{4\log(N_{2n}(\cH)/\delta)}{n}}\right)}^2
+        \hat R_D(\hat h_D) \le \hat R_D(h_0) \le R^*_\cH + 2\sqrt{R^*_\cH u} + u = {\left(\sqrt{R^*_\cH} + \sqrt{u}\right)}^2.
         \end{equation}
-        Substitute~(\ref{eq: hatR h le hat R h0}) into~(\ref{eq: bound hatR h0}), and apply the bound to $\hat R(\hat h)$ in the RHS of Theorem~\ref{thm: bound emprisk} at confidence $1-\delta/2$. This yields the desired bound, which holds with probability at least $1-\delta$ by a union bound on the events ((\ref{eq: bound hatR h0}) and Theorem~\ref{thm: bound emprisk}) that we require to hold simultaneously.
+        Theorem~\ref{thm: bound emprisk} at confidence $1-\delta/2$ gives, with probability at least $1-\delta/2$,
+        \begin{equation}\label{eq: bo}
+        (R-\hat R_D)(\hat h_D) \le 4\sqrt{\hat R_D(\hat h_D)\,u} + 16u.
+        \end{equation}
+        By a union bound, both events hold simultaneously with probability at least $1-\delta$. Hence, plugging~(\ref{eq: bound hatR h0}) in the RHS of~(\ref{eq: bo}), we obtain that with probability at least $1-\delta$,
+        \begin{align*}
+        (R-\hat R_D)(\hat h_D) &\le 4\sqrt u\left(\sqrt{R^*_\cH} + \sqrt u\right) + 16u \\
+        &= 4\sqrt{\frac{R^*_{\cH}\log(4N_{2n}(\cH)/\delta)}{n}} + 20\frac{\log(4N_{2n}(\cH)/\delta)}{n}.
+        \end{align*}
 \end{proof}
 
 \begin{proof}[Proof of Corollary~\ref{coroll: bound noiseandappr}]
@@ -265,23 +316,23 @@ Since $D$ is fixed, we can choose $t$ depending on $D$. Optimizing as in the pro
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm: bound noiseandappr}]
-    Let $\text{gap} = (R-\hat R(\hat h))$ and $C = \sqrt{\frac{\log(4 N_n(\cH)/\delta)}{n}}$. Corollary~\ref{coroll: bound bestrisk} gives
+    Let $\text{gap} = (R-\hat R_D)(\hat h_D)$ and $C = \sqrt{\frac{\log(4 N_{2n}(\cH)/\delta)}{n}}$. Corollary~\ref{coroll: bound bestrisk} gives
 \begin{align*}
-&\Pr\left[\text{gap} \le \sqrt{R^*_\cH}\,C + 20C^2\right] \ge 1-\delta \\
-\implies &\Pr\left[\text{gap} > \sqrt{R^*_\cH}\,C + 20C^2\right] \le \delta
+&\Pr\left[\text{gap} \le 4\sqrt{R^*_\cH}\,C + 20C^2\right] \ge 1-\delta \\
+\implies &\Pr\left[\text{gap} > 4\sqrt{R^*_\cH}\,C + 20C^2\right] \le \delta
 \end{align*}
-Set $\varepsilon = \sqrt{R^*_\cH}\,C + 20C^2$. Let us now find $\delta(\varepsilon)$:
+Set $\varepsilon = 4\sqrt{R^*_\cH}\,C + 20C^2$. Let us now find $\delta(\varepsilon)$:
 \[
-20C^2 + \sqrt{R^*_\cH}\,C - \varepsilon = 0 \implies C = \frac{-\sqrt{R^*_\cH} + \sqrt{R^*_\cH + 80\varepsilon}}{40}
+20C^2 + 4\sqrt{R^*_\cH}\,C - \varepsilon = 0 \implies C = \frac{-4\sqrt{R^*_\cH} + \sqrt{16R^*_\cH + 80\varepsilon}}{40} = \frac{\sqrt{R^*_\cH + 5\varepsilon} - \sqrt{R^*_\cH}}{10}
 \]
 So we have
 \begin{align*}
-\frac{\log(4N_{2n}(\cH)/\delta)}{n} &= \left(\frac{\sqrt{R^*_\cH + 80\varepsilon} - \sqrt{R^*_\cH}}{40}\right)^2 \\
-\frac{4N_{2n}(\cH)}{\delta} &= \exp\left(n\left(\frac{\sqrt{R^*_\cH + 80\varepsilon} - \sqrt{R^*_\cH}}{40}\right)^2\right)
+\frac{\log(4N_{2n}(\cH)/\delta)}{n} &= \left(\frac{\sqrt{R^*_\cH + 5\varepsilon} - \sqrt{R^*_\cH}}{10}\right)^2 \\
+\frac{4N_{2n}(\cH)}{\delta} &= \exp\left(n\left(\frac{\sqrt{R^*_\cH + 5\varepsilon} - \sqrt{R^*_\cH}}{10}\right)^2\right)
 \end{align*}
 and hence
 \[
-\delta(\varepsilon) = 4N_{2n}(\cH)\exp\left(-\frac{n}{1600}\left(\sqrt{R^*_\cH + 80\varepsilon} - \sqrt{R^*_\cH}\right)^2\right).
+\delta(\varepsilon) = 4N_{2n}(\cH)\exp\left(-\frac{n}{100}\left(\sqrt{R^*_\cH + 5\varepsilon} - \sqrt{R^*_\cH}\right)^2\right).
 \]
 Using that $\expv[X] = \int_0^\infty \Pr[X \ge \varepsilon]\,d\varepsilon$ for $X \ge 0$, applied to $\text{gap}^+ \coloneq \max\{\text{gap}, 0\}$,
 \[
@@ -291,9 +342,9 @@ By a shift of perspective, looking at the integral as a sum of horizontal stripe
 \[
 \int_0^\infty \min\{1, \delta(\varepsilon)\}\,d\varepsilon = \int_0^1 \delta^{-1}(t)\,dt = \int_0^1 \varepsilon(\delta)\,d\delta
 \]
-Hence, writing $\varepsilon(\delta) = \sqrt{R^*_\cH}\,C + 20C^2$ explicitly,
+Hence, writing $\varepsilon(\delta) = 4\sqrt{R^*_\cH}\,C + 20C^2$ explicitly,
 \[
-\expv_D[\text{gap}] \le \int_0^1 \varepsilon(\delta)\,d\delta = \sqrt{\frac{R^*_\cH}{n}}\int_0^1 \sqrt{\log\frac{4N_{2n}(\cH)}{\delta}}\,d\delta + \frac{20}{n}\int_0^1 \log\frac{4N_{2n}(\cH)}{\delta}\,d\delta.
+\expv_D[\text{gap}] \le \int_0^1 \varepsilon(\delta)\,d\delta = 4\sqrt{\frac{R^*_\cH}{n}}\int_0^1 \sqrt{\log\frac{4N_{2n}(\cH)}{\delta}}\,d\delta + \frac{20}{n}\int_0^1 \log\frac{4N_{2n}(\cH)}{\delta}\,d\delta.
 \]
 The logarithm is the only part depending on $\delta$, and its integral is
 \[
@@ -305,12 +356,12 @@ Applying Jensen's inequality to the square root term,
 \]
 we obtain
 \[
-\expv_D[\text{gap}] \le \sqrt{\frac{R^*_\cH\left(\log(4N_{2n}(\cH)) + 1\right)}{n}} + 20\,\frac{\log(4N_{2n}(\cH)) + 1}{n}.
+\expv_D[\text{gap}] \le 4\sqrt{\frac{R^*_\cH\left(\log(4N_{2n}(\cH)) + 1\right)}{n}} + 20\,\frac{\log(4N_{2n}(\cH)) + 1}{n}.
 \]
 
 Asymptotically,
 \[
-\expv_D\left[R(\hat h)-\hat R(\hat h)\right] \le O\left(
+\expv_D\left[(R-\hat R_D)(\hat h_D)\right] \le O\left(
 \sqrt{\frac{(A_{\mathcal H}+\sigma^2)\,\log N_{2n}(\mathcal H)}{n}} + \frac{\log N_{2n}(\mathcal H)}{n} \right)
 \]
 because, at the numerator,
@@ -323,7 +374,7 @@ and for large $x$,
 \] 
 for some constant $C>0$. Plugging in the counting inequality from Lemma~\ref{lemma: counting} with $2n$, we obtain and plot the following bound
 \[
-\expv_D\left[R(\hat h)-\hat R(\hat h)\right] \le \min\left\{ O\left(
+\expv_D\left[(R-\hat R_D)(\hat h_D)\right] \le \min\left\{ O\left(
 \sqrt{\frac{(A_{\mathcal H}+\sigma^2)\log \card}{n}} + \frac{\log\card}{n} \right), O\left(\sqrt{A_{\mathcal H}+\sigma^2}+1 \right)\right\}
 \]
 Remark: recall that $N_{2n}(\cH)$ is the maximum number of loss vectors over the union of two datasets $D, D'$, or equivalently over a dataset with size $2n$. The counting lemma must be applied to $2n$-long loss vectors. Hence, we still have $N_{2n}(\cH) \le \vert \cH\vert$ because the number of functions is still the same, and the bound counting all the possible sequences becomes $N_{2n}(\cH) \le 2^{2n}$. 
