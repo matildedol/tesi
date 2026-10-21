@@ -1,11 +1,11 @@
 \documentclass[reqno]{amsart}
-\usepackage{fullpage}
+% \usepackage{fullpage}
 \usepackage{parskip}
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{xcolor}
 \input{math.tex}
-\linespread{1.2}
+\linespread{1.5}
 
 \usepackage{hyperref}
 \usepackage{enumitem}
@@ -29,11 +29,12 @@
 \title{Towards a structure-aware bound on the test error of decision trees}
 \author{mati}
 \begin{document}
-\maketitle
 
 \begin{abstract}
   cuccurucucuccu palomaaa
 \end{abstract}
+
+\maketitle
 
 \newpage
 \tableofcontents
@@ -92,6 +93,7 @@ Each one of the following sections is organized as follows. First, we present th
 
 All proofs are in Appendix~\ref{app: proofs}. 
 
+\newpage
 \section{Union bound over $\cH$}\label{sec: unionbound}
 In this section, we present a fundamental result on the behavior of the gap between the expected and true risk of the empirical risk minimizer. First, we make the following assumptions on the loss function $\ell$.
 
@@ -228,17 +230,17 @@ The following results hold.
 
 Define $N_D(\cH)=\left|\left\{(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n)):h\in\cH\right\}\right|$.
 
-\begin{theorem}[Rademacher complexity bound]\label{thm: rad bound}
+\begin{theorem}[Rademacher complexity bound]\label{thm: rad bound} [\cite{bach2024learning}, Proposition 4.2]
 \[
 \expv_D\left[\,\sup_{h \in \cH}(R - \hat R_D)(h)\right]
 \le 2 \mathcal R_n(\LL)
 \]
 \end{theorem}
 
-\begin{lemma}[Massart]\label{lemma: massart}
+\begin{lemma}[Massart]\label{lemma: massart} [\cite{mohri2018foundations}, Theorem 3.3]
 Let $\ell$ be as in Assumption~\ref{ass: lipsch loss}, so that $\ell(\cdot) \le M$ for some $M\in\R$ by Proposition~\ref{prop: suff assump 2.2}. Then
 \[
-\mathcal R_n(\LL) \le \expv_D\left[\sqrt{\frac{2\log N_D(\cH)}{n}}\right]
+\mathcal R_n(\LL) \le \expv_D\left[M\sqrt{\frac{2\log \card}{n}}\right]
 \]
 \end{lemma}
 
@@ -246,10 +248,17 @@ Note that Theorem~\ref{thm: rad bound} can be easily extended to a bound on the 
 \[
 \expv_D[(R - \hat R_D)(\hat h_D)] \le \expv_D\left[\sup_{h \in \cH}(R - \hat R_D)(h)\right]
 \]
-since $\hat h_D\in\cH$.
+since $\hat h_D\in\cH$. Moreover, the supremum in Definition~\ref{def: rad} can be equivalently computed over the set of loss vectors, which yields the following version of the lemma. 
 
-So, using the Rademacher complexity as an intermediate step allows us to replace the number of predictors $\card$ from Theorem~\ref{thm: unionbound} with the number of loss vectors $N_D(\cH)$ (up to constants). In fact, the supremum in Definition~\ref{def: rad} can be equivalently computed over the set of loss vectors, which motivates the dependence on $N_D$ in Lemma~\ref{lemma: massart}. 
-Hence, Theorem~\ref{thm: rad bound} bounds a quantity that depends on the true expected value of $\ell_h(X,Y)$ with a quantity that can be computed on loss vectors. In fact, the key ingredient for proving it is a symmetrization technique, which consists in replacing the deviation of the random variable $\ell_h(X,Y)$ from its expected value with the difference between two identical random variables taking independent datasets $D$ and $D'$ as inputs. Note that since the loss function is fixed, counting loss vectors is equivalent to counting classification vectors. We work with loss vectors here because they arise more naturally from Rademacher complexity, and turn to classification vectors in Section~\ref{sec: growthf}. 
+\begin{lemma}[Massart, loss vectors]\label{lemma: massart loss v}
+Let $\ell$ be as in Assumption~\ref{ass: lipsch loss}, so that $\ell(\cdot) \le M$ for some $M\in\R$ by Proposition~\ref{prop: suff assump 2.2}. Then
+\[
+\mathcal R_n(\LL) \le \expv_D\left[M\sqrt{\frac{2\log N_D(\cH)}{n}}\right]
+\]
+\end{lemma}
+
+So, using the Rademacher complexity as an intermediate step allows us to replace the number of predictors $\card$ from Theorem~\ref{thm: unionbound} with the number of loss vectors $N_D(\cH)$ (up to constants). 
+In fact, Theorem~\ref{thm: rad bound} bounds a quantity that depends on the true expected value of $\ell_h(X,Y)$ with a quantity that can be computed on loss vectors. The key ingredient for proving it is a symmetrization technique, which consists in replacing the deviation of the random variable $\ell_h(X,Y)$ from its expected value with the difference between two identical random variables taking independent datasets $D$ and $D'$ as inputs. Note that since the loss function is fixed, counting loss vectors is equivalent to counting classification vectors. We work with loss vectors here because they arise more naturally from Rademacher complexity, and turn to classification vectors in Section~\ref{sec: growthf}. 
 
 The following result encloses the key point of the saturation mechanism discussed at the end of Section~\ref{sec: unionbound}. 
 
@@ -295,6 +304,7 @@ We plot bound~\ref{eq: rademmassart bound} against the empirical error curve in 
 At the same time, this mechanism is myopic to the other aspects of the structure of the learning problem.
 Indeed, Figure~\ref{fig:pic3} shows how the gap curve is sensistive to different levels of noise in the dataset, as measured by the $\sigma$ coefficient (standard deviation). Specifically, it remains flatter with less noise, indicating both that the model performs better and that the difference between train and test error is lower (see the explorative experiments in Appendix~\ref{app: prel exp} showing how the empirical curves change with noise). The bound curve, instead, remains unchanged, failing to capture that the noise present in the data has an effect on the generalization performance of the algorithm. 
 
+\newpage
 \section{Dependence on the best risk}\label{sec: bestrisk}
 In this section, we implement a different approach and new theoretical tools to look for a noise-sensitive bound.
 
@@ -435,6 +445,7 @@ As before, we ignore the constants and plot
 
 We plot bound~(\ref{eq: noiseandappr bound}) in Figure~\ref{fig:pic4}. As before, the bound saturates due to the constant term. Figure~\ref{fig:pic5} shows the two terms in the minimum. Figure~\ref{fig:pic6} shows the bound and the test error curve for different noise levels. Finally, we see that the bound changes with the noise. Both the term depending on $d$ and the constant one, which determines the saturating level, depend on the minimum risk $R^*_\cH$. As explained above, this changes with the noise, hence the bound capture the sensitivity of the generalization performance to different noise levels. 
 
+\newpage
 \section{Growth function}\label{sec: growthf}
 
 In this section, we introduce a new measure of the complexity of the hypotheses class, that considers classification vectors. This tool allows to make the intuition on the saturation of the test error due to characteristics of the decision tree algorithm that we discussed in Section~\ref{sec: rademmassart} more explicit. 
@@ -466,6 +477,7 @@ Moreover,
 
 The relation between $N_D$ and $\Pi_n$ makes it immediate to obtain growth-function versions of the bounds in Sections~\ref{sec: rademmassart} and~\ref{sec: bestrisk} (substitute $N(D)\le\Pi_n$ into Lemma~\ref{lemma: massart} and $N_{2n} = \Pi_{2n}$ into Theorem~\ref{thm: bound emprisk}). Substituting also $\Pi_{n}(\mathcal H)\le\min\{\vert \cH \vert,2^n\}$ yields bounds~(\ref{eq: rademmassart bound}) and (\ref{eq: noiseandappr bound}). The bounds are the same, but the intuition that they saturate because the number of distinct classification vectors is at most $2^n$ is made more explicit. In other words, when we evaluate the performance of an algorithm, the models in $\cH$ that the algorithm can learn are equivalent if they give the same classification. This result takes this into account when measuring the richness of the hypotheses class $\cH$.
 
+\newpage
 \section{Going on}
 The growth function has the additional result that
 \[
@@ -476,8 +488,6 @@ we need to understand if this is useful. Plus, we mentioned the localized Radema
 I still need to fix the matter of how to count $\vert \mathcal H \vert$ in terms of the depth $d$ (the ``disclaimer'' in Section~\ref{sec: unionbound}).
 Setting the constant term at $0.5$ in bound~(\ref{eq: rademmassart bound}) is heuristical because I know it works. Needs motivation.
 Similarly, I say $O(\sqrt{A_{\mathcal H}+\sigma^2} + 1) = O(\sqrt{A_{\mathcal H}+\sigma^2})$ and plot only $\sqrt{A_{\mathcal H}+\sigma^2}$ but it's heuristical as well, and since $A_{\mathcal H}+\sigma^2 \le 1$ probably wrong (however, con il $+1$ non fa nemmeno in tempo a saturare perché l'altro termine che dipende da $d$ rimane più piccolo). 
-
-\cite{boucheron2003concentration} 
 
 \bibliography{refs}
 \bibliographystyle{plain}

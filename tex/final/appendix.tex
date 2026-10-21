@@ -41,7 +41,11 @@ We first recall some basic results that are used throughout, and then give the p
 \end{proof}
 
 \begin{proof}[Proof of Lemma~\ref{lemma: massart}]
-  Pass to the supremum over {\it loss vectors\/} instead of functions $\ell\circ h$, and bound it with the sum, which makes the $N(D)$ term appear. Then, apply the exponential Hoeffding Lemma and optimize for the coefficient in the exponent. 
+  Bound the supremum in the definition of the Rademacher complexity with a sum over $\cH$. Then, apply the exponential Hoeffding Lemma to each term and optimize for the coefficient in the exponent. 
+\end{proof}
+
+\begin{proof}[Proof of Lemma~\ref{lemma: massart loss v}]
+  Pass to the supremum over {\it loss vectors\/} instead of functions $\ell\circ h$ in the definition of the Rademacher complexity, bound it with the sum. The proof is concluded as the proof of Lemma~\ref{lemma: massart}.  
 \end{proof}
 
 \begin{proof}[Proof of Lemma~\ref{lemma: counting}]
