@@ -30,10 +30,28 @@
 % \title{Theory and evidence on generalization bounds for decision trees}
 \title{A modern look at classical generalization bounds}
 \author{mati}
+
+% running heads: title on even pages, current section on odd pages
+\makeatletter
+\renewcommand{\sectionmark}[1]{\markright{\MakeUppercase{\ifx\@secnumber\@empty\else\@secnumber.\ \fi#1}}}
+\let\amsart@sect\@sect
+\def\@sect#1#2#3#4#5#6[#7]#8{\amsart@sect{#1}{#2}{#3}{#4}{#5}{#6}[{#7}]{#8}\@nameuse{#1mark}{#7}}
+\renewcommand{\shortauthors}{\MakeUppercase{\shorttitle}}
+% page numbers in the footer instead of the header
+\def\ps@headings{\ps@plain
+  \def\@evenhead{\setTrue{runhead}\normalfont\scriptsize\hfil\leftmark{}{}\hfil}%
+  \def\@oddhead{\setTrue{runhead}\normalfont\scriptsize\hfil\rightmark{}{}\hfil}%
+  \let\@mkboth\markboth}
+\pagestyle{headings}
+\makeatother
+
+% every section starts on a new page with no running head (pending floats are flushed first)
+\let\oldsection\section
+\renewcommand{\section}{\clearpage\thispagestyle{plain}\oldsection}
 \begin{document}
 
 \begin{abstract}
-  cuccurucucuccu palomaaa
+
 \end{abstract}
 
 \maketitle
@@ -332,11 +350,7 @@ Indeed, Figure~\ref{fig:pic3} shows how the gap curve is sensistive to different
 \section{Dependence on the best risk}\label{sec: bestrisk}
 In this section, we implement a different approach and new theoretical tools to look for a noise-sensitive bound.
 
-Let the minimum expected risk achievable in the hypotheses set be
-\[
-R^*_\hyp = \min_{h\in\hyp} R(h).
-\]
-We aim at obtaining a bound on the test error of $\hat h_D$ in terms of the best risk $R^*_\hyp$. The first ingredient is a concentration result for $\hat R_D$ that depends on the true risk $R$. The key ingredient is Chebyshev inequality, Theorem~\ref{app: chebyshev} in the Appendix. 
+The first ingredient is a concentration result for $\hat R_D$ that depends on the true risk $R$. 
 
 Define $N_{n}(\hyp) := \sup_{S \in {(\X \times \Y)}^n} N_S(\hyp)$. Let $\ell$ be the zero-one loss for the rest of this section.
 
@@ -349,6 +363,14 @@ Define $N_{n}(\hyp) := \sup_{S \in {(\X \times \Y)}^n} N_S(\hyp)$. Let $\ell$ be
 
 The dependence on the supremum of the number of loss vectors $N_n$ emerges naturally, since the proof of this result uses a symmetrization technique. Using the supremum instead of the expectation over $D$ as in Lemma~\ref{lemma: massart loss v} is only a trick to avoid handling the dependence on the disorder of the dataset. 
 
+\begin{remark}\label{rem: chebyshev}
+Lemma~\ref{lemma: rel dev} uses Chebyshev inequality that bounds the deviation of a random variable in terms of its variance. For a bounded random variable, the variance is controlled by the first moment, following the intuition that if being bounded it cannot fluctuate much around its expected value. Specifically, if $Z$ is Bernoulli, then $
+\Var(Z) = \expv[Z]\left(1-\expv[Z]\right) \le \expv[Z]$. Through the lenses of learning theory, for $Z = \ell_h(X,Y)$, si ha \[
+\Var(\ell_h) \le R(\ell_h(X,Y))
+\]
+and hence a bound in terms of the best risk. Then, applying a union bound, the resuly above follows (as always, the complete proof is in Appendix~\ref{app: proofs}).
+\end{remark}
+
 In high probability, and isolating the empirical risk $\hat R_D$ on the right hand side, we obtain the following result. 
 
 \begin{theorem}[Bound with empirical risk]\label{thm: bound emprisk}
@@ -358,17 +380,18 @@ In high probability, and isolating the empirical risk $\hat R_D$ on the right ha
     \]
 \end{theorem}
 
-Let
+Let the minimum expected risk achievable in the hypotheses set be
 \[
-h_0 \in \argmin_{h\in\hyp} R(h)
+R^*_\hyp = \min_{h\in\hyp} R(h).
 \]
-be the model that attains $R^*_\hyp$. Again, at least one such model exists since $\hyp$ is finite and nonempty. By applying Bernstein inequality (see Theorem~\ref{app: bernstein} in the Appendix) to the variable $\hat R_D(h_0)$, we obtain a bound on $\hat R_D(\hat h_0)$ that depends on $\expv_D[\hat R_D(h_0)] = R^*_\hyp$. 
+and let \[
+h_b \in \argmin_{h\in\hyp} R(h)
+\]
+be the best hypothesis, i.e.\ the model attaining $R^*_\hyp$. Again, at least one such model exists since $\hyp$ is finite and nonempty. 
 
-Then, using that \[\hat R_D(\hat h_D) \le \hat R_D(h_0)\] by definition of empirical risk minimizer, we obtain a bound on $\hat R_D(\hat h_D)$ that can be applied to the right hand side in the previous theorem, yielding a bound on the gap that depends on the best risk. 
+By definition of empirical risk minimizer, we know that its empirical risk is controlled by the empirical risk attained by the best hypotheses $h_b$. Therefore, controlling $\hat R(h_b)$ yields a bound on the empirical risk of the ERM that can be used in Theorem~\ref{thm: bound emprisk}. 
 
-\begin{remark}
-  The key ingredient of Bernstein inequality is that it uses the second moment of the random variable to bound higher order moments. That is, it is a concentration result in terms of the variance of the random variable. When $\ell$ is the zero-one loss, $\ell(h(X),Y)$ is a Bernoulli random variable with variance $R(h)(1-R(h))\le R(h)$. Therefore, $R^*_\hyp$ is a measure of the lowest possible variance of $\ell_h$ over $\hyp$. This is strictly connected to the noise in the data, as explained in~\cite{boucheron2005theory}.\ \mati{da controllare hehe}
-\end{remark}
+To do so, we use Bernstein inequality (see Theorem~\ref{app: bernstein} in the Appendix) on the variable $\hat R_D(h_b)$. We obtain a bound on $\hat R_D(\hat h_b)$ that depends on the best risk $\expv_D[\hat R_D(h_b)] = R^*_\hyp$. Substituting into the previous result, we get a bound on the gap at the ERM that depends on the best risk.
 
 \begin{corollary}[Bound with best risk]\label{coroll: bound bestrisk}
     With probability at least $1-\delta$,
@@ -376,6 +399,8 @@ Then, using that \[\hat R_D(\hat h_D) \le \hat R_D(h_0)\] by definition of empir
     (R - \hat R_D)(\hat h_D) \le 4\sqrt{\frac{R^*_{\hyp}\log(4N_{2n}(\hyp)/\delta)}{n}} + 20\frac{\log(4N_{2n}(\hyp)/\delta)}{n}
     \]
 \end{corollary}
+
+Note that Bernstein inequality used to obtain this result is a refinement of Chebyshev's~\cite{something}. Indeed, this result uses the same trick explained in Remark~\ref{rem: chebyshev} obtaining $\Var(h_b)\le R(h_b) = R^*_\hyp$. 
 
 Let the Bayes risk be
 \[
@@ -411,6 +436,9 @@ Tail integrating and using the counting Lemma~\ref{lemma: counting}, we obtain t
 \end{equation*}
 \end{theorem}
 
+\begin{remark}
+  All in all, we have used that the empirical risk of the ERM is never worse than the empirical risk of the best hypothesis. This, in turn, concentrates around its true risk, the best risk. The best risk achievable by our hypotheses is determined by the unavoidable risk any function $h:\X\to\Y$ would make due to noise in the data, plus an excess risk due to our choice of hypotheses. This naturally yields a bound depending on the noise.
+\end{remark}
 
 {\bf Experimental design}
 
@@ -467,7 +495,7 @@ As before, we ignore the constants and plot
   \end{minipage}
 \end{figure}
 
-We plot bound~(\ref{eq: noiseandappr bound}) in Figure~\ref{fig:pic4}. As before, the bound saturates due to the constant term. Figure~\ref{fig:pic5} shows the two terms in the minimum. Figure~\ref{fig:pic6} shows the bound and the test error curve for different noise levels. Finally, we see that the bound changes with the noise. Both the term depending on $d$ and the constant one, which determines the saturating level, depend on the minimum risk $R^*_\hyp$. As explained above, this changes with the noise, hence the bound capture the sensitivity of the generalization performance to different noise levels. 
+We plot bound~(\ref{eq: noiseandappr bound}) in Figure~\ref{fig:pic4}. As before, the bound saturates due to the constant term. Figure~\ref{fig:pic5} shows the two terms in the minimum. Figure~\ref{fig:pic6} shows the bound and the test error curve for different noise levels. Finally, we see that the bound changes with the noise. Both the term depending on $d$ and the constant one, which determines the saturating level, depend on the minimum risk $R^*_\hyp$. As explained above, this changes with the noise, hence the bound capture the sensitivity of the generalization performance to different noise levels. This is shown in Figure~\ref{fig:pic7}.
 
 \newpage
 \section{Growth function}\label{sec: growthf}
@@ -490,15 +518,28 @@ The following extends Lemma~\ref{lemma: counting}.
 \begin{lemma}[Counting inequalities with growth function]\label{lemma: growth}
 Let $\ell$ be the zero-one loss. Then
 \[
- 1\le N_D(\hyp)\le\Pi_{n}(\hyp)\le\min\{\vert \hyp \vert,2^n\}.
+ 1\le N_D(\hyp)\le\Pi_{n}(\hyp)\le\min\{\vert \hyp \vert,2^n\}
 \]
-Moreover,
+surely. Moreover,
 \[
 \Pi_n(\hyp)  = N_n(\hyp) = \sup_{S\in{(\X\times\Y)}^n} N_S(\hyp).
 \]
 \end{lemma}
 
-The relation between $N_D$ and $\Pi_n$ makes it immediate to obtain growth-function versions of the bounds in Sections~\ref{sec: rademmassart} and~\ref{sec: bestrisk} (substitute $N(D)\le\Pi_n$ into Lemma~\ref{lemma: massart loss v} and $N_{2n} = \Pi_{2n}$ into Theorem~\ref{thm: bound emprisk}). Substituting also $\Pi_{n}(\hyp)\le\min\{\vert \hyp \vert,2^n\}$ yields bounds~(\ref{eq: rademmassart bound}) and (\ref{eq: noiseandappr bound}). The bounds are the same, but the intuition that they saturate because the number of distinct classification vectors is at most $2^n$ is made more explicit. In other words, when we evaluate the performance of an algorithm, the models in $\hyp$ that the algorithm can learn are equivalent if they give the same classification. This result takes this into account when measuring the richness of the hypotheses class $\hyp$.
+The relation between $N_D$ and $\Pi_n$ makes it immediate to obtain growth-function versions of the bounds in Sections~\ref{sec: rademmassart} and~\ref{sec: bestrisk} (substitute $N(D)\le\Pi_n$ into Lemma~\ref{lemma: massart loss v} and $N_{2n} = \Pi_{2n}$ into Theorem~\ref{thm: bound emprisk}). Substituting also $\Pi_{n}(\hyp)\le\min\{\vert \hyp \vert,2^n\}$ yields bounds~(\ref{eq: rademmassart bound}) and (\ref{eq: noiseandappr bound}). The bounds are the same, but the intuition that they saturate because the number of distinct classification vectors is at most $2^n$ is made more explicit. In other words, when we evaluate the performance of an algorithm, the models in $\hyp$ that the algorithm can learn are equivalent if they give the same classification. This result takes this into account when measuring the richness of the hypotheses class $\hyp$. 
+
+The following Theorem constitutes our final result. It provides both an intuition on the drivers of the test error of decision trees through the dependence on $\Pi_{2n}, A, \sigma^2$, and captures its shape empirically as shown in Figure~\ref{fig:pic4}.
+
+\begin{theorem}[Bound with growth function]
+    Let $\ell$ be the zero-one loss. Then
+\[
+\expv_D\left[(R-\hat R_D)(\hat h_D)\right] \le 4\sqrt{\frac{(A_{\hyp}+\sigma^2)\left(\log (4\Pi_{2n}(\hyp))+1\right)}{n}} + 20\,\frac{\log(4\Pi_{2n}(\hyp))+1}{n}
+\]
+with
+\[
+\Pi_{2n}(\hyp) \le \min\left\{\vert\hyp\vert, 2^{2n}\right\}.
+\]
+\end{theorem}
 
 % \newpage
 % \section{Going on}
@@ -512,6 +553,7 @@ The relation between $N_D$ and $\Pi_n$ makes it immediate to obtain growth-funct
 \section{Conclusions}\label{sec: concl}
 finallyyy
 
+\newpage
 \bibliography{refs}
 \bibliographystyle{plain}
 

@@ -8,17 +8,17 @@ We first recall some basic results that are used throughout, and then give the p
   \]
 \end{theorem}
 
-\begin{theorem}[Bernstein's inequality]\label{app: bernstein}
-  Let $Z_1,\ldots,Z_n$ be independent real-valued random variables with $\expv[Z_i]=0$ and $Z_i\le M$ almost surely for some $M>0$, and let $v = \frac1n\sum_{i=1}^n \mathrm{Var}(Z_i)$. Then, for every $\varepsilon>0$,
-  \[
-  \Pr\left[\frac1n\sum_{i=1}^n Z_i \ge \varepsilon\right] \le \exp\left(-\frac{n\varepsilon^2}{2(v + M\varepsilon/3)}\right).
-  \]
-\end{theorem}
-
 \begin{theorem}[Chebyshev's inequality]\label{app: chebyshev}
   Let $Z$ be a real-valued random variable with finite variance. Then, for every $\varepsilon>0$,
   \[
   \Pr\left[\vert Z - \expv[Z]\vert \ge \varepsilon\right] \le \frac{\Var(Z)}{\varepsilon^2}.
+  \]
+\end{theorem}
+
+\begin{theorem}[Bernstein's inequality]\label{app: bernstein}
+  Let $Z_1,\ldots,Z_n$ be independent real-valued random variables with $\expv[Z_i]=0$ and $Z_i\le M$ almost surely for some $M>0$, and let $v = \frac1n\sum_{i=1}^n \mathrm{Var}(Z_i)$. Then, for every $\varepsilon>0$,
+  \[
+  \Pr\left[\frac1n\sum_{i=1}^n Z_i \ge \varepsilon\right] \le \exp\left(-\frac{n\varepsilon^2}{2(v + M\varepsilon/3)}\right).
   \]
 \end{theorem}
 
