@@ -61,32 +61,32 @@ We first recall some basic results that are used throughout, and then give the p
 \end{proof} 
 
 \begin{proof}[Proof of Theorem~\ref{thm: unionbound}]
-We prove the lower bound first. Since $\hat h_D \in \argmin_{h\in\cH} \hat R_D(h)$, we have
+We prove the lower bound first. Since $\hat h_D \in \argmin_{h\in\hyp} \hat R_D(h)$, we have
 \[
-\hat R_D(\hat h_D) \le \hat R_D(h) \qquad \forall h\in\cH,
+\hat R_D(\hat h_D) \le \hat R_D(h) \qquad \forall h\in\hyp,
 \]
 and taking expectations
 \[
-\expv_D[\hat R_D(\hat h_D)] \le \expv_D[\hat R_D(h)] \qquad \forall h\in\cH.
+\expv_D[\hat R_D(\hat h_D)] \le \expv_D[\hat R_D(h)] \qquad \forall h\in\hyp.
 \]
-For a fixed $h\in\cH$, which does not depend on $D$, the empirical risk is an unbiased estimate of the true risk, since by linearity and because the $(X_i,Y_i)$ are distributed as $(X,Y)$,
+For a fixed $h\in\hyp$, which does not depend on $D$, the empirical risk is an unbiased estimate of the true risk, since by linearity and because the $(X_i,Y_i)$ are distributed as $(X,Y)$,
 \[
 \expv_D[\hat R_D(h)] = \frac1n\sum_{i=1}^n \expv\left[\ell(h(X_i),Y_i)\right] = R(h).
 \]
 Hence
 \[
-\expv_D[\hat R_D(\hat h_D)] \le R(h) \qquad \forall h\in\cH.
+\expv_D[\hat R_D(\hat h_D)] \le R(h) \qquad \forall h\in\hyp.
 \]
-Now take $D_0$ a realization of $D$ and consider in particular $h=\hat h_{D_0}\in\cH$,
+Now take $S$ a realization of $D$ and consider in particular $h=\hat h_{S}\in\hyp$,
 \[
-\expv_D[\hat R_D(\hat h_D)] \le R(\hat h_{D_0}).
+\expv_D[\hat R_D(\hat h_D)] \le R(\hat h_{S}).
 \]
-Since this holds for every realization $D_0$ of $D$, we have $\expv_D[\hat R_D(\hat h_D)] \le R(\hat h_D)$ almost surely and, taking expectations,
+Since this holds for every realization $S$ of $D$, we have $\expv_D[\hat R_D(\hat h_D)] \le R(\hat h_D)$ almost surely and, taking expectations,
 \[
 \expv_D[\hat R_D(\hat h_D)] \le \expv_D[R(\hat h_D)].
 \]
 
-Next, we prove the upper bound. Fix $h\in\cH$ and let $Z_i \coloneq -\ell(h(X_i),Y_i)$, $i=1,\ldots,n$, so that
+Next, we prove the upper bound. Fix $h\in\hyp$ and let $Z_i \coloneq -\ell(h(X_i),Y_i)$, $i=1,\ldots,n$, so that
 \[
 \frac1n\sum_{i=1}^n Z_i - \frac1n\sum_{i=1}^n \expv[Z_i] = (R - \hat R_D)(h).
 \]
@@ -94,10 +94,10 @@ We want to apply Hoeffding's inequality (Theorem~\ref{app: hoeffding}). The $Z_i
 \begin{equation}\label{app/eq: hoeffding fixed h}
 \Pr\left[(R - \hat R_D)(h) \ge \varepsilon\right] \le e^{-2n\varepsilon^2/M^2}.
 \end{equation}
-Now, to obtain a bound at $\hat h_D$, which depends on $D$, notice that if $(R-\hat R_D)(\hat h_D)\ge\varepsilon$ then $(R - \hat R_D)(h)\ge\varepsilon$ for some $h\in\cH$. Therefore, by the union bound (Proposition~\ref{app: unionbound}) and~(\ref{app/eq: hoeffding fixed h}),
+Now, to obtain a bound at $\hat h_D$, which depends on $D$, notice that if $(R-\hat R_D)(\hat h_D)\ge\varepsilon$ then $(R - \hat R_D)(h)\ge\varepsilon$ for some $h\in\hyp$. Therefore, by the union bound (Proposition~\ref{app: unionbound}) and~(\ref{app/eq: hoeffding fixed h}),
 \begin{align}\label{app/eq: unionbound prob}
-\Pr\left[(R-\hat R_D)(\hat h_D) \ge \varepsilon\right] &\le \Pr\left[\bigcup_{h\in\cH}\left\{(R - \hat R_D)(h)\ge\varepsilon\right\}\right] \notag \\
-&\le \sum_{h\in\cH} \Pr\left[(R - \hat R_D)(h)\ge \varepsilon\right] \notag \\
+\Pr\left[(R-\hat R_D)(\hat h_D) \ge \varepsilon\right] &\le \Pr\left[\bigcup_{h\in\hyp}\left\{(R - \hat R_D)(h)\ge\varepsilon\right\}\right] \notag \\
+&\le \sum_{h\in\hyp} \Pr\left[(R - \hat R_D)(h)\ge \varepsilon\right] \notag \\
 &\le \card e^{-2n\varepsilon^2/M^2}.
 \end{align}
 
@@ -132,13 +132,13 @@ R(h) = \expv_{D'}\left[\frac1n\sum_{i=1}^n \ell_h(Z_i')\right] = \expv_{D'}\left
 \]
 Then,
 \[
-\expv_D\left[\sup_{h\in\cH}(R-\hat R_D)(h)\right] = \expv_D\left[\sup_{h\in\cH} \expv_{D'}\left[\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\,\Big\vert\, D\right]\right].
+\expv_D\left[\sup_{h\in\hyp}(R-\hat R_D)(h)\right] = \expv_D\left[\sup_{h\in\hyp} \expv_{D'}\left[\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\,\Big\vert\, D\right]\right].
 \]
 Since the supremum of expectations is at most the expectation of the supremum, and by the law of total expectation, we obtain
 \begin{equation}\label{app/eq: sym step1}
-\expv_D\left[\sup_{h\in\cH}(R-\hat R_D)(h)\right] \le \expv_{D,D'}\left[\sup_{h\in\cH}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right].
+\expv_D\left[\sup_{h\in\hyp}(R-\hat R_D)(h)\right] \le \expv_{D,D'}\left[\sup_{h\in\hyp}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right].
 \end{equation}
-Now we apply the symmetrization trick. Let $\cH = \{h_1,\ldots,h_m\}$, with $m = \card$. For each $i=1,\ldots,n$, since $Z_i$ and $Z_i'$ are independent and identically distributed, swapping them does not change the joint distribution, i.e.
+Now we apply the symmetrization trick. Let $\hyp = \{h_1,\ldots,h_m\}$, with $m = \card$. For each $i=1,\ldots,n$, since $Z_i$ and $Z_i'$ are independent and identically distributed, swapping them does not change the joint distribution, i.e.
 \[
 \left(\ell_{h_j}(Z_i')-\ell_{h_j}(Z_i)\right)_{j=1}^m \overset{d}{=} \left(\ell_{h_j}(Z_i)-\ell_{h_j}(Z_i')\right)_{j=1}^m.
 \]
@@ -150,17 +150,17 @@ Since the pairs $(Z_i,Z_i')$ are independent across $i$, we have
 \[
 \left(\frac1n\sum_{i=1}^n \left(\ell_{h_j}(Z_i')-\ell_{h_j}(Z_i)\right)\right)_{j=1}^m \overset{d}{=} \left(\frac1n\sum_{i=1}^n e_i\left(\ell_{h_j}(Z_i')-\ell_{h_j}(Z_i)\right)\right)_{j=1}^m,
 \]
-and, since the supremum over $\cH$ is a function of this vector,
+and, since the supremum over $\hyp$ is a function of this vector,
 \[
-\sup_{h\in\cH}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right) \overset{d}{=} \sup_{h\in\cH}\frac1n\sum_{i=1}^n e_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right).
+\sup_{h\in\hyp}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right) \overset{d}{=} \sup_{h\in\hyp}\frac1n\sum_{i=1}^n e_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right).
 \]
 Hence, the expected value of the left-hand side is equal to that of the right-hand side for every $e\in\{-1,1\}^n$. Averaging over $e$ with the distribution of $\xi=(\xi_1,\ldots,\xi_n)$, which is independent of $D$ and $D'$, we obtain
 \[
-\expv_{D,D'}\left[\sup_{h\in\cH}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right] = \expv_{\xi,D,D'}\left[\sup_{h\in\cH}\frac1n\sum_{i=1}^n \xi_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right].
+\expv_{D,D'}\left[\sup_{h\in\hyp}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right] = \expv_{\xi,D,D'}\left[\sup_{h\in\hyp}\frac1n\sum_{i=1}^n \xi_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right].
 \]
 Plugging this into~(\ref{app/eq: sym step1}) and bounding the supremum of a sum with the sum of the suprema,
 \begin{align*}
-\expv_D\left[\sup_{h\in\cH}(R-\hat R_D)(h)\right] &\le \expv_{\xi,D'}\left[\sup_{h\in\cH}\frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i')\right] + \expv_{\xi,D}\left[\sup_{h\in\cH}\frac1n\sum_{i=1}^n (-\xi_i)\ell_h(Z_i)\right] \\
+\expv_D\left[\sup_{h\in\hyp}(R-\hat R_D)(h)\right] &\le \expv_{\xi,D'}\left[\sup_{h\in\hyp}\frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i')\right] + \expv_{\xi,D}\left[\sup_{h\in\hyp}\frac1n\sum_{i=1}^n (-\xi_i)\ell_h(Z_i)\right] \\
 &= 2\mathcal R_n(\LL),
 \end{align*}
 because $D'$ has the same distribution as $D$, and $-\xi$ has the same distribution as $\xi$ and is independent of $D$.
@@ -169,11 +169,11 @@ because $D'$ has the same distribution as $D$, and $-\xi$ has the same distribut
 \begin{proof}[Proof of Lemma~\ref{lemma: massart}]
 Let $Z_i\coloneq(X_i,Y_i)$. For any $t>0$,
 \begin{align}
-\exp\left(t\,\expv_{\xi,D}\left[\sup_{h\in\cH}\sum_{i=1}^n \xi_i\ell_h(Z_i)\right]\right)
-&\le \expv_{\xi,D}\left[\exp\left(t\sup_{h\in\cH}\sum_{i=1}^n \xi_i\ell_h(Z_i)\right)\right] \notag\\
-&= \expv_{\xi,D}\left[\sup_{h\in\cH}\exp\left(t\sum_{i=1}^n \xi_i\ell_h(Z_i)\right)\right] \notag\\
-&\le \expv_{\xi,D}\left[\sum_{h\in\cH}\exp\left(t\sum_{i=1}^n \xi_i\ell_h(Z_i)\right)\right] \notag\\
-&= \expv_D\left[\sum_{h\in\cH}\prod_{i=1}^n \expv_{\xi_i}\left[\exp\left(t\xi_i\ell_h(Z_i)\right)\right]\right], \label{app/eq: massart start}
+\exp\left(t\,\expv_{\xi,D}\left[\sup_{h\in\hyp}\sum_{i=1}^n \xi_i\ell_h(Z_i)\right]\right)
+&\le \expv_{\xi,D}\left[\exp\left(t\sup_{h\in\hyp}\sum_{i=1}^n \xi_i\ell_h(Z_i)\right)\right] \notag\\
+&= \expv_{\xi,D}\left[\sup_{h\in\hyp}\exp\left(t\sum_{i=1}^n \xi_i\ell_h(Z_i)\right)\right] \notag\\
+&\le \expv_{\xi,D}\left[\sum_{h\in\hyp}\exp\left(t\sum_{i=1}^n \xi_i\ell_h(Z_i)\right)\right] \notag\\
+&= \expv_D\left[\sum_{h\in\hyp}\prod_{i=1}^n \expv_{\xi_i}\left[\exp\left(t\xi_i\ell_h(Z_i)\right)\right]\right], \label{app/eq: massart start}
 \end{align}
 where we use Jensen's inequality for the convex function $\exp$ in the first inequality, that $\exp$ is increasing in the first equality, we bound the supremum with the sum (all terms are positive) in the second inequality, and we use the independence of the $\xi_i$'s, and their independence of $D$, in the last equality.
 
@@ -183,11 +183,11 @@ Now we apply Hoeffding's lemma (Theorem~\ref{app: hoeffdinglemma}) to each facto
 \]
 Plugging this into~(\ref{app/eq: massart start}),
 \[
-\exp\left(t\,\expv_{\xi,D}\left[\sup_{h\in\cH}\sum_{i=1}^n \xi_i\ell_h(Z_i)\right]\right) \le \sum_{h\in\cH}\prod_{i=1}^n e^{t^2M^2/2} = \card\, e^{nt^2M^2/2}.
+\exp\left(t\,\expv_{\xi,D}\left[\sup_{h\in\hyp}\sum_{i=1}^n \xi_i\ell_h(Z_i)\right]\right) \le \sum_{h\in\hyp}\prod_{i=1}^n e^{t^2M^2/2} = \card\, e^{nt^2M^2/2}.
 \]
 Taking the logarithm of both sides,
 \[
-t\,\expv_{\xi,D}\left[\sup_{h\in\cH}\sum_{i=1}^n \xi_i\ell_h(Z_i)\right] \le \log\card + \frac{nt^2M^2}{2},
+t\,\expv_{\xi,D}\left[\sup_{h\in\hyp}\sum_{i=1}^n \xi_i\ell_h(Z_i)\right] \le \log\card + \frac{nt^2M^2}{2},
 \]
 and dividing by $tn>0$,
 \begin{equation}\label{app/eq: massart opt}
@@ -206,80 +206,78 @@ and the second derivative $\frac{2\log\card}{t^3n}\ge0$, hence $t^\star$ is a mi
 \begin{proof}[Proof of Lemma~\ref{lemma: massart loss v}]
 Let $Z_i\coloneq(X_i,Y_i)$. Since $\xi$ is independent of $D$, by the tower law we can write
 \[
-\mathcal R_n(\LL) = \expv_D\left[\expv_\xi\left[\sup_{h\in\cH}\frac1n\sum_{i=1}^n\xi_i\ell_h(Z_i)\right]\right],
+\mathcal R_n(\LL) = \expv_D\left[\expv_\xi\left[\sup_{h\in\hyp}\frac1n\sum_{i=1}^n\xi_i\ell_h(Z_i)\right]\right],
 \]
-where the inner expectation is over $\xi$ only, for a fixed realization of $D$. We bound the inner expectation for each fixed $D$, and then take the expectation over $D$. This is the reason why the expectation over $D$ remains outside of the bound: the number of loss vectors $N_D(\cH)$ depends on $D$, hence, differently from the proof of Lemma~\ref{lemma: massart}, we cannot apply Jensen's inequality and optimize $t$ jointly over $\xi$ and $D$.
+where the inner expectation is over $\xi$ only, with $D$ fixed. We bound the inner expectation for every realization $S$ of $D$, and then take the expectation over $D$. This is the reason why the expectation over $D$ remains outside of the bound: the number of loss vectors $N_D(\hyp)$ depends on $D$, hence, differently from the proof of Lemma~\ref{lemma: massart}, we cannot apply Jensen's inequality and optimize $t$ jointly over $\xi$ and $D$.
 
-Fix $D$ and let $V_D\coloneq\{(\ell_h(Z_1),\ldots,\ell_h(Z_n)) : h\in\cH\}$ be the set of loss vectors, so that $\vert V_D\vert = N_D(\cH)$. The quantity $\sum_i\xi_i\ell_h(Z_i)$ depends on $h$ only through its loss vector, hence
+Fix $S=(z_1,\ldots,z_n)\in(\X\times\Y)^n$ and let $V_S\coloneq\{(\ell_h(z_1),\ldots,\ell_h(z_n)) : h\in\hyp\}$ be the set of loss vectors, so that $\vert V_S\vert = N_S(\hyp)$. The quantity $\sum_i\xi_i\ell_h(z_i)$ depends on $h$ only through its loss vector, hence
 \[
-\sup_{h\in\cH}\sum_{i=1}^n\xi_i\ell_h(Z_i) = \max_{v\in V_D}\sum_{i=1}^n\xi_i v_i.
+\sup_{h\in\hyp}\sum_{i=1}^n\xi_i\ell_h(z_i) = \max_{v\in V_S}\sum_{i=1}^n\xi_i v_i.
 \]
 Then, for any $t>0$, proceeding as in the proof of Lemma~\ref{lemma: massart} with the expectation over $\xi$ only, we have
 \begin{align*}
-\exp\left(t\,\expv_\xi\left[\max_{v\in V_D}\sum_{i=1}^n\xi_i v_i\right]\right)
-&\le \expv_\xi\left[\max_{v\in V_D}\exp\left(t\sum_{i=1}^n\xi_i v_i\right)\right]
-\le \sum_{v\in V_D}\prod_{i=1}^n\expv_{\xi_i}\left[e^{t\xi_i v_i}\right] \\
-&\le \sum_{v\in V_D}\prod_{i=1}^n e^{t^2M^2/2} = N_D(\cH)\,e^{nt^2M^2/2},
+\exp\left(t\,\expv_\xi\left[\max_{v\in V_S}\sum_{i=1}^n\xi_i v_i\right]\right)
+&\le \expv_\xi\left[\max_{v\in V_S}\exp\left(t\sum_{i=1}^n\xi_i v_i\right)\right]
+\le \sum_{v\in V_S}\prod_{i=1}^n\expv_{\xi_i}\left[e^{t\xi_i v_i}\right] \\
+&\le \sum_{v\in V_S}\prod_{i=1}^n e^{t^2M^2/2} = N_S(\hyp)\,e^{nt^2M^2/2},
 \end{align*}
 where we use Jensen's inequality, we bound the maximum with the sum and use the independence of the $\xi_i$'s, and we apply Hoeffding's lemma (Theorem~\ref{app: hoeffdinglemma}) to $\xi_iv_i$, which is centered and satisfies $\vert\xi_iv_i\vert = v_i\le M$. Taking the logarithm and dividing by $tn$,
 \[
-\expv_\xi\left[\sup_{h\in\cH}\frac1n\sum_{i=1}^n\xi_i\ell_h(Z_i)\right] \le \frac{\log N_D(\cH)}{tn} + \frac{tM^2}{2}.
+\expv_\xi\left[\sup_{h\in\hyp}\frac1n\sum_{i=1}^n\xi_i\ell_h(z_i)\right] \le \frac{\log N_S(\hyp)}{tn} + \frac{tM^2}{2}.
 \]
-Since $D$ is fixed, we can choose $t$ depending on $D$. Optimizing as in the proof of Lemma~\ref{lemma: massart}, with $t^\star = \sqrt{2\log N_D(\cH)/(nM^2)}$, gives
+Since $S$ is fixed, we can choose $t$ depending on $S$. Optimizing as in the proof of Lemma~\ref{lemma: massart}, with $t^\star = \sqrt{2\log N_S(\hyp)/(nM^2)}$, gives
 \[
-\expv_\xi\left[\sup_{h\in\cH}\frac1n\sum_{i=1}^n\xi_i\ell_h(Z_i)\right] \le M\sqrt{\frac{2\log N_D(\cH)}{n}}
+\expv_\xi\left[\sup_{h\in\hyp}\frac1n\sum_{i=1}^n\xi_i\ell_h(z_i)\right] \le M\sqrt{\frac{2\log N_S(\hyp)}{n}}
 \]
-(if $N_D(\cH)=1$, the left-hand side is $0$ since $\expv[\xi_i]=0$). Taking the expectation over $D$ yields the result.
+(if $N_S(\hyp)=1$, the left-hand side is $0$ since $\expv[\xi_i]=0$). Since this holds for every $S\in(\X\times\Y)^n$, it holds for every realization of $D$, i.e.\ the inner expectation is bounded by $M\sqrt{2\log N_D(\hyp)/n}$ for every realization of $D$. Taking the expectation over $D$ yields the result.
 \end{proof}
 
 \begin{proof}[Proof of Lemma~\ref{lemma: counting}]
-  We prove that $N_D(\cH)\le \card$ and $N_D(\cH)\le 2^n$. 
-Fix $D=\{z_1,\dots,z_n\}$ and consider the map
+  We prove that $N_S(\hyp)\le \card$ and $N_S(\hyp)\le 2^n$ for every $S\in(\X\times\Y)^n$.
+Fix $S=(z_1,\dots,z_n)$ and consider the map
 \[
-\Phi\colon \mathcal H \to \{0,1\}^n,\qquad
+\Phi\colon \hyp \to {\{0,1\}}^n,\qquad
 h \mapsto \bigl(\ell_h(z_1),\dots,\ell_h(z_n)\bigr),
 \]
-so that $N_D(\mathcal H)=|\Phi(\mathcal H)|$. Since the image of a set under any map
-has cardinality at most that of the domain, $|\Phi(\mathcal H)|\le|\mathcal H|$.
-Since $\Phi(\mathcal H)\subseteq\{0,1\}^n$, we also have
-$|\Phi(\mathcal H)|\le|\{0,1\}^n|=2^n$.
+so that $N_S(\hyp)=|\Phi(\hyp)|$. Since the image of a set under any map
+has cardinality at most that of the domain, $|\Phi(\hyp)|\le|\hyp|$.
+Since $\Phi(\hyp)\subseteq\{0,1\}^n$, we also have
+$|\Phi(\hyp)|\le|\{0,1\}^n|=2^n$. Because this holds for every realization $S$ of $D$, the claim for $N_D(\hyp)$ follows. 
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm: rademmassart bound}]
-  Since $\hat h_D \in \cH$ for any dataset $D$,
+  Since $\hat h_S \in \hyp$ for any realization $S$ of $D$,
   \[
-  \expv_D\left[(R-\hat R_D)(\hat h_D)\right] \le \expv_D\left[\sup_{h\in\cH} (R-\hat R_D)(h)\right]
+  \expv_D\left[(R-\hat R_D)(\hat h_D)\right] \le \expv_D\left[\sup_{h\in\hyp} (R-\hat R_D)(h)\right]
   \]
-  The proof is concluded applying Theorem~\ref{thm: rad bound}, bounding the Rademacher complexity with Lemma~\ref{lemma: massart loss v}, and bounding $N_D(\cH)$ with Lemma~\ref{lemma: counting}.
+  The proof is concluded applying Theorem~\ref{thm: rad bound}, bounding the Rademacher complexity with Lemma~\ref{lemma: massart loss v}, and bounding $N_D(\hyp)$ with Lemma~\ref{lemma: counting}.
 \end{proof}
 
 \begin{proof}[Proof of Lemma~\ref{lemma: rel dev}]
-Let $\mathcal F=\{(x,y)\mapsto\ell(y,h(x)):h\in\mathcal H\}$,
-where $\ell$ is the zero-one loss. By Theorem~5.1
-of~\cite{boucheron2005theory}, bounding the number of distinct
-loss vectors on $2n$ observations by $N_{2n}(\mathcal H)$,
-with probability at least $1-\delta$, simultaneously for all
-$h\in\mathcal H$,
+Let $\LL=\{(x,y)\mapsto\ell(y,h(x)):h\in\hyp\}$,
+where $\ell$ is the zero-one loss. Apply the first inequality of Theorem~5.1
+of~\cite{boucheron2005theory}, with $\mathbb{S}_\mathcal{F}(X_1^{2n}) = N_{2n}(\hyp)$, yielding with probability at least $1-\delta$, simultaneously for all
+$h\in\hyp$,
 \[
 R(h)-\widehat R_D(h)
 \le
-2\sqrt{\frac{R(h)\log(4N_{2n}(\mathcal H)/\delta)}{n}}.
+2\sqrt{\frac{R(h)\log(4N_{2n}(\hyp)/\delta)}{n}}.
 \]
 Set
 \[
 \delta_\varepsilon
 =
-4N_{2n}(\mathcal H)e^{-n\varepsilon^2/4}.
+4N_{2n}(\hyp)e^{-n\varepsilon^2/4}.
 \]
 If $\delta_\varepsilon<1$, applying the preceding inequality
 with $\delta=\delta_\varepsilon$ gives
 \[
 \Pr\!\left[
-\exists h\in\mathcal H:
+\exists h\in\hyp:
 R(h)-\widehat R_D(h)>\varepsilon\sqrt{R(h)}
 \right]
 \le
-4N_{2n}(\mathcal H)e^{-n\varepsilon^2/4}.
+4N_{2n}(\hyp)e^{-n\varepsilon^2/4}.
 \]
 If $\delta_\varepsilon\ge1$, this probability bound holds
 trivially. Finally, since $n\varepsilon^2\ge8$,
@@ -292,23 +290,39 @@ which proves the claim.
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm: bound emprisk}]
-        Apply the relative deviation inequality (see Loz's file),
-        \[
-        \Pr\left[\exists h\in\cH : (R-\hat R_D)(h) > \varepsilon \sqrt{R(h)}\right] \le 2N_{2n} (\cH) e^{-2\varepsilon^2/16}
-        \]
-        with the suitable $\varepsilon$ and then isolate $\hat R_D(\hat h_D)$ on the RHS.
-        % I have not looked precisely at the proof of the rel dev ineq
+Let $\delta\in(0,1)$ and set
+\[
+u\coloneq\frac{\log(2N_{2n}(\hyp)/\delta)}{n} \qquad\text{and}\qquad \varepsilon\coloneq 4\sqrt{u},
+\]
+so that $2N_{2n}(\hyp)e^{-n\varepsilon^2/16} = \delta$. Since $N_{2n}(\hyp)\ge1$ and $\delta<1$, we have $n\varepsilon^2 = 16\log(2N_{2n}(\hyp)/\delta) \ge 16\log 2 \ge 8$, hence Lemma~\ref{lemma: rel dev} applies and gives
+\[
+\Pr\left[\exists h\in\hyp : (R-\hat R_D)(h) > \varepsilon\sqrt{R(h)}\right] \le \delta.
+\]
+Therefore, with probability at least $1-\delta$, we have $(R-\hat R_D)(h)\le\varepsilon\sqrt{R(h)}$ for all $h\in\hyp$, and in particular for $h=\hat h_D\in\hyp$.
+
+On this event, we isolate $\hat R_D(\hat h_D)$. Let $r\coloneq R(\hat h_D)$ and $\hat r\coloneq\hat R_D(\hat h_D)$, so that $r-\varepsilon\sqrt r-\hat r\le0$. This is a quadratic inequality in $x\coloneq\sqrt r\ge0$, namely $x^2-\varepsilon x-\hat r\le0$, which implies that $x$ is at most the largest root,
+\[
+\sqrt r \le \frac{\varepsilon+\sqrt{\varepsilon^2+4\hat r}}{2}.
+\]
+Squaring both sides,
+\[
+r \le \frac{2\varepsilon^2 + 4\hat r + 2\varepsilon\sqrt{\varepsilon^2+4\hat r}}{4} = \hat r + \frac{\varepsilon^2}{2} + \frac{\varepsilon}{2}\sqrt{\varepsilon^2+4\hat r} \le \hat r + \varepsilon^2 + \varepsilon\sqrt{\hat r},
+\]
+where in the last inequality we used $\sqrt{a+b}\le\sqrt a+\sqrt b$. Hence, substituting $\varepsilon = 4\sqrt u$, with probability at least $1-\delta$,
+\begin{align*}
+(R-\hat R_D)(\hat h_D) &= r-\hat r \le \varepsilon\sqrt{\hat r} + \varepsilon^2 \\ &= 4\sqrt{\frac{\hat R_D(\hat h_D)\log(2N_{2n}(\hyp)/\delta)}{n}} + 16\frac{\log(2N_{2n}(\hyp)/\delta)}{n}.
+\end{align*}
 \end{proof}
 
 \begin{proof}[Proof of Corollary~\ref{coroll: bound bestrisk}]
-        Recall $h_0 = \argmin_{h\in\cH} R(h)$, $R(h_0) = R^*_{\cH}$ by definition of $R^*_\cH$ and $\hat R_D(\hat h_D) \le \hat R_D(h_0)$ by definition of the ERM $\hat h_D$.
-        Since $h_0$ is independent of the data, the variables $\ell(h_0(X_i),Y_i)$ are i.i.d.\ Bernoulli with mean $R^*_\cH$ and variance $R^*_\cH(1-R^*_\cH) \le R^*_\cH$. Bernstein inequality (Theorem~\ref{app: bernstein}) with $M=1$ gives, with probability at least $1-\delta/2$,
+        Recall $h_0 = \argmin_{h\in\hyp} R(h)$, $R(h_0) = R^*_{\hyp}$ by definition of $R^*_\hyp$ and $\hat R_D(\hat h_D) \le \hat R_D(h_0)$ by definition of the ERM $\hat h_D$.
+        Since $h_0$ is independent of the data, the variables $\ell(h_0(X_i),Y_i)$ are i.i.d.\ Bernoulli with mean $R^*_\hyp$ and variance $R^*_\hyp(1-R^*_\hyp) \le R^*_\hyp$. Bernstein inequality (Theorem~\ref{app: bernstein}) with $M=1$ gives, with probability at least $1-\delta/2$,
         \[
-        \hat R_D(h_0) \le R^*_{\cH} + \sqrt{\frac{2R^*_\cH \log (2/\delta)}{n}} + \frac{2\log(2/\delta)}{3n}.
+        \hat R_D(h_0) \le R^*_{\hyp} + \sqrt{\frac{2R^*_\hyp \log (2/\delta)}{n}} + \frac{2\log(2/\delta)}{3n}.
         \]
-        Let $u\coloneq\log(4N_{2n}(\cH)/\delta)/n$. Since $N_{2n}(\cH)\ge 1$, $\log(2/\delta)/n\le u$. Thus
+        Let $u\coloneq\log(4N_{2n}(\hyp)/\delta)/n$. Since $N_{2n}(\hyp)\ge 1$, $\log(2/\delta)/n\le u$. Thus
         \begin{equation}\label{eq: bound hatR h0}
-        \hat R_D(\hat h_D) \le \hat R_D(h_0) \le R^*_\cH + 2\sqrt{R^*_\cH u} + u = {\left(\sqrt{R^*_\cH} + \sqrt{u}\right)}^2.
+        \hat R_D(\hat h_D) \le \hat R_D(h_0) \le R^*_\hyp + 2\sqrt{R^*_\hyp u} + u = {\left(\sqrt{R^*_\hyp} + \sqrt{u}\right)}^2.
         \end{equation}
         Theorem~\ref{thm: bound emprisk} at confidence $1-\delta/2$ gives, with probability at least $1-\delta/2$,
         \begin{equation}\label{eq: bo}
@@ -316,82 +330,110 @@ which proves the claim.
         \end{equation}
         By a union bound, both events hold simultaneously with probability at least $1-\delta$. Hence, plugging~(\ref{eq: bound hatR h0}) in the RHS of~(\ref{eq: bo}), we obtain that with probability at least $1-\delta$,
         \begin{align*}
-        (R-\hat R_D)(\hat h_D) &\le 4\sqrt u\left(\sqrt{R^*_\cH} + \sqrt u\right) + 16u \\
-        &= 4\sqrt{\frac{R^*_{\cH}\log(4N_{2n}(\cH)/\delta)}{n}} + 20\frac{\log(4N_{2n}(\cH)/\delta)}{n}.
+        (R-\hat R_D)(\hat h_D) &\le 4\sqrt u\left(\sqrt{R^*_\hyp} + \sqrt u\right) + 16u \\
+        &= 4\sqrt{\frac{R^*_{\hyp}\log(4N_{2n}(\hyp)/\delta)}{n}} + 20\frac{\log(4N_{2n}(\hyp)/\delta)}{n}.
         \end{align*}
 \end{proof}
 
 \begin{proof}[Proof of Corollary~\ref{coroll: bound noiseandappr}]
-  Substitute $R^*_\cH = \sigma^2 + A_\cH$ into Corollary~\ref{coroll: bound bestrisk}.
+  Substitute $R^*_\hyp = \sigma^2 + A_\hyp$ into Corollary~\ref{coroll: bound bestrisk}.
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm: bound noiseandappr}]
-    Let $\text{gap} = (R-\hat R_D)(\hat h_D)$ and $C = \sqrt{\frac{\log(4 N_{2n}(\cH)/\delta)}{n}}$. Corollary~\ref{coroll: bound bestrisk} gives
+    Let $\text{gap} = (R-\hat R_D)(\hat h_D)$ and $C = \sqrt{\frac{\log(4 N_{2n}(\hyp)/\delta)}{n}}$. Corollary~\ref{coroll: bound bestrisk} gives
 \begin{align*}
-&\Pr\left[\text{gap} \le 4\sqrt{R^*_\cH}\,C + 20C^2\right] \ge 1-\delta \\
-\implies &\Pr\left[\text{gap} > 4\sqrt{R^*_\cH}\,C + 20C^2\right] \le \delta
+&\Pr\left[\text{gap} \le 4\sqrt{R^*_\hyp}\,C + 20C^2\right] \ge 1-\delta \\
+\implies &\Pr\left[\text{gap} > 4\sqrt{R^*_\hyp}\,C + 20C^2\right] \le \delta
 \end{align*}
-Set $\varepsilon = 4\sqrt{R^*_\cH}\,C + 20C^2$. Let us now find $\delta(\varepsilon)$:
+Set $\varepsilon = 4\sqrt{R^*_\hyp}\,C + 20C^2$. Let us now find $\delta(\varepsilon)$:
 \[
-20C^2 + 4\sqrt{R^*_\cH}\,C - \varepsilon = 0 \implies C = \frac{-4\sqrt{R^*_\cH} + \sqrt{16R^*_\cH + 80\varepsilon}}{40} = \frac{\sqrt{R^*_\cH + 5\varepsilon} - \sqrt{R^*_\cH}}{10}
+20C^2 + 4\sqrt{R^*_\hyp}\,C - \varepsilon = 0 \implies C = \frac{-4\sqrt{R^*_\hyp} + \sqrt{16R^*_\hyp + 80\varepsilon}}{40} = \frac{\sqrt{R^*_\hyp + 5\varepsilon} - \sqrt{R^*_\hyp}}{10}
 \]
 So we have
 \begin{align*}
-\frac{\log(4N_{2n}(\cH)/\delta)}{n} &= \left(\frac{\sqrt{R^*_\cH + 5\varepsilon} - \sqrt{R^*_\cH}}{10}\right)^2 \\
-\frac{4N_{2n}(\cH)}{\delta} &= \exp\left(n\left(\frac{\sqrt{R^*_\cH + 5\varepsilon} - \sqrt{R^*_\cH}}{10}\right)^2\right)
+\frac{\log(4N_{2n}(\hyp)/\delta)}{n} &= \left(\frac{\sqrt{R^*_\hyp + 5\varepsilon} - \sqrt{R^*_\hyp}}{10}\right)^2 \\
+\frac{4N_{2n}(\hyp)}{\delta} &= \exp\left(n\left(\frac{\sqrt{R^*_\hyp + 5\varepsilon} - \sqrt{R^*_\hyp}}{10}\right)^2\right)
 \end{align*}
 and hence
 \[
-\delta(\varepsilon) = 4N_{2n}(\cH)\exp\left(-\frac{n}{100}\left(\sqrt{R^*_\cH + 5\varepsilon} - \sqrt{R^*_\cH}\right)^2\right).
+\delta(\varepsilon) = 4N_{2n}(\hyp)\exp\left(-\frac{n}{100}\left(\sqrt{R^*_\hyp + 5\varepsilon} - \sqrt{R^*_\hyp}\right)^2\right).
 \]
 Using that $\expv[X] = \int_0^\infty \Pr[X \ge \varepsilon]\,d\varepsilon$ for $X \ge 0$, applied to $\text{gap}^+ \coloneq \max\{\text{gap}, 0\}$,
 \[
 \expv_D[\text{gap}] \le \expv_D[\text{gap}^+] = \int_0^\infty \Pr[\text{gap} \ge \varepsilon]\,d\varepsilon \le \int_0^\infty \min\{1, \delta(\varepsilon)\}\,d\varepsilon.
 \]
-By a shift of perspective, looking at the integral as a sum of horizontal stripes instead of vertical stripes in the graph of $\varepsilon \mapsto \delta(\varepsilon)$, we obtain
+We now compute the integral by exchanging the roles of $\varepsilon$ and $\delta$. The map $\varepsilon\mapsto\delta(\varepsilon)$ is continuous and strictly decreasing on $[0,\infty)$, with $\delta(0) = 4N_{2n}(\hyp) > 1$ and $\delta(\varepsilon)\to0$ as $\varepsilon\to\infty$. Hence, for every $t\in(0,1)$ there is a unique $\varepsilon(t)>0$ such that $\delta(\varepsilon(t)) = t$, and it is given by $\varepsilon(t) = 4\sqrt{R^*_\hyp}\,C + 20C^2$ with $C = \sqrt{\log(4N_{2n}(\hyp)/t)/n}$, by construction of $\delta(\varepsilon)$. Moreover, for $t\in(0,1)$,
 \[
-\int_0^\infty \min\{1, \delta(\varepsilon)\}\,d\varepsilon = \int_0^1 \delta^{-1}(t)\,dt = \int_0^1 \varepsilon(\delta)\,d\delta
+\min\{1,\delta(\varepsilon)\} > t \iff \delta(\varepsilon) > t \iff \varepsilon < \varepsilon(t).
 \]
-Hence, writing $\varepsilon(\delta) = 4\sqrt{R^*_\cH}\,C + 20C^2$ explicitly,
+Writing $\min\{1,\delta(\varepsilon)\} = \int_0^1 \mathbf 1\{t < \min\{1,\delta(\varepsilon)\}\}\,dt$ and exchanging the order of integration by Tonelli's theorem (the integrand is non-negative), we obtain
 \[
-\expv_D[\text{gap}] \le \int_0^1 \varepsilon(\delta)\,d\delta = 4\sqrt{\frac{R^*_\cH}{n}}\int_0^1 \sqrt{\log\frac{4N_{2n}(\cH)}{\delta}}\,d\delta + \frac{20}{n}\int_0^1 \log\frac{4N_{2n}(\cH)}{\delta}\,d\delta.
+\int_0^\infty \min\{1, \delta(\varepsilon)\}\,d\varepsilon = \int_0^1 \int_0^\infty \mathbf 1\{\varepsilon < \varepsilon(t)\}\,d\varepsilon\,dt = \int_0^1 \varepsilon(t)\,dt = \int_0^1 \varepsilon(\delta)\,d\delta.
+\]
+Hence, writing $\varepsilon(\delta) = 4\sqrt{R^*_\hyp}\,C + 20C^2$ explicitly,
+\[
+\expv_D[\text{gap}] \le \int_0^1 \varepsilon(\delta)\,d\delta = 4\sqrt{\frac{R^*_\hyp}{n}}\int_0^1 \sqrt{\log\frac{4N_{2n}(\hyp)}{\delta}}\,d\delta + \frac{20}{n}\int_0^1 \log\frac{4N_{2n}(\hyp)}{\delta}\,d\delta.
 \]
 The logarithm is the only part depending on $\delta$, and its integral is
 \[
-\int_0^1 \log\frac{4N_{2n}(\cH)}{\delta}\,d\delta = \log(4N_{2n}(\cH)) - \int_0^1 \log\delta\,d\delta = \log(4N_{2n}(\cH)) + 1.
+\int_0^1 \log\frac{4N_{2n}(\hyp)}{\delta}\,d\delta = \log(4N_{2n}(\hyp)) - \int_0^1 \log\delta\,d\delta = \log(4N_{2n}(\hyp)) + 1.
 \]
 Applying Jensen's inequality to the square root term,
 \[
-\int_0^1 \sqrt{\log\frac{4N_{2n}(\cH)}{\delta}}\,d\delta \le \sqrt{\int_0^1 \log\frac{4N_{2n}(\cH)}{\delta}\,d\delta} = \sqrt{\log(4N_{2n}(\cH)) + 1},
+\int_0^1 \sqrt{\log\frac{4N_{2n}(\hyp)}{\delta}}\,d\delta \le \sqrt{\int_0^1 \log\frac{4N_{2n}(\hyp)}{\delta}\,d\delta} = \sqrt{\log(4N_{2n}(\hyp)) + 1},
 \]
 we obtain
 \[
-\expv_D[\text{gap}] \le 4\sqrt{\frac{R^*_\cH\left(\log(4N_{2n}(\cH)) + 1\right)}{n}} + 20\,\frac{\log(4N_{2n}(\cH)) + 1}{n}.
+\expv_D[\text{gap}] \le 4\sqrt{\frac{R^*_\hyp\left(\log(4N_{2n}(\hyp)) + 1\right)}{n}} + 20\,\frac{\log(4N_{2n}(\hyp)) + 1}{n}.
 \]
 
 Asymptotically,
 \[
 \expv_D\left[(R-\hat R_D)(\hat h_D)\right] \le O\left(
-\sqrt{\frac{(A_{\mathcal H}+\sigma^2)\,\log N_{2n}(\mathcal H)}{n}} + \frac{\log N_{2n}(\mathcal H)}{n} \right)
+\sqrt{\frac{(A_{\hyp}+\sigma^2)\,\log N_{2n}(\hyp)}{n}} + \frac{\log N_{2n}(\hyp)}{n} \right)
 \]
 because, at the numerator,
 \[
-\log (4 N_{2n}(\mathcal H)) + 1 = \log 4 + \log N_{2n}(\mathcal H) + 1 = \log N_{2n}(\mathcal H) + O(1)
+\log (4 N_{2n}(\hyp)) + 1 = \log 4 + \log N_{2n}(\hyp) + 1 = \log N_{2n}(\hyp) + O(1)
 \]
 and for large $x$, 
 \[
 \log x + O(1) \le C \log x
 \] 
-for some constant $C>0$. Plugging in the counting inequality from Lemma~\ref{lemma: counting} with $2n$, we obtain and plot the following bound
+for some constant $C>0$.
+Apply Lemma~\ref{lemma: counting}, obtaining
 \[
 \expv_D\left[(R-\hat R_D)(\hat h_D)\right] \le \min\left\{ O\left(
-\sqrt{\frac{(A_{\mathcal H}+\sigma^2)\log \card}{n}} + \frac{\log\card}{n} \right), O\left(\sqrt{A_{\mathcal H}+\sigma^2}+1 \right)\right\}
+\sqrt{\frac{(A_{\hyp}+\sigma^2)\log \card}{n}} + \frac{\log\card}{n} \right), O\left(\sqrt{A_{\hyp}+\sigma^2}+1 \right)\right\}
 \]
-Remark: recall that $N_{2n}(\cH)$ is the maximum number of loss vectors over the union of two datasets $D, D'$, or equivalently over a dataset with size $2n$. The counting lemma must be applied to $2n$-long loss vectors. Hence, we still have $N_{2n}(\cH) \le \vert \cH\vert$ because the number of functions is still the same, and the bound counting all the possible sequences becomes $N_{2n}(\cH) \le 2^{2n}$. 
 \end{proof}
 
 \begin{proof}[Proof of Lemma~\ref{lemma: growth}]
-    $N_D(\cH) \le \Pi_{n}(\cH)$ because the number of distinct loss vector can at most decrease, given prediction vectors. $\Pi_{n}(\cH)\le \card$ because the realizations of functions in $h$ are at most as much as the functions in $h$ (equality when functions in $h$ are bijective). $\Pi_{n}(\cH)\le 2^n$ because we have at most $2^n$ sequences of $n$ $1$s and $-1$s.
+We prove the inequalities for $N_S(\hyp)$, for every $S\in(\X\times\Y)^n$. Since $N_D(\hyp)$ takes the value $N_S(\hyp)$ when $D$ takes the value $S$, they hold for $N_D(\hyp)$ for every realization of $D$.
+
+Fix $S=((x_1,y_1),\ldots,(x_n,y_n))\in(\X\times\Y)^n$, and consider the maps
+\[
+\Psi\colon\hyp\to\Y^n,\quad h\mapsto\bigl(h(x_1),\ldots,h(x_n)\bigr),
+\]
+\[
+\lambda\colon\Y^n\to\{0,1\}^n,\quad (\hat y_1,\ldots,\hat y_n)\mapsto\bigl(\ell(\hat y_1,y_1),\ldots,\ell(\hat y_n,y_n)\bigr).
+\]
+The map $\Phi\colon h\mapsto(\ell_h(x_1,y_1),\ldots,\ell_h(x_n,y_n))$ of the proof of Lemma~\ref{lemma: counting} factorizes as $\Phi=\lambda\circ\Psi$, hence $N_S(\hyp) = |\Phi(\hyp)| = |\lambda(\Psi(\hyp))|$. Moreover, by definition of growth function, $|\Psi(\hyp)|\le\Pi_n(\hyp)$.
+
+\emph{$1\le N_S(\hyp)$.} Since $\hyp$ is nonempty, $\Phi(\hyp)$ is nonempty.
+
+\emph{$N_S(\hyp)\le\Pi_n(\hyp)$.} Since the image of a set under any map has cardinality at most that of the set,
+\[
+N_S(\hyp) = |\lambda(\Psi(\hyp))| \le |\Psi(\hyp)| \le \Pi_n(\hyp).
+\]
+
+\emph{$\Pi_n(\hyp)\le\min\{\card,2^n\}$.} Let $x_1,\ldots,x_n\in\X$ and let $\Psi$ be the corresponding map. As above, $|\Psi(\hyp)|\le\card$, and $\Psi(\hyp)\subseteq\Y^n$ with $|\Y^n| = 2^n$, since $\Y=\{-1,1\}$. Taking the supremum over $x_1,\ldots,x_n$ gives $\Pi_n(\hyp)\le\card$ and $\Pi_n(\hyp)\le2^n$.
+
+\emph{$\Pi_n(\hyp) = N_n(\hyp)$.} Taking the supremum over $S$ in $N_S(\hyp)\le\Pi_n(\hyp)$ gives $N_n(\hyp)\le\Pi_n(\hyp)$. For the converse, let $x_1,\ldots,x_n\in\X$, take any $y_1,\ldots,y_n\in\Y$, and let $S=((x_1,y_1),\ldots,(x_n,y_n))$. Since $\Y=\{-1,1\}$ and $\ell$ is the zero-one loss, $\hat y_i = y_i$ if $\ell(\hat y_i,y_i)=0$ and $\hat y_i = -y_i$ if $\ell(\hat y_i,y_i)=1$. Hence $\lambda$ is injective, and
+\[
+|\Psi(\hyp)| = |\lambda(\Psi(\hyp))| = N_S(\hyp) \le N_n(\hyp).
+\]
+Taking the supremum over $x_1,\ldots,x_n$ gives $\Pi_n(\hyp)\le N_n(\hyp)$.
 \end{proof}
 
 \newpage
