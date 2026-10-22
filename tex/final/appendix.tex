@@ -50,7 +50,7 @@ We first recall some basic results that are used throughout, and then give the p
   \]
 \end{proposition}
 
-\begin{proof}[Proof of Proposition~\ref{prop: suff assump 2.2}] For $a\in A$,
+\begin{proof}[Proof of Proposition~\ref{prop: suff assump 2.2}] Let $\ell:A\to\R^+$ satisfy Assumption~\ref{ass: lipsch loss} with constants $C$ and $C'$. Then
   \begin{align*}
             \ell(a) &= \vert \ell(a)\vert \\
             &= \vert \ell(a)-\ell(0)+\ell(0)\vert \\
@@ -233,14 +233,24 @@ Since $D$ is fixed, we can choose $t$ depending on $D$. Optimizing as in the pro
 \end{proof}
 
 \begin{proof}[Proof of Lemma~\ref{lemma: counting}]
-  Given a dataset, its realizations through $\ell_h$ are less than or equal to those through $h$ because applying $\ell$ cannot increase the number of outputs, and the number of images of the functions in $\mathcal H$ are less than or equal to the number of functions $\card$. On the other hand, $N_D(\cH)\le 2^n$ because we have at most $2^n$ $n$-long sequences of $0s$ and $1s$.
+  We prove that $N_D(\cH)\le \card$ and $N_D(\cH)\le 2^n$. 
+Fix $D=\{z_1,\dots,z_n\}$ and consider the map
+\[
+\Phi\colon \mathcal H \to \{0,1\}^n,\qquad
+h \mapsto \bigl(\ell_h(z_1),\dots,\ell_h(z_n)\bigr),
+\]
+so that $N_D(\mathcal H)=|\Phi(\mathcal H)|$. Since the image of a set under any map
+has cardinality at most that of the domain, $|\Phi(\mathcal H)|\le|\mathcal H|$.
+Since $\Phi(\mathcal H)\subseteq\{0,1\}^n$, we also have
+$|\Phi(\mathcal H)|\le|\{0,1\}^n|=2^n$.
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm: rademmassart bound}]
-  The result follows by Theorem~\ref{thm: rad bound}, Lemma~\ref{lemma: massart loss v} and Lemma~\ref{lemma: counting}. Moreover,
+  Since $\hat h_D \in \cH$ for any dataset $D$,
   \[
   \expv_D\left[(R-\hat R_D)(\hat h_D)\right] \le \expv_D\left[\sup_{h\in\cH} (R-\hat R_D)(h)\right]
   \]
+  The proof is concluded applying Theorem~\ref{thm: rad bound}, bounding the Rademacher complexity with Lemma~\ref{lemma: massart loss v}, and bounding $N_D(\cH)$ with Lemma~\ref{lemma: counting}.
 \end{proof}
 
 \begin{proof}[Proof of Lemma~\ref{lemma: rel dev}]

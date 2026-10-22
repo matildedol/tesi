@@ -26,8 +26,8 @@
 \definecolor{pink}{RGB}{255, 130, 190}
 \definecolor{acquagreen}{RGB}{0,230,255} % verde acqua
 
-% \title{A story of theory and evidence on generalization bounds for decision trees}
-\title{Generalization bounds for decision trees in light of empirical evidence}
+% \title{Theory and evidence on generalization bounds for decision trees}
+\title{A modern look at classical generalization bounds}
 \author{mati}
 \begin{document}
 
@@ -96,18 +96,20 @@ All proofs are in Appendix~\ref{app: proofs}.
 
 \newpage
 \section{Union bound over $\cH$}\label{sec: unionbound}
-In this section, we present a fundamental result on the behavior of the gap between the expected and true risk of the empirical risk minimizer. First, we make the following assumptions on the loss function $\ell$.
+In this section, we present a fundamental result on the behavior of the gap between the expected and true risk of the empirical risk minimizer. First, we make the following assumption.
 
 \begin{assumption}[Boundedness of loss function]\label{ass: bounded loss}
-    Given a set $A\subseteq\R$,
+    Given a set $A\subseteq\R$ and $\ell:A\to\R^+$,
     $\exists M\in\R$ s.t.
     \[
     \ell (a) \le M \qquad \forall a\in A.
     \]
 \end{assumption}
 
+A bounded loss function is crucial for obtaining all the upper bounds on the risk discussed in this work. However, the following holds.
+
 \begin{assumption}[Lipschitzness of loss function and bound at zero]\label{ass: lipsch loss}
-Given a set $A\subseteq\R$, 
+Given a set $A\subseteq\R$ and $\ell:A\to\R^+$, 
     \begin{enumerate}
         \item $\exists C>0$ s.t.
         \[ \forall a,a^\prime\in A, \vert \ell(a)-\ell(a^\prime)\vert \le C\vert a-a^\prime\vert\]
@@ -131,6 +133,24 @@ Note that, in general, we can always take a {\it\/truncation map} $T:\R\to[-1,1]
     \end{cases}
 \end{equation}
 This allows to set $\cH_T =  T\circ \cH$ and take $A = \{(h(x),y) : h\in\cH_T, x\in\X, y\in\Y = \{1,-1\}\}$ which satisfies the assumption of bounded inputs required by Proposition~\ref{prop: suff assump 2.2}. 
+
+Proposition~\ref{prop: suff assump 2.2} combined with the truncation map argument allows to reduce the requirement of boundedness to that of Lipschitzness of the loss function. The latter does not depend on the hypotheses set and is sometimes easier to obtain, as Example~\ref{ex: logistic} shows. Also, this provides a framework for extending the results in this work to an arbitrary $\cH$, possibly infinite, as discussed in Section~\ref{sec: concl}.   
+
+\begin{example}[Logistic loss function]\label{ex: logistic}
+    Let $\ell (a) = \log (1+e^{-a}), a \in \R$ be the logistic loss function. Note that in our setting the function takes as input the product $h(x)\cdot y$.
+    We have
+    \[
+    \ell'(a) = -\frac{e^{-a}}{1+e^{-a}} = -\frac{1}{1+e^a}\quad \Rightarrow \quad \vert \ell'(a)\vert < 1 \qquad\forall a \in \R
+    \]
+    hence 
+    \[
+    C = \sup_{a\in\R} \vert \ell^\prime\vert \le 1.
+    \]
+    Also,
+    \[
+    \ell(0) = \log 2 = C^\prime.
+    \]
+\end{example}
 
 \begin{remark}
   The zero-one loss satisfies Assumption~\ref{ass: bounded loss} with $M=1$ by definition. 
@@ -185,7 +205,7 @@ The exact computation gives
 \[
 \vert \mathcal H_d \vert = 2 \sum_{k=0}^{\min{N-1, 2^d-1}} \binom{N-1}{k}
 \] 
-\mati{Disclaimer: all the plots in this thesis have been obtained with $\vert\cH_d\vert \le 2^d$ which is incorrect, I need to fix it. I tried the formula above or something like $\min(2^N, N^{2^d}2^{2^d})$ but dependence on $d$ is awful.}
+\mati{Disclaimer: all the plots in this thesis have been obtained with $\vert\cH_d\vert \le 2^d$ which is incorrect, I need to fix it. I tried the formula above or something like $\min(2^N, N^{2^d}2^{2^d})$ as suggested by LLMs, but dependence on $d$ is awful and the empirical error curve gets squashed down. However, this is not a problem for the rigor and validity of the results.}
 
 As the maximum depth $d$ increases, we plot the following:
 \begin{enumerate}
@@ -265,8 +285,8 @@ The following result encloses the key point of the saturation mechanism discusse
 
 \begin{lemma}[Counting inequalities]\label{lemma: counting} Let $\ell$ be the zero-one loss. Then
 \[
-N_D(\cH) \le \min\{\vert\cH\vert, 2^n\}.
-\] 
+N_D(\cH) \le \min\{\vert\cH\vert, 2^n\} 
+\]
 \end{lemma} 
 
 Substituting this bound on $N_D$ in Lemma~\ref{lemma: massart loss v} and combining it with Theorem~\ref{thm: rad bound}, we obtain the following bound. 
@@ -282,7 +302,8 @@ The experimental design is the same as above. Again, we ignore the constants and
 \min\left\{2\sqrt{\frac{2\log\card}{n}}, 2\sqrt{2\log 2}\right\} = \min\left\{O\left(\sqrt\frac{\log\card}{n}\right), O(1)\right\}.
 \end{equation}
 We set the constant term to $0.5$, because the Rademacher complexity of $\LL$ is naturally bounded by $0.5$ (see Appendix~\ref{app: add res} for a proof of this fact). 
-\mati{si zia ma il bound è 2Rad quindi avrebbe più senso settarlo a $1$. però empiricamente il test error non va sopra 0.5. AAAAAA}
+
+\mati{Related to the comment on the formula for $\card$, also the constants we choose need to be revisited. Again, saturation holds nonetheless. It's a matter of how to display the results.}
 
 \begin{figure}[h!]
   \centering
@@ -478,17 +499,17 @@ Moreover,
 
 The relation between $N_D$ and $\Pi_n$ makes it immediate to obtain growth-function versions of the bounds in Sections~\ref{sec: rademmassart} and~\ref{sec: bestrisk} (substitute $N(D)\le\Pi_n$ into Lemma~\ref{lemma: massart loss v} and $N_{2n} = \Pi_{2n}$ into Theorem~\ref{thm: bound emprisk}). Substituting also $\Pi_{n}(\mathcal H)\le\min\{\vert \cH \vert,2^n\}$ yields bounds~(\ref{eq: rademmassart bound}) and (\ref{eq: noiseandappr bound}). The bounds are the same, but the intuition that they saturate because the number of distinct classification vectors is at most $2^n$ is made more explicit. In other words, when we evaluate the performance of an algorithm, the models in $\cH$ that the algorithm can learn are equivalent if they give the same classification. This result takes this into account when measuring the richness of the hypotheses class $\cH$.
 
-\newpage
-\section{Going on}
-The growth function has the additional result that
-\[
- \log\Pi_{\cH}(2n)\le d\log\frac{2en}{d}
-\]
-we need to understand if this is useful. Plus, we mentioned the localized Rademacher sometime this summer. 
+% \newpage
+% \section{Going on}
+% I still need to fix the matter of how to count $\vert \mathcal H \vert$ in terms of the depth $d$ (the ``disclaimer'' in Section~\ref{sec: unionbound}).
+% Setting the constant term at $0.5$ in bound~(\ref{eq: rademmassart bound}) is heuristical because I know it works. Needs motivation.
+% Similarly, I say $O(\sqrt{A_{\mathcal H}+\sigma^2} + 1) = O(\sqrt{A_{\mathcal H}+\sigma^2})$ and plot only $\sqrt{A_{\mathcal H}+\sigma^2}$ but it's heuristical as well, and since $A_{\mathcal H}+\sigma^2 \le 1$ probably wrong (however, con il $+1$ non fa nemmeno in tempo a saturare perché l'altro termine che dipende da $d$ rimane più piccolo). 
 
-I still need to fix the matter of how to count $\vert \mathcal H \vert$ in terms of the depth $d$ (the ``disclaimer'' in Section~\ref{sec: unionbound}).
-Setting the constant term at $0.5$ in bound~(\ref{eq: rademmassart bound}) is heuristical because I know it works. Needs motivation.
-Similarly, I say $O(\sqrt{A_{\mathcal H}+\sigma^2} + 1) = O(\sqrt{A_{\mathcal H}+\sigma^2})$ and plot only $\sqrt{A_{\mathcal H}+\sigma^2}$ but it's heuristical as well, and since $A_{\mathcal H}+\sigma^2 \le 1$ probably wrong (however, con il $+1$ non fa nemmeno in tempo a saturare perché l'altro termine che dipende da $d$ rimane più piccolo). 
+% Plus, potential developments on the growth function (\cite{leboeuf2022generalization}).
+
+\newpage
+\section{Conclusions}\label{sec: concl}
+finallyyy
 
 \bibliography{refs}
 \bibliographystyle{plain}
