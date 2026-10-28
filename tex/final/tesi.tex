@@ -256,20 +256,28 @@ Instead, a counting way that accounts for the finiteness of our problem might re
 \section{Using the Rademacher complexity}\label{sec: rademmassart}
 In this section, we introduce the Rademacher complexity, a tool that allows to leverage the viewpoint exposed in the last section and obtain a saturating bound on the test error of decision trees. As before, we state the first results for generic loss functions and hypotheses sets.  
 
-Define $\LL =  \{\ell_h : h \in \hyp \}$ and $\ell_h(x,y) = \ell(h(x), y)$. 
+\begin{definition}[Empirical Rademacher complexity]\label{def: rad gen}
+Let $\xi_1,\ldots,\xi_n$ be $n$ i.i.d.\ random variables taking value $1$ or $-1$ with equal probability. Let $\mathcal{Z} \subset \R$ be a set and $\{z_1,\ldots,z_n\}\subset \mathcal{Z}$ a collection of $n$ points. Given $\mathcal G\coloneq \{g:\mathcal{Z} \to \R\}$ a class of functions over $\mathcal{Z}$, the Rademacher complexity of $\mathcal G$ is
+\[
+\mathcal R_n(\mathcal G) \coloneq \expv_{\xi} \left[\sup_{g \in \mathcal{G}}\frac{1}{n}\sum_{i=1}^n \xi_i g(z_i)\right]
+\]
+\end{definition}
 
-\begin{definition}[Rademacher complexity]\label{def: rad}
-Let $\xi_1,\ldots,\xi_n$ be independent random variables taking value $1$ or $-1$ with equal probability. The Rademacher complexity of the set $\LL$ is
+The Rademacher complexity measures the richness of a class of functions. The argument of the supremum $\frac{1}{n}\sum_i\xi_i g(z_i)$ is the (scaled) inner product between $(\xi_1,\ldots,\xi_n)$ and $(g(z_1),\ldots,g(z_n))$, measuring how well functions in $\mathcal{G}$ can align to the Rademacher variables.
+
+In the context of our learning problem, we define the Rademacher complexity of the class $\LL =  \{\ell_h:\X\times\Y\to\R^+ :\ell_h(x,y) = \ell(h(x),y), h \in \hyp \}$. 
+
+\begin{definition}[Rademacher complexity of $\LL$]\label{def: rad}
+Let $\xi_1,\ldots,\xi_n$ be independent random variables taking value $1$ or $-1$ with equal probability. The Rademacher complexity of the class $\LL$ is
 \[
 \mathcal R_n(\LL) \coloneq \expv_{\xi,D} \left[\sup_{\ell_h\in\LL}\frac{1}{n}\sum_{i=1}^n \xi_i \ell_h(X_i, Y_i)\right]
 \]
 \end{definition}
 
-The Rademacher complexity measures the richness of a class of functions. The argument of the supremum  $\frac{1}{n}\sum_i\xi_i \ell_h(X_i,Y_i) = \langle \xi, \ell_h(X,Y)\rangle$ is the correlation between $\xi$ and $\ell_h(X,Y)$. Since the loss function is fixed, this correlation measures to what extent the classifiers can align to random labels. Note that the supremum is taken before the expectation over the disorder of $\xi$ and $D$, and that in our case it is a maximum, since $\LL$ is finite. Hence, for each dataset and for each realization of the Rademacher vectors, we can choose a different function $\ell_h \in\LL$ that attains the maximum. A high complexity means that for most values of $\xi$ we can find a model $h$ that is similar to that pattern. It is the highest when we can find a function that correlates with any possible pattern.
+Note that we also take the expectation over the disorder of the data $D$, because our sample $(X_1,Y_1),\ldots,(X_n,Y_n)$ is random and our quantity of interest~\ref{eq: ERM} is independent of the data realization. 
+In this case, the argument of the supremum is the inner product between $(\xi_1,\ldots,\xi_n)$ and $(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n))$. Since the loss function is fixed, it measures to what extent classifiers $h\in\hyp$ can align to random noise. Note that the supremum is taken before the expectation over the disorder of $\xi$ and $D$, and that it is a maximum, since $\LL$ is finite. Hence, for each dataset and for each realization of the Rademacher vectors, we can choose a different function $\ell_h \in\LL$ that attains the maximum. A high complexity means that for most values of $\xi$ we can find a model $h$ that is similar to that pattern. It is the highest when we can find a function that correlates with any possible pattern.
 
 The following results hold. 
-
-Define $N_D(\hyp)=\left|\left\{(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n)):h\in\hyp\right\}\right|$.
 
 \begin{theorem}[Rademacher complexity bound]\label{thm: rad bound} [\cite{bach2024learning}, Proposition 4.2]
 \[
@@ -281,25 +289,43 @@ Define $N_D(\hyp)=\left|\left\{(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n)):h\in\hyp
 \begin{lemma}[Massart]\label{lemma: massart} [\cite{mohri2018foundations}, Theorem 3.3]
 Let $\ell$ be as in Assumption~\ref{ass: lipsch loss}, so that $\ell(\cdot) \le M$ for some $M\in\R$ by Proposition~\ref{prop: suff assump 2.2}. Then
 \[
-\mathcal R_n(\LL) \le M\sqrt{\frac{2\log \card}{n}}
+\mathcal R_n(\LL) \le M\sqrt{\frac{2\log \vert\LL\vert}{n}}.
 \]
 \end{lemma}
 
 Note that Theorem~\ref{thm: rad bound} can be easily extended to a bound on the gap at $\hat h_D$ because
 \[
-\expv_D[(R - \hat R_D)(\hat h_D)] \le \sup_{h\in\hyp}\expv_D\left[(R - \hat R_D)(h)\right] \le \expv_D\left[\sup_{h \in \hyp}(R - \hat R_D)(h)\right]
+\expv_D[(R - \hat R_D)(\hat h_D)] \le \expv_D\left[\sup_{h \in \hyp}(R - \hat R_D)(h)\right]
 \]
-since $\hat h_D\in\hyp$ and by definition of supremum. Moreover, the supremum in Definition~\ref{def: rad} can be equivalently computed over the set of loss vectors, which yields the following version of the lemma. 
+since $\hat h_D\in\hyp$. 
+
+\begin{remark}
+  %[Equivalence with Theorem~\ref{thm: unionbound}]
+  We have $\vert\LL\vert = \card$ by definition of $\LL$.
+\end{remark}
+
+Altogether, the previous results yield a bound on the gap at the ERM that is asymptotically the same as that provided by Theorem~\ref{thm: unionbound}. However, the technology introduced here allows to take a step forward. 
+
+Define $\LL(D) \coloneq \left\{\left(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n)\right): h \in \hyp\right\}$.
+
+The supremum in Definition~\ref{def: rad} can be equivalently computed over the set of loss vectors,
+\[
+\sup_{\ell_h\in\LL} \frac{1}{n}\sum_i \xi_i \ell_h(X_i,Y_i) = \sup_{(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n))\in\LL(D)} \frac{1}{n}\sum_i \xi_i \ell_h(X_i,Y_i)
+\]
+
+This yields the following version of the lemma. 
+
+Define $N_D(\hyp)\coloneq \left\vert\left\{\left(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n)\right) : h\in\hyp\right\}\right\vert = \left\vert \LL(D)\right\vert$, which is a random variable as it depends on the dataset $D$.
 
 \begin{lemma}[Massart, loss vectors]\label{lemma: massart loss v}
 Let $\ell$ be as in Assumption~\ref{ass: lipsch loss}, so that $\ell(\cdot) \le M$ for some $M\in\R$ by Proposition~\ref{prop: suff assump 2.2}. Then
 \[
-\mathcal R_n(\LL) \le \expv_D\left[M\sqrt{\frac{2\log N_D(\hyp)}{n}}\right]
+\mathcal R_n(\LL) \le M\sqrt{\frac{2\log \expv_D[N_D(\hyp)]}{n}}
 \]
 \end{lemma}
 
 So, using the Rademacher complexity as an intermediate step allows us to replace the number of predictors $\card$ from Theorem~\ref{thm: unionbound} with the number of loss vectors $N_D(\hyp)$ (up to constants). 
-In fact, Theorem~\ref{thm: rad bound} bounds a quantity that depends on the true expected value of $\ell_h(X,Y)$ with a quantity that can be computed on loss vectors. The key ingredient that allows this is a symmetrization technique, which consists in replacing the deviation of the random variable $\ell_h(X,Y)$ from its expected value with the difference between two identical random variables taking two i.i.d. copies $D$ and $D'$ as inputs. Note that since the loss function is fixed, counting loss vectors is equivalent to counting classification vectors. We work with loss vectors here because they arise more naturally from the Rademacher complexity, and turn to classification vectors in Section~\ref{sec: growthf}. 
+In fact, Theorem~\ref{thm: rad bound} bounds a quantity that depends on the true expected value of $\ell_h(X,Y)$ with a quantity that can be computed on loss vectors. The key ingredient that allows this is a symmetrization technique, which consists in replacing the deviation of the random variable $\ell_h(X,Y)$ from its expected value with the difference between two random variables $\ell_h(X,Y)$ and $\ell_h(X',Y')$ taking two i.i.d.\ copies $D$ and $D'$ as inputs. Note that since the loss function is fixed, counting loss vectors is equivalent to counting classification vectors. We work with loss vectors here because they arise more naturally from the Rademacher complexity, and turn to classification vectors in Section~\ref{sec: growthf}. 
 
 The following result encloses the key point of the saturation mechanism discussed at the end of Section~\ref{sec: unionbound}. 
 

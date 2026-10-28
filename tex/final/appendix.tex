@@ -126,110 +126,138 @@ Let $Z\coloneq(X,Y)$ and $Z_i\coloneq(X_i,Y_i)$, so that
 \[
 R(h) = \expv[\ell_h(Z)] \qquad \text{and} \qquad \hat R_D(h) = \frac1n\sum_{i=1}^n \ell_h(Z_i).
 \]
-The key ingredient of the proof is to introduce an independent copy $D'=(Z_1',\ldots,Z_n')$ of the dataset $D$, and to study the random variables $\ell_h(Z_i')-\ell_h(Z_i)$, which have a symmetric distribution ({\it symmetrization trick}). Since the $Z_i'$ are distributed as $Z$ and are independent of $D$,
+Introduce an independent copy $D'=(Z_1',\ldots,Z_n')$ of the dataset $D$.
+% and to study the random variables $\ell_h(Z_i')-\ell_h(Z_i)$, which have a symmetric distribution ({\it symmetrization trick}).
+Since the $Z_i'$ are distributed as $Z$ and are independent of $D$, we rewrite
 \[
 R(h) = \expv_{D'}\left[\frac1n\sum_{i=1}^n \ell_h(Z_i')\right] = \expv_{D'}\left[\frac1n\sum_{i=1}^n \ell_h(Z_i')\,\Big\vert\, D\right].
 \]
 Then,
 \[
-\expv_D\left[\sup_{h\in\hyp}(R-\hat R_D)(h)\right] = \expv_D\left[\sup_{h\in\hyp} \expv_{D'}\left[\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\,\Big\vert\, D\right]\right].
+\expv_D\left[\sup_{\ell_h\in\LL}(R-\hat R_D)(h)\right] = \expv_D\left[\sup_{\ell_h\in\LL} \expv_{D'}\left[\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\,\Big\vert\, D\right]\right].
 \]
+since, again, $Z_i$ is independent of $D'$ hence it can enter the expectation.
 Since the supremum of expectations is at most the expectation of the supremum, and by the law of total expectation, we obtain
 \begin{equation}\label{app/eq: sym step1}
-\expv_D\left[\sup_{h\in\hyp}(R-\hat R_D)(h)\right] \le \expv_{D,D'}\left[\sup_{h\in\hyp}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right].
+\expv_D\left[\sup_{\ell_h\in\LL}(R-\hat R_D)(h)\right] \le \expv_{D,D'}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right].
 \end{equation}
-Now we apply the symmetrization trick. Let $\hyp = \{h_1,\ldots,h_m\}$, with $m = \card$. For each $i=1,\ldots,n$, since $Z_i$ and $Z_i'$ are independent and identically distributed, swapping them does not change the joint distribution, i.e.
+Now we apply the symmetrization trick. Let $\hyp = \{h_1,\ldots,h_m\}$, with $m = \card$. Since $Z_i$ and $Z_i'$ are i.i.d. for each $i=1,\ldots,n$, swapping them does not change the joint distribution, i.e.
 \[
 \left(\ell_{h_j}(Z_i')-\ell_{h_j}(Z_i)\right)_{j=1}^m \overset{d}{=} \left(\ell_{h_j}(Z_i)-\ell_{h_j}(Z_i')\right)_{j=1}^m.
 \]
-This means that, for any fixed $e=(e_1,\ldots,e_n)\in\{-1,1\}^n$,
+This means that, for any fixed $(e_1,\ldots,e_n)\in\{-1,1\}^n$,
 \[
 \left(\ell_{h_j}(Z_i')-\ell_{h_j}(Z_i)\right)_{j=1}^m \overset{d}{=} \left(e_i\left(\ell_{h_j}(Z_i')-\ell_{h_j}(Z_i)\right)\right)_{j=1}^m.
 \]
-Since the pairs $(Z_i,Z_i')$ are independent across $i$, we have
+The pairs $(Z_1,Z_1'),\ldots,(Z_n,Z'_n)$ are also independent, therefore equality in distribution holds also when taking the sum, i.e.
 \[
-\left(\frac1n\sum_{i=1}^n \left(\ell_{h_j}(Z_i')-\ell_{h_j}(Z_i)\right)\right)_{j=1}^m \overset{d}{=} \left(\frac1n\sum_{i=1}^n e_i\left(\ell_{h_j}(Z_i')-\ell_{h_j}(Z_i)\right)\right)_{j=1}^m,
+\left(\frac1n\sum_{i=1}^n \left(\ell_{h_j}(Z_i')-\ell_{h_j}(Z_i)\right)\right)_{j=1}^m \overset{d}{=} \left(\frac1n\sum_{i=1}^n e_i\left(\ell_{h_j}(Z_i')-\ell_{h_j}(Z_i)\right)\right)_{j=1}^m.
 \]
-and, since the supremum over $\hyp$ is a function of this vector,
+Finally, because the $m$ random variables are jointly equally distributed, we have equality in distribution of the suprema
 \[
-\sup_{h\in\hyp}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right) \overset{d}{=} \sup_{h\in\hyp}\frac1n\sum_{i=1}^n e_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right).
+\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right) \overset{d}{=} \sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n e_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right).
 \]
-Hence, the expected value of the left-hand side is equal to that of the right-hand side for every $e\in\{-1,1\}^n$. Averaging over $e$ with the distribution of $\xi=(\xi_1,\ldots,\xi_n)$, which is independent of $D$ and $D'$, we obtain
+Because the two sides in the previous equation have the same distribution, their expected value is the same
 \[
-\expv_{D,D'}\left[\sup_{h\in\hyp}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right] = \expv_{\xi,D,D'}\left[\sup_{h\in\hyp}\frac1n\sum_{i=1}^n \xi_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right].
+\expv_{D,D'}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right]\, = \,\expv_{D,D'}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n e_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right].
 \]
-Plugging this into~(\ref{app/eq: sym step1}) and bounding the supremum of a sum with the sum of the suprema,
+Note that until now we have considered only the disorder of the data $D,D'$. Because this holds for any value of $(e_1,\ldots,e_n)\in\{-1,1\}^n$, it holds surely for the random variable $\xi = \xi_1,\ldots,\xi_n$, i.e. 
+\[
+\expv_{D,D'}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right]\, = \,\expv_{D,D'}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right]
+\]
+surely. Taking the expected value over the disorder of $\xi$, we obtain
+\[
+\expv_{D,D'}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right] = \expv_{\xi,D,D'}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right]
+\]
+where the left hand side is independent of $\xi$. 
+Plugging the result into~(\ref{app/eq: sym step1}), we have 
+\[
+\expv_D\left[\sup_{\ell_h\in\LL}(R-\hat R_D)(h)\right] \le\expv_{\xi,D,D'}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right]
+\]
+Now we split the sum over $i=1,\ldots,n$ into
+\[
+\frac1n\sum_{i=1}^n \xi_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right) = \frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i') + \frac1n\sum_{i=1}^n\left(-\xi_i\ell_h(Z_i)\right)
+\]
+Then, we use that the supremum of the sum is bounded by the sum of the suprema, 
+\[
+\sup_{\ell_h\in\LL} \frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i') + \frac1n\sum_{i=1}^n\left(-\xi_i\ell_h(Z_i)\right) \le \sup_{\ell_h\in\LL} \frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i') + \sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n\left(-\xi_i\ell_h(Z_i)\right)
+\]
+and that the expectation of the sum is the sum of the expectations, obtaining
+\[
+\expv_D\left[\sup_{\ell_h\in\LL}(R-\hat R_D)(h)\right] \le\expv_{\xi,D'}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i')\right] + \expv_{\xi,D}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n (-\xi_i)\ell_h(Z_i)\right]
+\]
+We also observe that we can replace $-\xi_i$ with $\xi_i$, because they have the same distributions, hence the same expected value, and are independent of the datasets. Therefore,
 \begin{align*}
-\expv_D\left[\sup_{h\in\hyp}(R-\hat R_D)(h)\right] &\le \expv_{\xi,D'}\left[\sup_{h\in\hyp}\frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i')\right] + \expv_{\xi,D}\left[\sup_{h\in\hyp}\frac1n\sum_{i=1}^n (-\xi_i)\ell_h(Z_i)\right] \\
-&= 2\mathcal R_n(\LL),
+\expv_D\left[\sup_{\ell_h\in\LL}(R-\hat R_D)(h)\right] &\le \expv_{\xi,D'}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i')\right] + \expv_{\xi,D}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i)\right] \\
+&= 2\mathcal R_n(\LL).
 \end{align*}
-because $D'$ has the same distribution as $D$, and $-\xi$ has the same distribution as $\xi$ and is independent of $D$.
 \end{proof}
 
 \begin{proof}[Proof of Lemma~\ref{lemma: massart}]
-Let $Z_i\coloneq(X_i,Y_i)$. For any $t>0$,
+For any $t>0$,
 \begin{align}
-\exp\left(t\,\expv_{\xi,D}\left[\sup_{h\in\hyp}\sum_{i=1}^n \xi_i\ell_h(Z_i)\right]\right)
-&\le \expv_{\xi,D}\left[\exp\left(t\sup_{h\in\hyp}\sum_{i=1}^n \xi_i\ell_h(Z_i)\right)\right] \notag\\
-&= \expv_{\xi,D}\left[\sup_{h\in\hyp}\exp\left(t\sum_{i=1}^n \xi_i\ell_h(Z_i)\right)\right] \notag\\
-&\le \expv_{\xi,D}\left[\sum_{h\in\hyp}\exp\left(t\sum_{i=1}^n \xi_i\ell_h(Z_i)\right)\right] \notag\\
-&= \expv_D\left[\sum_{h\in\hyp}\prod_{i=1}^n \expv_{\xi_i}\left[\exp\left(t\xi_i\ell_h(Z_i)\right)\right]\right], \label{app/eq: massart start}
+\exp\left(t\,\expv_{\xi,D}\left[\sup_{\ell_h\in\LL}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right]\right)
+&\le \expv_{\xi,D}\left[\exp\left(t\sup_{\ell_h\in\LL}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right)\right] \notag\\
+&= \expv_{\xi,D}\left[\sup_{\ell_h\in\LL}\exp\left(t\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right)\right] \notag\\
+&\le \expv_{\xi,D}\left[\sum_{\ell_h\in\LL}\exp\left(t\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right)\right] \notag\\
+&= \expv_D\left[\sum_{\ell_h\in\LL}\prod_{i=1}^n \expv_{\xi_i}\left[\exp\left(t\xi_i\ell_h(X_i,Y_i)\right)\right]\right], 
+\label{app/eq: massart start}
 \end{align}
-where we use Jensen's inequality for the convex function $\exp$ in the first inequality, that $\exp$ is increasing in the first equality, we bound the supremum with the sum (all terms are positive) in the second inequality, and we use the independence of the $\xi_i$'s, and their independence of $D$, in the last equality.
+where we use Jensen's inequality for the convex function $\exp(\cdot)$ in the first inequality, that $\exp$ is increasing in the first equality, we bound the supremum with the sum (all terms are positive) in the second inequality, and we use the independence of the $\xi_i$'s, and their independence of $D$, in the last equality.
 
-Now we apply Hoeffding's lemma (Theorem~\ref{app: hoeffdinglemma}) to each factor, conditionally on $D$. We can do so because, for fixed $Z_i$, the random variable $\xi_i\ell_h(Z_i)$ is centered, since $\expv[\xi_i]=0$, and it satisfies $\vert\xi_i\ell_h(Z_i)\vert = \ell_h(Z_i)\le M$ by non-negativity of the loss and Proposition~\ref{prop: suff assump 2.2}. We obtain
+Now we apply Hoeffding's lemma (Theorem~\ref{app: hoeffdinglemma}) to each factor for fixed $(X_i,Y_i)=(x_i,y_i)$ taking any value in $\X\times\Y$. The random variable $\xi_i\ell_h(x_i,y_i)$ is centered, since $\expv[\xi_i]=0$, and it satisfies $\vert\xi_i\ell_h(x_i,y_i)\vert = \ell_h(x_i,y_i)\le M$ by non-negativity of the loss and Proposition~\ref{prop: suff assump 2.2}, hence it satisfies the assumptions of Hoeffding's lemma. We obtain
 \[
-\expv_{\xi_i}\left[\exp\left(t\xi_i\ell_h(Z_i)\right)\right] \le e^{t^2M^2/2}.
+\expv_{\xi_i}\left[\exp\left(t\xi_i\ell_h(x_i,y_i)\right)\right] \le e^{t^2M^2/2}.
 \]
+Because this holds for any $(x_i,y_i)\in\X\times\Y$, we have
+\[
+\expv_{\xi_i}\left[\exp\left(t\xi_i\ell_h(X_i,Y_i)\right)\right] \le e^{t^2M^2/2}
+\]
+surely.
 Plugging this into~(\ref{app/eq: massart start}),
 \[
-\exp\left(t\,\expv_{\xi,D}\left[\sup_{h\in\hyp}\sum_{i=1}^n \xi_i\ell_h(Z_i)\right]\right) \le \sum_{h\in\hyp}\prod_{i=1}^n e^{t^2M^2/2} = \card\, e^{nt^2M^2/2}.
+\exp\left(t\,\expv_{\xi,D}\left[\sup_{\ell_h\in\LL}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right]\right) \le \expv_D\left[\sum_{\ell_h\in\LL}\prod_{i=1}^n e^{t^2M^2/2}\right] = \vert\LL\vert\, e^{nt^2M^2/2}.
 \]
 Taking the logarithm of both sides,
 \[
-t\,\expv_{\xi,D}\left[\sup_{h\in\hyp}\sum_{i=1}^n \xi_i\ell_h(Z_i)\right] \le \log\card + \frac{nt^2M^2}{2},
+t\,\expv_{\xi,D}\left[\sup_{\ell_h\in\LL}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right] \le \log\vert\LL\vert + \frac{nt^2M^2}{2},
 \]
 and dividing by $tn>0$,
 \begin{equation}\label{app/eq: massart opt}
-\mathcal R_n(\LL) \le \frac{\log\card}{tn} + \frac{tM^2}{2}.
+\mathcal R_n(\LL) \le \frac{\log\vert\LL\vert}{tn} + \frac{tM^2}{2} \eqqcolon b(t)
 \end{equation}
-Since~(\ref{app/eq: massart opt}) holds for every $t>0$, we look for the tightest bound. Setting the derivative in $t$ to zero,
+Since~(\ref{app/eq: massart opt}) holds for every $t>0$, we look for the tightest bound. We set the derivative in $t$ to zero
 \[
--\frac{\log\card}{t^2n} + \frac{M^2}{2} = 0 \quad\Longrightarrow\quad t^\star = \sqrt{\frac{2\log\card}{nM^2}},
+\deriv{b(t)}{t}= 
+-\frac{\log\vert\LL\vert}{t^2n} + \frac{M^2}{2} = 0 \quad\Longrightarrow\quad t^\star = \sqrt{\frac{2\log\vert\LL\vert}{nM^2}}.
 \]
-and the second derivative $\frac{2\log\card}{t^3n}\ge0$, hence $t^\star$ is a minimizer (if $\card = 1$, the bound follows by letting $t\to\infty$). Plugging $t^\star$ into~(\ref{app/eq: massart opt}) yields
+Observe that since it is fair to assume $\vert\LL\vert>1$, the second derivative is nonnegative for any $t$
+\[\frac{2\log\vert\LL\vert}{t^3n}\ge0 \quad \forall t\] hence $t^\star$ is a minimizer (if $\vert\LL\vert = 1$, the bound follows by letting $t\to\infty$). Plugging $t^\star$ into~(\ref{app/eq: massart opt}) yields
 \[
-\mathcal R_n(\LL) \le M\sqrt{\frac{2\log\card}{n}}.
+\mathcal R_n(\LL) \le M\sqrt{\frac{2\log\vert\LL\vert}{n}}
 \]
 \end{proof}
 
 \begin{proof}[Proof of Lemma~\ref{lemma: massart loss v}]
-Let $Z_i\coloneq(X_i,Y_i)$. Since $\xi$ is independent of $D$, by the tower law we can write
-\[
-\mathcal R_n(\LL) = \expv_D\left[\expv_\xi\left[\sup_{h\in\hyp}\frac1n\sum_{i=1}^n\xi_i\ell_h(Z_i)\right]\right],
-\]
-where the inner expectation is over $\xi$ only, with $D$ fixed. We bound the inner expectation for every realization $S$ of $D$, and then take the expectation over $D$. This is the reason why the expectation over $D$ remains outside of the bound: the number of loss vectors $N_D(\hyp)$ depends on $D$, hence, differently from the proof of Lemma~\ref{lemma: massart}, we cannot apply Jensen's inequality and optimize $t$ jointly over $\xi$ and $D$.
+Most of the proof is similar to Proof of Lemma~\ref{lemma: massart}. 
 
-Fix $S=(z_1,\ldots,z_n)\in(\X\times\Y)^n$ and let $V_S\coloneq\{(\ell_h(z_1),\ldots,\ell_h(z_n)) : h\in\hyp\}$ be the set of loss vectors, so that $\vert V_S\vert = N_S(\hyp)$. The quantity $\sum_i\xi_i\ell_h(z_i)$ depends on $h$ only through its loss vector, hence
+Let $(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n)) = \ell(D)$. For any $t>0$, 
 \[
-\sup_{h\in\hyp}\sum_{i=1}^n\xi_i\ell_h(z_i) = \max_{v\in V_S}\sum_{i=1}^n\xi_i v_i.
+\exp\left(t\,\expv_{\xi,D}\left[\sup_{\ell(D) \in \LL(D)}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right]\right)\le
+\expv_D\left[\sum_{\ell(D)\in\LL(D)}\prod_{i=1}^n \expv_{\xi_i}\left[\exp\left(t\xi_i\ell_h(X_i,Y_i)\right)\right]\right]
 \]
-Then, for any $t>0$, proceeding as in the proof of Lemma~\ref{lemma: massart} with the expectation over $\xi$ only, we have
+following the same steps as in Proof of Lemma~\ref{lemma: massart} as they don't depend on the set over which we are summing. 
+
+Now we apply Hoeffding's lemma (Theorem~\ref{app: hoeffdinglemma}). These steps also do not depend on the set over which we are summing, therefore we obtain
+\[
+\expv_{\xi_i}\left[\exp\left(t\xi_i\ell_h(X_i,Y_i)\right)\right] \le e^{t^2M^2/2}.
+\]
+surely as in Proof of Lemma~\ref{lemma: massart}. 
+Plugging this into~(\ref{app/eq: massart start}),
 \begin{align*}
-\exp\left(t\,\expv_\xi\left[\max_{v\in V_S}\sum_{i=1}^n\xi_i v_i\right]\right)
-&\le \expv_\xi\left[\max_{v\in V_S}\exp\left(t\sum_{i=1}^n\xi_i v_i\right)\right]
-\le \sum_{v\in V_S}\prod_{i=1}^n\expv_{\xi_i}\left[e^{t\xi_i v_i}\right] \\
-&\le \sum_{v\in V_S}\prod_{i=1}^n e^{t^2M^2/2} = N_S(\hyp)\,e^{nt^2M^2/2},
+\exp\left(t\,\expv_{\xi,D}\left[\sup_{\ell(D)\in\LL(D)}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right]\right) &\le \expv_D\left[\sum_{\ell(D)\in\LL(D)}\prod_{i=1}^n e^{t^2M^2/2}\right]\\ &= \expv_D\left[N_D(\hyp)e^{nt^2M^2/2}\right] \\&= \expv_D\left[N_D(\hyp)\right] e^{nt^2M^2/2}.
 \end{align*}
-where we use Jensen's inequality, we bound the maximum with the sum and use the independence of the $\xi_i$'s, and we apply Hoeffding's lemma (Theorem~\ref{app: hoeffdinglemma}) to $\xi_iv_i$, which is centered and satisfies $\vert\xi_iv_i\vert = v_i\le M$. Taking the logarithm and dividing by $tn$,
-\[
-\expv_\xi\left[\sup_{h\in\hyp}\frac1n\sum_{i=1}^n\xi_i\ell_h(z_i)\right] \le \frac{\log N_S(\hyp)}{tn} + \frac{tM^2}{2}.
-\]
-Since $S$ is fixed, we can choose $t$ depending on $S$. Optimizing as in the proof of Lemma~\ref{lemma: massart}, with $t^\star = \sqrt{2\log N_S(\hyp)/(nM^2)}$, gives
-\[
-\expv_\xi\left[\sup_{h\in\hyp}\frac1n\sum_{i=1}^n\xi_i\ell_h(z_i)\right] \le M\sqrt{\frac{2\log N_S(\hyp)}{n}}
-\]
-(if $N_S(\hyp)=1$, the left-hand side is $0$ since $\expv[\xi_i]=0$). Since this holds for every $S\in(\X\times\Y)^n$, it holds for every realization of $D$, i.e.\ the inner expectation is bounded by $M\sqrt{2\log N_D(\hyp)/n}$ for every realization of $D$. Taking the expectation over $D$ yields the result.
+The rest of the proof follows exacltly as Proof of Lemma~\ref{lemma: massart}, replacing $\vert\LL\vert$ with $\expv_D\left[N_D(\hyp)\right]$ .
 \end{proof}
 
 \begin{proof}[Proof of Lemma~\ref{lemma: counting}]
