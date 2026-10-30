@@ -621,9 +621,27 @@ With our noise level, $\sigma = 3.5$, the Bayes risk is $\approx 0.20$ and $n = 
 % \]
 % \end{proof}
 
-\begin{fact}[Bound on the Rademacher complexity of $\LL$]
-lalalala
-
+\begin{fact}[Bound on the Rademacher complexity of $\LL$]\label{app: fact rad half}
+Let $\ell$ take values in $[0,M]$ for some $M>0$. Then, for any distribution $p$, any $\hyp$ and any $n\ge1$,
+\[
+\mathcal R_n(\LL) \le \frac M2.
+\]
+In particular, if $\ell$ is the zero-one loss, $\mathcal R_n(\LL)\le\frac12$.
+\begin{proof}
+Fix a realization of $D$ and $\xi$, and let $I_+ = \{i : \xi_i = 1\}$. For every $\ell_h\in\LL$, since $0\le\ell_h(X_i,Y_i)\le M$,
+\[
+\frac1n\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i) = \frac1n\sum_{i\in I_+}\ell_h(X_i,Y_i) - \frac1n\sum_{i\notin I_+}\ell_h(X_i,Y_i) \le \frac1n\sum_{i\in I_+}\ell_h(X_i,Y_i) \le \frac{M\vert I_+\vert}{n}.
+\]
+The right-hand side does not depend on $h$, hence
+\[
+\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i) \le \frac Mn\sum_{i=1}^n \mathbf 1(\xi_i=1).
+\]
+Taking expectations over $\xi$ and $D$, and since $\Pr[\xi_i=1]=\frac12$,
+\[
+\mathcal R_n(\LL) \le \frac Mn\sum_{i=1}^n\Pr[\xi_i=1] = \frac M2.
+\]
+The zero-one loss takes values in $\{0,1\}$, so the second claim follows with $M=1$.
+\end{proof}
 \end{fact}
 
 \newpage
