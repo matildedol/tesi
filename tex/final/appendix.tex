@@ -518,7 +518,16 @@ Because in theory an algorithm could learn such a classification pattern as soon
 \[
     h^*(x) = 5\, \sin\left(\frac{\pi \,( m  +1)}{10}\, x\right)
 \]
-We multiply the sine by $5$ to allow for enough height to properly inspect the data, while the argument of the sine is such that $m$ is the number of times $h^*$ crosses the $x$-axis in the open interval $(0,10)$, yielding $m+1$ contiguous blocks of $1s$ and $-1s$. 
+We multiply the sine by $5$ to allow for enough height to properly inspect the data, while the argument of the sine is such that $m$ is the number of times $h^*$ crosses the $x$-axis in the open interval $(0,10)$, yielding $m+1$ contiguous blocks of $1s$ and $-1s$.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{outputs/app_explore_sine.png}
+  \caption{Samples from the sine ($m = 10$). One sample of size $n = 50$ for $\sigma \in \{10^{-4}, 1, 3, 5\}$.}
+  \label{app/fig: explore data sine}
+\end{figure}
+
+Figure~\ref{app/fig: explore data sine} shows the data generated with the sine for $m=10$, for different amounts of noise.
 
 \begin{figure}[h!]
   \centering
