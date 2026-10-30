@@ -600,12 +600,55 @@ With our noise level, $\sigma = 3.5$, the Bayes risk is $\approx 0.20$ and $n = 
 \newpage
 \section{Additional results}\label{app: add res}
 
-\begin{fact}[The empirical risk is a biased estimate of the true risk for the ERM]
-lalala
-  
-\end{fact}
+% \begin{fact}[The empirical risk is a biased estimate of the true risk for the ERM]\label{app: fact bias}
+% For any distribution $p$, any loss $\ell$ and any finite, nonempty $\hyp$,
+% \[
+% \expv_D\left[\hat R_D(\hat h_D)\right] \le \min_{h\in\hyp} R(h) \le \expv_D\left[R(\hat h_D)\right],
+% \]
+% and there exist $p$, $\ell$ and $\hyp$ for which the inequality is strict. Hence, in general, $\expv_D[\hat R_D(\hat h_D)]\neq\expv_D[R(\hat h_D)]$.
+% \end{fact}
+%
+% \begin{proof}
+% Fix any $h\in\hyp$. By definition of the ERM, $\hat R_D(\hat h_D)\le\hat R_D(h)$ for every realization of $D$. Taking expectations, and since $h$ does not depend on $D$ and the $(X_i,Y_i)$ are distributed as $(X,Y)$,
+% \[
+% \expv_D\left[\hat R_D(\hat h_D)\right] \le \expv_D\left[\hat R_D(h)\right] = \frac1n\sum_{i=1}^n\expv\left[\ell(h(X_i),Y_i)\right] = R(h).
+% \]
+% Since this holds for every $h\in\hyp$, and $\hyp$ is finite, $\expv_D[\hat R_D(\hat h_D)]\le\min_{h\in\hyp}R(h)$. Moreover, $\hat h_D\in\hyp$ for every realization of $D$, hence $\min_{h\in\hyp}R(h)\le R(\hat h_D)$ pointwise, and taking expectations gives the second inequality.
+%
+% For strictness, let $\X=\{\bar x_1\}$, $p_{1,1}=p_{1,-1}=\frac12$, $\ell$ the zero-one loss, $n=1$ and $\hyp=\{h_+,h_-\}$ with $h_+\equiv1$, $h_-\equiv-1$. Then $R(h_+)=R(h_-)=\frac12$, so $R(\hat h_D)=\frac12$ for every realization of $D$. On the other hand, $\hat h_D$ is the constant classifier equal to $Y_1$, so $\hat R_D(\hat h_D)=0$. Therefore
+% \[
+% \expv_D\left[\hat R_D(\hat h_D)\right]=0<\frac12=\expv_D\left[R(\hat h_D)\right].
+% \]
+% \end{proof}
 
 \begin{fact}[Bound on the Rademacher complexity of $\LL$]
 lalalala
 
 \end{fact}
+
+\newpage
+\section{Code specifications}\label{app: code}
+
+{\bf Computation of the best risk.} The algorithm is explained using one-based indexing for the sake of exposition, while the real code uses zero-based indexing as usual in Python. We produce $N$ noiseless labels for each input value in the support and we cluster the intervals over $\X$ where inputs have the same label. Let $L$ be the number of contiguous blocks we obtain. We create a \texttt{dp} matrix with dimension $k_{\max} \times 2$: in the columns, we have the labels $y_j \in\{1,-1\}$ for $j = 1,2$; in the rows, we have the number of leaves in the tree $k = 1,\ldots,k_{\max}$, with $k_{\max} = \min(2^{d_{\max}}, L)$ the maximum number of leaves and $d_{\max}$ the largest depth we consider overall (that is a multiple of $\lceil\log_2 n\rceil$ as mentioned in Section~\ref{sec: unionbound}). Note that the tree reproducing exactly the noiseless labels has $L$ leaves and has expected risk equal to $1-p$, the portion of corrupted labels, reaching the Bayes risk. Since the best risk is bounded from below by the Bayes risk, considering more than $L$ leaves cannot improve it. So, to avoid useless computations, we consider the minimum between $L$ and $2^{d_{\max}}$. Given the true labels for each of the $L$ blocks, it is easy to create also a \texttt{cost} matrix with dimension $L\times 2$, where \texttt{cost[i, j]} is the risk given by predicting  $y_j$ at block $i$. Let $y_i$ be the true label in block $i$ and $\rho_i$ the portion of inputs falling into block $i$. We have 
+\[
+\texttt{cost[i,j]} = \begin{cases}
+    \rho_i \cdot (1-p) & \text{if } y_i = y_j\\
+    \rho_i \cdot p & \text{if } y_i \neq y_j
+\end{cases}
+\]
+
+We initialize the \texttt{dp} matrix setting all entries to $\infty$. For the first iteration over block $i=1$, we set \[\texttt{dp[1, :]} = \texttt{cost[1, :]}\] For each iteration $i=2,\ldots,L$ we dynamically update the \texttt{dp} matrix with minimum risks. Dynamically updating means that in \texttt{dp[k,j]} we store the cumulative minimum risk of having predicted label $y_j$ at the {\it previous\/} block $i-1$ with $k$ leaves, and we create a new $k_{\max}\times 2$ matrix called \texttt{new} such that in \texttt{new[k,j]} we store the minimum risk of predicting label $y_j$ at the current block $i$ with $k$ leaves. This minimum risk is computed as follows. Given that we predict $y_j$ at block $i$, we choose between the tree that has predicted label $y_j$ at block $i-1$ using $k$ leaves, i.e.\ that keeps the same label, and the tree that has predicted label $-y_j$ at block $i-1$ using $k-1$ leaves, i.e.\ that switches labels. These two values are stored in the \texttt{dp} matrix, as said. Then, we add the cost of predicting label $y_j$ in the current block $i$. This is summarized by the following line
+\[
+\texttt{new[k,j]} = \min(\texttt{dp[k,j]}, \texttt{dp[k-1,3-j]}) + \texttt{cost[i,j]}
+\]
+Note that $3-j$ swaps the indices $1$ and $2$, i.e.\ it stays for $-y_j$. Also, this code holds for $k>1$, while for $k = 1$ the cost of switchiing is set to $\infty$, as it is not admissible. 
+After passing over all $2k_{\max}$ entries of \texttt{new}, we update $\texttt{dp = new}$ and pass to the next block $i+1$. The \texttt{dp} matrix will now contain the cumulative minimum risks for each possible label predicted in the last block $i$. Note that using an auxiliary matrix \texttt{new} is not strictly necessary, as we could update the \texttt{dp} matrix recursively, but using it eases understanding the logic. 
+In the end, after passing over the last contiguous block, we obtain a matrix with the minimum risk for each number of leaves and each label assigned to the last block. We create a $k_{\max}$-long list \texttt{exact\_k\_risk} with the minimum value for each $k$,
+\[
+\texttt{exact\_k\_risk[k]} = \min_{j \in\{1,2\}} \texttt{dp[k,j]}
+\]
+Then, we create another $k_{\max}$-long list \texttt{at\_most\_k\_risk} that stores the cumulative minimum for each possible {\it maximum} number of leaves, 
+\[
+\texttt{at\_most\_k\_risk[k]} = \min_{r \in[1,k]} \texttt{exact\_k\_risk[r]}
+\]
+Thus, the $k$-th entry of \texttt{at\_most\_k\_risk} contains the best risk allowing at most $k$ leaves. Finally, for each depth $d$ we set $k_d = \min(2^d, L)$ and select the $k_d$-th entry in \texttt{at\_most\_k\_risk}, yielding the best risk among trees with maximum depth $d$.
