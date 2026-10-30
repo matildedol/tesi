@@ -50,7 +50,7 @@ We first recall some basic results that are used throughout, and then give the p
   \]
 \end{proposition}
 
-\begin{proof}[Proof of Proposition~\ref{prop: suff assump 2.2}] Let $\ell:A\to\R^+$ satisfy Assumption~\ref{ass: lipsch loss} with constants $C$ and $C'$. Then
+\begin{proof}[Proof of Proposition~\ref{prop: suff assump}] Let $\ell:A\to\R^+$ satisfy Assumption~\ref{ass: lipsch loss} with constants $C$ and $C'$. Then
   \begin{align*}
             \ell(a) &= \vert \ell(a)\vert \\
             &= \vert \ell(a)-\ell(0)+\ell(0)\vert \\
@@ -90,7 +90,7 @@ Next, we prove the upper bound. Fix $h\in\hyp$ and let $Z_i \coloneq -\ell(h(X_i
 \[
 \frac1n\sum_{i=1}^n Z_i - \frac1n\sum_{i=1}^n \expv[Z_i] = (R - \hat R_D)(h).
 \]
-We want to apply Hoeffding's inequality (Theorem~\ref{app: hoeffding}). The $Z_i$ are independent, since the $(X_i,Y_i)$ are, and $Z_i\in[-M,0]$ by non-negativity of the loss function and Proposition~\ref{prop: suff assump 2.2}. Hence, with $a_i = -M$ and $b_i = 0$, we obtain
+We want to apply Hoeffding's inequality (Theorem~\ref{app: hoeffding}). The $Z_i$ are independent, since the $(X_i,Y_i)$ are, and $Z_i\in[-M,0]$ by non-negativity of the loss function and Proposition~\ref{prop: suff assump}. Hence, with $a_i = -M$ and $b_i = 0$, we obtain
 \begin{equation}\label{app/eq: hoeffding fixed h}
 \Pr\left[(R - \hat R_D)(h) \ge \varepsilon\right] \le e^{-2n\varepsilon^2/M^2}.
 \end{equation}
@@ -205,7 +205,7 @@ For any $t>0$,
 \end{align}
 where we use Jensen's inequality for the convex function $\exp(\cdot)$ in the first inequality, that $\exp$ is increasing in the first equality, we bound the supremum with the sum (all terms are positive) in the second inequality, and we use the independence of the $\xi_i$'s, and their independence of $D$, in the last equality.
 
-Now we apply Hoeffding's lemma (Theorem~\ref{app: hoeffdinglemma}) to each factor for fixed $(X_i,Y_i)=(x_i,y_i)$ taking any value in $\X\times\Y$. The random variable $\xi_i\ell_h(x_i,y_i)$ is centered, since $\expv[\xi_i]=0$, and it satisfies $\vert\xi_i\ell_h(x_i,y_i)\vert = \ell_h(x_i,y_i)\le M$ by non-negativity of the loss and Proposition~\ref{prop: suff assump 2.2}, hence it satisfies the assumptions of Hoeffding's lemma. We obtain
+Now we apply Hoeffding's lemma (Theorem~\ref{app: hoeffdinglemma}) to each factor for fixed $(X_i,Y_i)=(x_i,y_i)$ taking any value in $\X\times\Y$. The random variable $\xi_i\ell_h(x_i,y_i)$ is centered, since $\expv[\xi_i]=0$, and it satisfies $\vert\xi_i\ell_h(x_i,y_i)\vert = \ell_h(x_i,y_i)\le M$ by non-negativity of the loss and Proposition~\ref{prop: suff assump}, hence it satisfies the assumptions of Hoeffding's lemma. We obtain
 \[
 \expv_{\xi_i}\left[\exp\left(t\xi_i\ell_h(x_i,y_i)\right)\right] \le e^{t^2M^2/2}.
 \]
@@ -246,9 +246,9 @@ Let $(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n)) = \ell(D)$. For any $t>0$, 
 \exp\left(t\,\expv_{\xi,D}\left[\sup_{\ell(D) \in \LL(D)}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right]\right)\le
 \expv_D\left[\sum_{\ell(D)\in\LL(D)}\prod_{i=1}^n \expv_{\xi_i}\left[\exp\left(t\xi_i\ell_h(X_i,Y_i)\right)\right]\right]
 \]
-following the same steps as in Proof of Lemma~\ref{lemma: massart} as they don't depend on the set over which we are summing. 
+following the same steps as in Proof of Lemma~\ref{lemma: massart}, all of which are independent of the data disorder, as they can be made fixing an observation $S$. 
 
-Now we apply Hoeffding's lemma (Theorem~\ref{app: hoeffdinglemma}). These steps also do not depend on the set over which we are summing, therefore we obtain
+Now we apply Hoeffding's lemma (Theorem~\ref{app: hoeffdinglemma}). These steps also regard the argument of the expectation over the Rademacher variables disorder. We obtain
 \[
 \expv_{\xi_i}\left[\exp\left(t\xi_i\ell_h(X_i,Y_i)\right)\right] \le e^{t^2M^2/2}.
 \]
@@ -282,9 +282,9 @@ $|\Phi(\hyp)|\le|\{0,1\}^n|=2^n$. Because this holds for every realization $S$ o
 \end{proof}
 
 \begin{proof}[Proof of Lemma~\ref{lemma: rel dev}]
-Let $\LL=\{(x,y)\mapsto\ell(y,h(x)):h\in\hyp\}$,
-where $\ell$ is the zero-one loss. Apply the first inequality of Theorem~5.1
-of~\cite{boucheron2005theory}, with $\mathbb{S}_\mathcal{F}(X_1^{2n}) = N_{2n}(\hyp)$, yielding with probability at least $1-\delta$, simultaneously for all
+Recall $\LL=\{(x,y)\mapsto\ell(y,h(x)):h\in\hyp\}$,
+where $\ell$ is the zero-one loss. Applying the first inequality of Theorem~5.1
+of~\cite{boucheron2005theory}, with $\mathbb{S}_\mathcal{F}(X_1^{2n}) = N_{2n}(\hyp)$, we obtain that with probability at least $1-\delta$, simultaneously for all
 $h\in\hyp$,
 \[
 R(h)-\widehat R_D(h)
