@@ -1,6 +1,6 @@
-# A modern look at classical generalization bound
+# A Modern Look at Classical Generalization Bounds
 
-This repository contains the source code and LaTeX file used for producing my master's thesis. 
+This repository contains the source code and LaTeX files used for producing my master's thesis. 
 
 The folder ```tex``` contains the .tex files and the thesis .pdf, as well as the figures appearing in the thesis inside ```/outputs```. 
 
