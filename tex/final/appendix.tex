@@ -67,23 +67,23 @@ We prove the lower bound first. Since $\hat h_D \in \argmin_{h\in\hyp} \hat R_D(
 \]
 and taking expectations
 \[
-\expv_D[\hat R_D(\hat h_D)] \le \expv_D[\hat R_D(h)] \qquad \forall h\in\hyp.
+\expv[\hat R_D(\hat h_D)] \le \expv[\hat R_D(h)] \qquad \forall h\in\hyp.
 \]
 For a fixed $h\in\hyp$, which does not depend on $D$, the empirical risk is an unbiased estimate of the true risk, by linearity and because the $(X_i,Y_i)$ are distributed as $(X,Y)$,
 \[
-\expv_D[\hat R_D(h)] = \frac1n\sum_{i=1}^n \expv\left[\ell(h(X_i),Y_i)\right] = R(h).
+\expv[\hat R_D(h)] = \frac1n\sum_{i=1}^n \expv\left[\ell(h(X_i),Y_i)\right] = R(h).
 \]
 Hence
 \[
-\expv_D[\hat R_D(\hat h_D)] \le R(h) \qquad \forall h\in\hyp.
+\expv[\hat R_D(\hat h_D)] \le R(h) \qquad \forall h\in\hyp.
 \]
 Now take $S$ a realization of $D$ and consider in particular $h=\hat h_{S}\in\hyp$,
 \[
-\expv_D[\hat R_D(\hat h_D)] \le R(\hat h_{S}).
+\expv[\hat R_D(\hat h_D)] \le R(\hat h_{S}).
 \]
-Since this holds for every realization $S$ of $D$, we have $\expv_D[\hat R_D(\hat h_D)] \le R(\hat h_D)$ almost surely and, taking expectations,
+Since this holds for every realization $S$ of $D$, we have $\expv[\hat R_D(\hat h_D)] \le R(\hat h_D)$ almost surely and, taking expectations,
 \[
-\expv_D[\hat R_D(\hat h_D)] \le \expv_D[R(\hat h_D)].
+\expv[\hat R_D(\hat h_D)] \le \expv[R(\hat h_D)].
 \]
 
 Next, we prove the upper bound. Fix $h\in\hyp$ and let $Z_i \coloneq -\ell(h(X_i),Y_i)$, $i=1,\ldots,n$, so that
@@ -103,7 +103,7 @@ Now, to obtain a bound at $\hat h_D$, which depends on $D$, notice that if $(R-\
 
 To obtain a bound in expected value from~(\ref{app/eq: unionbound prob}), we tail integrate. Let $X\coloneq(R-\hat R_D)(\hat h_D)$ and $X^+\coloneq\max\{X,0\}$, which is non-negative, so that by Proposition~\ref{app: tail int}
 \[
-\expv_D[X] \le \expv_D[X^+] = \int_0^\infty \Pr[X^+\ge\varepsilon]\de\varepsilon = \int_0^\infty \Pr[X\ge\varepsilon]\de\varepsilon.
+\expv[X] \le \expv[X^+] = \int_0^\infty \Pr[X^+\ge\varepsilon]\de\varepsilon = \int_0^\infty \Pr[X\ge\varepsilon]\de\varepsilon.
 \]
 Let $\alpha\coloneq\card$ and $c\coloneq 2n/M^2$, so that~(\ref{app/eq: unionbound prob}) reads $\Pr[X\ge\varepsilon]\le\alpha e^{-c\varepsilon^2}$. This bound is good for large values of $\varepsilon$, but for small $\varepsilon$ it exceeds $1$, hence we use instead
 \[
@@ -111,13 +111,13 @@ Let $\alpha\coloneq\card$ and $c\coloneq 2n/M^2$, so that~(\ref{app/eq: unionbou
 \]
 We split the integral at the threshold $\varepsilon_0$ where $\alpha e^{-c\varepsilon_0^2} = 1$, i.e.\ $\varepsilon_0 = \sqrt{\log\alpha/c}$. Using the Gaussian tail bound (Proposition~\ref{app: gtailbound}) for the second integral, we obtain
 \[
-\expv_D[X] \le \int_0^{\varepsilon_0} 1\de\varepsilon + \int_{\varepsilon_0}^\infty \alpha e^{-c\varepsilon^2}\de\varepsilon
+\expv[X] \le \int_0^{\varepsilon_0} 1\de\varepsilon + \int_{\varepsilon_0}^\infty \alpha e^{-c\varepsilon^2}\de\varepsilon
 \le \varepsilon_0 + \frac{\alpha}{2c\varepsilon_0}e^{-c\varepsilon_0^2}
 = \sqrt{\frac{\log\alpha}{c}} + \frac{1}{2\sqrt{c\log\alpha}},
 \]
 where in the last equality we used $\alpha e^{-c\varepsilon_0^2}=1$. Finally, assuming $\alpha\ge e^{1/2}$, which holds as soon as $\card\ge 2$, we have $\frac{1}{2\sqrt{c\log\alpha}}\le\sqrt{\frac{\log\alpha}{c}}$, and hence
 \[
-\expv_D[X] \le 2\sqrt{\frac{\log\alpha}{c}} = 2M\sqrt{\frac{\log\card}{2n}}.
+\expv[X] \le 2\sqrt{\frac{\log\alpha}{c}} = 2M\sqrt{\frac{\log\card}{2n}}.
 \]
 \end{proof}
 
@@ -130,16 +130,16 @@ Introduce an independent copy $D'=(Z_1',\ldots,Z_n')$ of the dataset $D$.
 % and to study the random variables $\ell_h(Z_i')-\ell_h(Z_i)$, which have a symmetric distribution ({\it symmetrization trick}).
 Since the $Z_i'$ are distributed as $Z$ and are independent of $D$, we rewrite
 \[
-R(h) = \expv_{D'}\left[\frac1n\sum_{i=1}^n \ell_h(Z_i')\right] = \expv_{D'}\left[\frac1n\sum_{i=1}^n \ell_h(Z_i')\,\Big\vert\, D\right].
+R(h) = \expv\left[\frac1n\sum_{i=1}^n \ell_h(Z_i')\right] = \expv\left[\frac1n\sum_{i=1}^n \ell_h(Z_i')\,\Big\vert\, D\right].
 \]
 Then,
 \[
-\expv_D\left[\sup_{\ell_h\in\LL}(R-\hat R_D)(h)\right] = \expv_D\left[\sup_{\ell_h\in\LL} \expv_{D'}\left[\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\,\Big\vert\, D\right]\right].
+\expv\left[\sup_{\ell_h\in\LL}(R-\hat R_D)(h)\right] = \expv\left[\sup_{\ell_h\in\LL} \expv\left[\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\,\Big\vert\, D\right]\right].
 \]
-since, again, $Z_i$ is independent of $D'$ hence it can enter the expectation.
+since $\ell_h(Z_i)$ is a function of $D$, hence $\expv\left[\ell_h(Z_i)\,\vert\, D\right] = \ell_h(Z_i)$.
 Since the supremum of expectations is at most the expectation of the supremum, and by the law of total expectation, we obtain
 \begin{equation}\label{app/eq: sym step1}
-\expv_D\left[\sup_{\ell_h\in\LL}(R-\hat R_D)(h)\right] \le \expv_{D,D'}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right].
+\expv\left[\sup_{\ell_h\in\LL}(R-\hat R_D)(h)\right] \le \expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right].
 \end{equation}
 Now we apply the symmetrization trick. Let $\hyp = \{h_1,\ldots,h_m\}$, with $m = \card$. Since $Z_i$ and $Z_i'$ are i.i.d. for each $i=1,\ldots,n$, swapping them does not change the joint distribution, i.e.
 \[
@@ -159,20 +159,20 @@ Finally, because the $m$ random variables are jointly equally distributed, we ha
 \]
 Because the two sides in the previous equation have the same distribution, their expected value is the same
 \[
-\expv_{D,D'}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right]\, = \,\expv_{D,D'}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n e_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right].
+\expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right]\, = \,\expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n e_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right].
 \]
-Note that until now we have considered only the disorder of the data $D,D'$. Because this holds for any value of $(e_1,\ldots,e_n)\in\{-1,1\}^n$, it holds surely for the random variable $\xi = \xi_1,\ldots,\xi_n$, i.e. 
+Note that until now we have considered only the disorder of the data $D,D'$. Because this holds for any value of $(e_1,\ldots,e_n)\in\{-1,1\}^n$, it holds surely for the random variable $\xi = (\xi_1,\ldots,\xi_n)$, i.e. 
 \[
-\expv_{D,D'}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right]\, = \,\expv_{D,D'}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right]
+\expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right]\, = \,\expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right)\bigg\vert\, \xi\right]
 \]
 surely. Taking the expected value over the disorder of $\xi$, we obtain
 \[
-\expv_{D,D'}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right] = \expv_{\xi,D,D'}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right]
+\expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right] = \expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right]
 \]
-where the left hand side is independent of $\xi$. 
+where the left hand side is independent of $\xi$ and in the right hand side we use the law of total expectation. 
 Plugging the result into~(\ref{app/eq: sym step1}), we have 
 \[
-\expv_D\left[\sup_{\ell_h\in\LL}(R-\hat R_D)(h)\right] \le\expv_{\xi,D,D'}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right]
+\expv\left[\sup_{\ell_h\in\LL}(R-\hat R_D)(h)\right] \le\expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right]
 \]
 Now we split the sum over $i=1,\ldots,n$ into
 \[
@@ -184,11 +184,11 @@ Then, we use that the supremum of the sum is bounded by the sum of the suprema,
 \]
 and that the expectation of the sum is the sum of the expectations, obtaining
 \[
-\expv_D\left[\sup_{\ell_h\in\LL}(R-\hat R_D)(h)\right] \le\expv_{\xi,D'}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i')\right] + \expv_{\xi,D}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n (-\xi_i)\ell_h(Z_i)\right]
+\expv\left[\sup_{\ell_h\in\LL}(R-\hat R_D)(h)\right] \le\expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i')\right] + \expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n (-\xi_i)\ell_h(Z_i)\right]
 \]
 We also observe that we can replace $-\xi_i$ with $\xi_i$, because they have the same distributions, hence the same expected value, and are independent of the datasets. Therefore,
 \begin{align*}
-\expv_D\left[\sup_{\ell_h\in\LL}(R-\hat R_D)(h)\right] &\le \expv_{\xi,D'}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i')\right] + \expv_{\xi,D}\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i)\right] \\
+\expv\left[\sup_{\ell_h\in\LL}(R-\hat R_D)(h)\right] &\le \expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i')\right] + \expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i)\right] \\
 &= 2\mathcal R_n(\LL).
 \end{align*}
 \end{proof}
@@ -196,31 +196,31 @@ We also observe that we can replace $-\xi_i$ with $\xi_i$, because they have the
 \begin{proof}[Proof of Lemma~\ref{lemma: massart}]
 For any $t>0$,
 \begin{align}
-\exp\left(t\,\expv_{\xi,D}\left[\sup_{\ell_h\in\LL}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right]\right)
-&\le \expv_{\xi,D}\left[\exp\left(t\sup_{\ell_h\in\LL}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right)\right] \notag\\
-&= \expv_{\xi,D}\left[\sup_{\ell_h\in\LL}\exp\left(t\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right)\right] \notag\\
-&\le \expv_{\xi,D}\left[\sum_{\ell_h\in\LL}\exp\left(t\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right)\right] \notag\\
-&= \expv_D\left[\sum_{\ell_h\in\LL}\prod_{i=1}^n \expv_{\xi_i}\left[\exp\left(t\xi_i\ell_h(X_i,Y_i)\right)\right]\right], 
+\exp\left(t\,\expv\left[\sup_{\ell_h\in\LL}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right]\right)
+&\le \expv\left[\exp\left(t\sup_{\ell_h\in\LL}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right)\right] \notag\\
+&= \expv\left[\sup_{\ell_h\in\LL}\exp\left(t\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right)\right] \notag\\
+&\le \expv\left[\sum_{\ell_h\in\LL}\exp\left(t\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right)\right] \notag\\
+&= \expv\left[\sum_{\ell_h\in\LL}\prod_{i=1}^n \expv\left[\exp\left(t\xi_i\ell_h(X_i,Y_i)\right)\big\vert \,D\,\right]\right]
 \label{app/eq: massart start}
 \end{align}
 where we use Jensen's inequality for the convex function $\exp(\cdot)$ in the first inequality, that $\exp$ is increasing in the first equality, we bound the supremum with the sum (all terms are positive) in the second inequality, and we use the independence of the $\xi_i$'s, and their independence of $D$, in the last equality.
 
 Now we apply Hoeffding's lemma (Theorem~\ref{app: hoeffdinglemma}) to each factor for fixed $(X_i,Y_i)=(x_i,y_i)$ taking any value in $\X\times\Y$. The random variable $\xi_i\ell_h(x_i,y_i)$ is centered, since $\expv[\xi_i]=0$, and it satisfies $\vert\xi_i\ell_h(x_i,y_i)\vert = \ell_h(x_i,y_i)\le M$ by non-negativity of the loss and Proposition~\ref{prop: suff assump}, hence it satisfies the assumptions of Hoeffding's lemma. We obtain
 \[
-\expv_{\xi_i}\left[\exp\left(t\xi_i\ell_h(x_i,y_i)\right)\right] \le e^{t^2M^2/2}.
+\expv\left[\exp\left(t\xi_i\ell_h(x_i,y_i)\right)\right] \le e^{t^2M^2/2}.
 \]
 Because this holds for any $(x_i,y_i)\in\X\times\Y$, we have
 \[
-\expv_{\xi_i}\left[\exp\left(t\xi_i\ell_h(X_i,Y_i)\right)\right] \le e^{t^2M^2/2}
+\expv\left[\exp\left(t\xi_i\ell_h(X_i,Y_i)\right)\big\vert\,D\,\right] \le e^{t^2M^2/2}
 \]
 surely.
 Plugging this into~(\ref{app/eq: massart start}),
 \[
-\exp\left(t\,\expv_{\xi,D}\left[\sup_{\ell_h\in\LL}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right]\right) \le \expv_D\left[\sum_{\ell_h\in\LL}\prod_{i=1}^n e^{t^2M^2/2}\right] = \vert\LL\vert\, e^{nt^2M^2/2}.
+\exp\left(t\,\expv\left[\sup_{\ell_h\in\LL}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right]\right) \le \expv\left[\sum_{\ell_h\in\LL}\prod_{i=1}^n e^{t^2M^2/2}\right] = \vert\LL\vert\, e^{nt^2M^2/2}.
 \]
 Taking the logarithm of both sides,
 \[
-t\,\expv_{\xi,D}\left[\sup_{\ell_h\in\LL}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right] \le \log\vert\LL\vert + \frac{nt^2M^2}{2},
+t\,\expv\left[\sup_{\ell_h\in\LL}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right] \le \log\vert\LL\vert + \frac{nt^2M^2}{2},
 \]
 and dividing by $tn>0$,
 \begin{equation}\label{app/eq: massart opt}
@@ -243,21 +243,21 @@ Most of the proof is similar to Proof of Lemma~\ref{lemma: massart}. 
 
 Let $(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n)) = \ell(D)$. For any $t>0$, 
 \[
-\exp\left(t\,\expv_{\xi,D}\left[\sup_{\ell(D) \in \LL(D)}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right]\right)\le
-\expv_D\left[\sum_{\ell(D)\in\LL(D)}\prod_{i=1}^n \expv_{\xi_i}\left[\exp\left(t\xi_i\ell_h(X_i,Y_i)\right)\right]\right]
+\exp\left(t\,\expv\left[\sup_{\ell(D) \in \LL(D)}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right]\right)\le
+\expv\left[\sum_{\ell(D)\in\LL(D)}\prod_{i=1}^n \expv\left[\exp\left(t\xi_i\ell_h(X_i,Y_i)\right)\big\vert\,D\,\right]\right]
 \]
 following the same steps as in Proof of Lemma~\ref{lemma: massart}, all of which are independent of the data disorder, as they can be made fixing an observation $S$. 
 
 Now we apply Hoeffding's lemma (Theorem~\ref{app: hoeffdinglemma}). These steps also regard the argument of the expectation over the Rademacher variables disorder. We obtain
 \[
-\expv_{\xi_i}\left[\exp\left(t\xi_i\ell_h(X_i,Y_i)\right)\right] \le e^{t^2M^2/2}.
+\expv\left[\exp\left(t\xi_i\ell_h(X_i,Y_i)\right)\big\vert\,D\,\right] \le e^{t^2M^2/2}.
 \]
 surely as in Proof of Lemma~\ref{lemma: massart}. 
 Plugging this into~(\ref{app/eq: massart start}),
 \begin{align*}
-\exp\left(t\,\expv_{\xi,D}\left[\sup_{\ell(D)\in\LL(D)}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right]\right) &\le \expv_D\left[\sum_{\ell(D)\in\LL(D)}\prod_{i=1}^n e^{t^2M^2/2}\right]\\ &= \expv_D\left[N_D(\hyp)e^{nt^2M^2/2}\right] \\&= \expv_D\left[N_D(\hyp)\right] e^{nt^2M^2/2}.
+\exp\left(t\,\expv\left[\sup_{\ell(D)\in\LL(D)}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right]\right) &\le \expv\left[\sum_{\ell(D)\in\LL(D)}\prod_{i=1}^n e^{t^2M^2/2}\right]\\ &= \expv\left[N_D(\hyp)e^{nt^2M^2/2}\right] \\&= \expv\left[N_D(\hyp)\right] e^{nt^2M^2/2}.
 \end{align*}
-The rest of the proof follows exacltly as Proof of Lemma~\ref{lemma: massart}, replacing $\vert\LL\vert$ with $\expv_D\left[N_D(\hyp)\right]$ .
+The rest of the proof follows exacltly as Proof of Lemma~\ref{lemma: massart}, replacing $\vert\LL\vert$ with $\expv\left[N_D(\hyp)\right]$ .
 \end{proof}
 
 \begin{proof}[Proof of Lemma~\ref{lemma: counting}]
@@ -276,7 +276,7 @@ $|\Phi(\hyp)|\le|\{0,1\}^n|=2^n$. Because this holds for every realization $S$ o
 \begin{proof}[Proof of Theorem~\ref{thm: rademmassart bound}]
   Since $\hat h_S \in \hyp$ for any realization $S$ of $D$,
   \[
-  \expv_D\left[(R-\hat R_D)(\hat h_D)\right] \le \expv_D\left[\sup_{h\in\hyp} (R-\hat R_D)(h)\right]
+  \expv\left[(R-\hat R_D)(\hat h_D)\right] \le \expv\left[\sup_{h\in\hyp} (R-\hat R_D)(h)\right]
   \]
   The proof is concluded applying Theorem~\ref{thm: rad bound}, bounding the Rademacher complexity with Lemma~\ref{lemma: massart loss v}, and bounding $N_D(\hyp)$ with Lemma~\ref{lemma: counting}.
 \end{proof}
@@ -343,14 +343,14 @@ where in the last inequality we used $\sqrt{a+b}\le\sqrt a+\sqrt b$. Hence, subs
 \end{proof}
 
 \begin{proof}[Proof of Corollary~\ref{coroll: bound bestrisk}]
-        Recall $h_0 = \argmin_{h\in\hyp} R(h)$, $R(h_0) = R^*_{\hyp}$ by definition of $R^*_\hyp$ and $\hat R_D(\hat h_D) \le \hat R_D(h_0)$ by definition of the ERM $\hat h_D$.
-        Since $h_0$ is independent of the data, the variables $\ell(h_0(X_i),Y_i)$ are i.i.d.\ Bernoulli with mean $R^*_\hyp$ and variance $R^*_\hyp(1-R^*_\hyp) \le R^*_\hyp$. Bernstein inequality (Theorem~\ref{app: bernstein}) with $M=1$ gives, with probability at least $1-\delta/2$,
+        Recall $h_b = \argmin_{h\in\hyp} R(h)$, $R(h_b) = R^*_{\hyp}$ by definition of $R^*_\hyp$ and $\hat R_D(\hat h_D) \le \hat R_D(h_b)$ by definition of the ERM $\hat h_D$.
+        Since $h_b$ is independent of the data, the variables $\ell(h_b(X_i),Y_i)$ are i.i.d.\ Bernoulli with mean $R^*_\hyp$ and variance $R^*_\hyp(1-R^*_\hyp) \le R^*_\hyp$. Bernstein inequality (Theorem~\ref{app: bernstein}) with $M=1$ gives, with probability at least $1-\delta/2$,
         \[
-        \hat R_D(h_0) \le R^*_{\hyp} + \sqrt{\frac{2R^*_\hyp \log (2/\delta)}{n}} + \frac{2\log(2/\delta)}{3n}.
+        \hat R_D(h_b) \le R^*_{\hyp} + \sqrt{\frac{2R^*_\hyp \log (2/\delta)}{n}} + \frac{2\log(2/\delta)}{3n}.
         \]
         Let $u\coloneq\log(4N_{2n}(\hyp)/\delta)/n$. Since $N_{2n}(\hyp)\ge 1$, $\log(2/\delta)/n\le u$. Thus
         \begin{equation}\label{eq: bound hatR h0}
-        \hat R_D(\hat h_D) \le \hat R_D(h_0) \le R^*_\hyp + 2\sqrt{R^*_\hyp u} + u = {\left(\sqrt{R^*_\hyp} + \sqrt{u}\right)}^2.
+        \hat R_D(\hat h_D) \le \hat R_D(h_b) \le R^*_\hyp + 2\sqrt{R^*_\hyp u} + u = {\left(\sqrt{R^*_\hyp} + \sqrt{u}\right)}^2.
         \end{equation}
         Theorem~\ref{thm: bound emprisk} at confidence $1-\delta/2$ gives, with probability at least $1-\delta/2$,
         \begin{equation}\label{eq: bo}
@@ -388,7 +388,7 @@ and hence
 \]
 Using that $\expv[X] = \int_0^\infty \Pr[X \ge \varepsilon]\,d\varepsilon$ for $X \ge 0$, applied to $\text{gap}^+ \coloneq \max\{\text{gap}, 0\}$,
 \[
-\expv_D[\text{gap}] \le \expv_D[\text{gap}^+] = \int_0^\infty \Pr[\text{gap} \ge \varepsilon]\,d\varepsilon \le \int_0^\infty \min\{1, \delta(\varepsilon)\}\,d\varepsilon.
+\expv[\text{gap}] \le \expv[\text{gap}^+] = \int_0^\infty \Pr[\text{gap} \ge \varepsilon]\,d\varepsilon \le \int_0^\infty \min\{1, \delta(\varepsilon)\}\,d\varepsilon.
 \]
 We now compute the integral by exchanging the roles of $\varepsilon$ and $\delta$. The map $\varepsilon\mapsto\delta(\varepsilon)$ is continuous and strictly decreasing on $[0,\infty)$, with $\delta(0) = 4N_{2n}(\hyp) > 1$ and $\delta(\varepsilon)\to0$ as $\varepsilon\to\infty$. Hence, for every $t\in(0,1)$ there is a unique $\varepsilon(t)>0$ such that $\delta(\varepsilon(t)) = t$, and it is given by $\varepsilon(t) = 4\sqrt{R^*_\hyp}\,C + 20C^2$ with $C = \sqrt{\log(4N_{2n}(\hyp)/t)/n}$, by construction of $\delta(\varepsilon)$. Moreover, for $t\in(0,1)$,
 \[
@@ -400,7 +400,7 @@ Writing $\min\{1,\delta(\varepsilon)\} = \int_0^1 \mathbf 1\{t < \min\{1,\delta(
 \]
 Hence, writing $\varepsilon(\delta) = 4\sqrt{R^*_\hyp}\,C + 20C^2$ explicitly,
 \[
-\expv_D[\text{gap}] \le \int_0^1 \varepsilon(\delta)\,d\delta = 4\sqrt{\frac{R^*_\hyp}{n}}\int_0^1 \sqrt{\log\frac{4N_{2n}(\hyp)}{\delta}}\,d\delta + \frac{20}{n}\int_0^1 \log\frac{4N_{2n}(\hyp)}{\delta}\,d\delta.
+\expv[\text{gap}] \le \int_0^1 \varepsilon(\delta)\,d\delta = 4\sqrt{\frac{R^*_\hyp}{n}}\int_0^1 \sqrt{\log\frac{4N_{2n}(\hyp)}{\delta}}\,d\delta + \frac{20}{n}\int_0^1 \log\frac{4N_{2n}(\hyp)}{\delta}\,d\delta.
 \]
 The logarithm is the only part depending on $\delta$, and its integral is
 \[
@@ -412,12 +412,12 @@ Applying Jensen's inequality to the square root term,
 \]
 we obtain
 \[
-\expv_D[\text{gap}] \le 4\sqrt{\frac{R^*_\hyp\left(\log(4N_{2n}(\hyp)) + 1\right)}{n}} + 20\,\frac{\log(4N_{2n}(\hyp)) + 1}{n}.
+\expv[\text{gap}] \le 4\sqrt{\frac{R^*_\hyp\left(\log(4N_{2n}(\hyp)) + 1\right)}{n}} + 20\,\frac{\log(4N_{2n}(\hyp)) + 1}{n}.
 \]
 
 Asymptotically,
 \[
-\expv_D\left[(R-\hat R_D)(\hat h_D)\right] \le O\left(
+\expv\left[(R-\hat R_D)(\hat h_D)\right] \le O\left(
 \sqrt{\frac{(A_{\hyp}+\sigma^2)\,\log N_{2n}(\hyp)}{n}} + \frac{\log N_{2n}(\hyp)}{n} \right)
 \]
 because, at the numerator,
@@ -431,7 +431,7 @@ and for large $x$,
 for some constant $C>0$.
 Apply Lemma~\ref{lemma: counting}, obtaining
 \[
-\expv_D\left[(R-\hat R_D)(\hat h_D)\right] \le \min\left\{ O\left(
+\expv\left[(R-\hat R_D)(\hat h_D)\right] \le \min\left\{ O\left(
 \sqrt{\frac{(A_{\hyp}+\sigma^2)\log \card}{n}} + \frac{\log\card}{n} \right), O\left(\sqrt{A_{\hyp}+\sigma^2}+1 \right)\right\}
 \]
 \end{proof}
@@ -603,21 +603,21 @@ With our noise level, $\sigma = 3.5$, the Bayes risk is $\approx 0.20$ and $n = 
 % \begin{fact}[The empirical risk is a biased estimate of the true risk for the ERM]\label{app: fact bias}
 % For any distribution $p$, any loss $\ell$ and any finite, nonempty $\hyp$,
 % \[
-% \expv_D\left[\hat R_D(\hat h_D)\right] \le \min_{h\in\hyp} R(h) \le \expv_D\left[R(\hat h_D)\right],
+% \expv\left[\hat R_D(\hat h_D)\right] \le \min_{h\in\hyp} R(h) \le \expv\left[R(\hat h_D)\right],
 % \]
-% and there exist $p$, $\ell$ and $\hyp$ for which the inequality is strict. Hence, in general, $\expv_D[\hat R_D(\hat h_D)]\neq\expv_D[R(\hat h_D)]$.
+% and there exist $p$, $\ell$ and $\hyp$ for which the inequality is strict. Hence, in general, $\expv[\hat R_D(\hat h_D)]\neq\expv[R(\hat h_D)]$.
 % \end{fact}
 %
 % \begin{proof}
 % Fix any $h\in\hyp$. By definition of the ERM, $\hat R_D(\hat h_D)\le\hat R_D(h)$ for every realization of $D$. Taking expectations, and since $h$ does not depend on $D$ and the $(X_i,Y_i)$ are distributed as $(X,Y)$,
 % \[
-% \expv_D\left[\hat R_D(\hat h_D)\right] \le \expv_D\left[\hat R_D(h)\right] = \frac1n\sum_{i=1}^n\expv\left[\ell(h(X_i),Y_i)\right] = R(h).
+% \expv\left[\hat R_D(\hat h_D)\right] \le \expv\left[\hat R_D(h)\right] = \frac1n\sum_{i=1}^n\expv\left[\ell(h(X_i),Y_i)\right] = R(h).
 % \]
-% Since this holds for every $h\in\hyp$, and $\hyp$ is finite, $\expv_D[\hat R_D(\hat h_D)]\le\min_{h\in\hyp}R(h)$. Moreover, $\hat h_D\in\hyp$ for every realization of $D$, hence $\min_{h\in\hyp}R(h)\le R(\hat h_D)$ pointwise, and taking expectations gives the second inequality.
+% Since this holds for every $h\in\hyp$, and $\hyp$ is finite, $\expv[\hat R_D(\hat h_D)]\le\min_{h\in\hyp}R(h)$. Moreover, $\hat h_D\in\hyp$ for every realization of $D$, hence $\min_{h\in\hyp}R(h)\le R(\hat h_D)$ pointwise, and taking expectations gives the second inequality.
 %
 % For strictness, let $\X=\{\bar x_1\}$, $p_{1,1}=p_{1,-1}=\frac12$, $\ell$ the zero-one loss, $n=1$ and $\hyp=\{h_+,h_-\}$ with $h_+\equiv1$, $h_-\equiv-1$. Then $R(h_+)=R(h_-)=\frac12$, so $R(\hat h_D)=\frac12$ for every realization of $D$. On the other hand, $\hat h_D$ is the constant classifier equal to $Y_1$, so $\hat R_D(\hat h_D)=0$. Therefore
 % \[
-% \expv_D\left[\hat R_D(\hat h_D)\right]=0<\frac12=\expv_D\left[R(\hat h_D)\right].
+% \expv\left[\hat R_D(\hat h_D)\right]=0<\frac12=\expv\left[R(\hat h_D)\right].
 % \]
 % \end{proof}
 
@@ -643,6 +643,21 @@ Taking expectations over $\xi$ and $D$, and since $\Pr[\xi_i=1]=\frac12$,
 The zero-one loss takes values in $\{0,1\}$, so the second claim follows with $M=1$.
 \end{proof}
 \end{fact}
+
+\paragraph{\bf Plot of Theorem~\ref{thm: bound noiseandappr} without fit} Figure~\ref{app/fig: noise and appr nofit} shows the plot with the noise-sensitive bound derived in Theorem~\ref{thm: bound noiseandappr},
+  \begin{equation*}
+\begin{split}
+\min\Bigg\{ &4\sqrt{\frac{(R^*+A_{\hyp})\left(\log (4\card)+1\right)}{n}} + 20\,\frac{\log(4\card)+1}{n}, \\
+&4\sqrt{\frac{(R^*+A_{\hyp})\left((2n+2)\log 2+1\right)}{n}} + 20\,\frac{(2n+2)\log 2+1}{n} \Bigg\},
+\end{split}
+\end{equation*}
+for different noise levels and before fitting the constants in the function to our problem specification. As is evident, the curve is too high to provide a useful interpretation, reaching a value of $30$. 
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.8\textwidth]{outputs/app_nofit.png}
+    \caption{Noise and approximation error bound (Theorem~\ref{thm: bound noiseandappr}), before fitting constants}
+    \label{app/fig: noise and appr nofit}
+\end{figure}
 
 \newpage
 \section{Code specifications}\label{app: code}
