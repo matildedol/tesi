@@ -5,9 +5,9 @@ A number of results have tried to answer this question, coming to the apparent c
 
 This thesis seeks to understand whether this is true by testing theoretical results against empirical evidences. We study the setting of a finite hypotheses set of binary decision trees. We look for a bound on the {\it generalization gap\/} as the maximum depth of decision trees increases. The generalization gap is defined as the expected difference between the expected and empirical risk of the selected model, 
 \[
-\expv_D\left[(R-\hat R_D)(\hat h_D)\right]
+\expv\left[(R-\hat R_D)(\hat h_D)\right]
 \]
-where $\expv_D$ denotes the expectation over the disorder of the data. 
+where the expectation is taken over the disorder of the data. 
 
 We consider a number of candidates coming from existing theoretical results that increasingly account for the structure of the learning problem at hand, in particular the finiteness of decision trees and the noise in the data. Moreover, we test the validity of these results comparing them with the empirical test error curve by carrying out experiments on synthetic data. We are interested in capturing the qualitative behavior of the test error curve. This means that we are not concerned with finding a quantitatively correct bound that lies above the generalization gap, as long as it reproduces its shape. 
 By doing so, it is possible to examine how the quantities appearing in the bounds affect their shape, and thereby identify which aspects of the learning problem influence the generalization ability of decision trees. 
