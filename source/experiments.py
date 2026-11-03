@@ -17,6 +17,7 @@ from typing import Literal, Sequence
 
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 from scipy.optimize import brentq
 from scipy.special import gammaln, logsumexp
 from scipy.stats import binom, norm
@@ -31,15 +32,15 @@ BOUNDS = ["bound_union", "bound_radmass", "bound_noise"]
 # curves computed from the T training sets: drawn with a ± 1 std band (dots only if no bound)
 EMPIRICAL = ["gap", "test_err", "train_err", "train_bound_union", "train_bound_radmass", "train_bound_noise"]
 CURVE_NAMES = {
-    "gap": "gap",
-    "test_err": "test error",
-    "train_err": "train error",
-    "bound_union": "union bound",
-    "bound_radmass": "Rademacher bound",
-    "bound_noise": "best risk bound",
-    "train_bound_union": "train error + union bound",
-    "train_bound_radmass": "train error + Rademacher bound",
-    "train_bound_noise": "train error + best risk bound",
+    "gap": "Gap",
+    "test_err": "Test Error",
+    "train_err": "Train Error",
+    "bound_union": "Union Bound",
+    "bound_radmass": "Rademacher Bound",
+    "bound_noise": "Best Risk Bound",
+    "train_bound_union": "Train Error + Union Bound",
+    "train_bound_radmass": "Train Error + Rademacher Bound",
+    "train_bound_noise": "Train Error + Best Risk Bound",
 }
 # colormap of each curve, one shade per noise level; train error + bound has the colormap of the bound
 CMAPS = {
@@ -47,7 +48,9 @@ CMAPS = {
     "test_err": "Purples",
     "train_err": "Reds",
     "bound_union": "Greens",
-    "bound_radmass": "Oranges",
+    # oranges ending in a bright red, to stand apart from the pinks of the noise bound
+    "bound_radmass": LinearSegmentedColormap.from_list(
+        "radmass", [(0, "#fff5eb"), (0.45, "#fdae6b"), (0.7, "#f16913"), (0.95, "#e8000b"), (1, "#b30000")]),
     "bound_noise": "RdPu",
 }
 
@@ -213,7 +216,7 @@ def experiment(curves: Sequence[Curve] = ("gap", "bound_union"),
     rng = np.random.default_rng(seed=seed)
     f = lambda x: sine(x, m=num_crossing)
     n, N = train_size, supp_size
-    depths = np.arange(1, int(np.floor(4 * np.log2(n))) + 1)
+    depths = np.arange(1, 31)
 
     emp = [c for c in curves if c in EMPIRICAL]
     # bounds to compute, also when only train error + bound is plotted
@@ -273,8 +276,8 @@ def experiment(curves: Sequence[Curve] = ("gap", "bound_union"),
                 transform=ax.get_xaxis_transform())
 
     title = join_and([CURVE_NAMES[c] for c in curves])
-    if not emp:
-        # no empirical curve: no noise in the title
+    if not emp and "bound_noise" not in needed:
+        # no curve depends on the noise: no noise in the title
         pass
     elif len(noise_level) == 1:
         title += f" with noise at {fmt_level(noise_level[0])}"
