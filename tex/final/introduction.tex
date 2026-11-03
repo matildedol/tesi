@@ -3,16 +3,17 @@ A big question in learning theory is explaining what drives such {\it generaliza
 Generalization is the process of applying a model to unseen data, after the algorithm has learned it from some available data.
 A number of results have tried to answer this question, coming to the apparent conclusion that the classical theory is not able to exhaustively explain what drives the generalization ability of learning algorithms. In particular, it fails to describe the behavior of the test error of learning algorithms as the complexity of the hypotheses set increases~\cite{belkin2019reconciling,zhang2016understanding,zhang2021understanding, nagarajan2019uniform}.
 
-This thesis seeks to understand whether this is true by testing theoretical results against empirical evidences. We study the setting of a finite hypotheses set of binary decision trees. We look for a bound on the {\it generalization gap\/} as the maximum depth of decision trees increases. The generalization gap is defined as the expected difference between the expected and empirical risk of the selected model, 
+This thesis seeks to understand whether this is true by evaluating qualitatively theoretical results against empirical evidences, in the setting of a finite hypotheses set of binary decision trees. We look for a bound on the {\it generalization gap\/} as the maximum depth of decision trees increases. The generalization gap is defined as the expected difference between the expected and empirical risk of the selected model, 
 \[
 \expv\left[(R-\hat R_D)(\hat h_D)\right]
 \]
 where the expectation is taken over the disorder of the data. 
 
-We consider a number of candidates coming from existing theoretical results that increasingly account for the structure of the learning problem at hand, in particular the finiteness of decision trees and the noise in the data. Moreover, we test the validity of these results comparing them with the empirical test error curve by carrying out experiments on synthetic data. We are interested in capturing the qualitative behavior of the test error curve. This means that we are not concerned with finding a quantitatively correct bound that lies above the generalization gap, as long as it reproduces its shape. 
+In particular, we consider a number of existing theoretical results that increasingly account for the structure of the learning problem at hand, namely the finiteness of the data sample and the noise in the data. For each one of these results, we inquire its descriptive power by carrying out experiments and comparing it with the empirical generalization gap in asymptotic terms. Our aim is to empirically test the bounds as functions that capture the qualitative behavior of the gap curve. This means that we are not concerned with finding a quantitatively exact bound on the generalization gap, but one that reproduces its shape. Indeed, the bounds we consider are distirbution-free and use an elementary technology. 
+
 By doing so, it is possible to examine how the quantities appearing in the bounds affect their shape, and thereby identify which aspects of the learning problem influence the generalization ability of decision trees. 
 
-The final result of this thesis is a qualitative bound on the generalization gap of decision trees that is empirically validated, providing a theoretical understanding of the behavior of decision trees on unseen data. It also develops framework and toolkit that can be extended to the study of the generalization ability of other learning algorithms, like gradient-based ones.
+The final result of this thesis is a bound on the generalization gap of decision trees that is empirically validated as a function describing the shape of the gap, providing a first step to the theoretical understanding of the behavior of decision trees on unseen data. It also develops a framework and a toolkit that can be extended to the study of the generalization ability of other learning algorithms, like gradient-based ones.
 
 % in machine learning, comprendere la generalizzazioe degli algoritmi di learning è una domanda centrale. 
 
