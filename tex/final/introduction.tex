@@ -1,36 +1,23 @@
-In machine learning, there exists a large number of algorithms, notably neural networks trained with gradient descent, which achieve great performances at prediction tasks on unseen data.
-A big question in learning theory is explaining what drives such {\it generalization\/}~\cite{zhang2016understanding,neyshabur2014search}.  
-Generalization is the process of applying a model to unseen data, after the algorithm has learned it from some available data.
-A number of results have tried to answer this question, coming to the apparent conclusion that the classical theory is not able to exhaustively explain what drives the generalization ability of learning algorithms. In particular, it fails to describe the behavior of the test error of learning algorithms as the complexity of the hypotheses set increases~\cite{belkin2019reconciling,zhang2016understanding,zhang2021understanding, nagarajan2019uniform}.
-
-This thesis seeks to understand whether this is true by evaluating qualitatively theoretical results against empirical evidences, in the setting of a finite hypotheses set of binary decision trees. We look for a bound on the {\it generalization gap\/} as the maximum depth of decision trees increases. The generalization gap is defined as the expected difference between the expected and empirical risk of the selected model, 
-\[
-\expv\left[(R-\hat R_D)(\hat h_D)\right]
-\]
-where the expectation is taken over the disorder of the data. 
-
-In particular, we consider a number of existing theoretical results that increasingly account for the structure of the learning problem at hand, namely the finiteness of the data sample and the noise in the data. For each one of these results, we inquire its descriptive power by carrying out experiments and comparing it with the empirical generalization gap in asymptotic terms. Our aim is to empirically test the bounds as functions that capture the qualitative behavior of the gap curve. This means that we are not concerned with finding a quantitatively exact bound on the generalization gap, but one that reproduces its shape. Indeed, the bounds we consider are distirbution-free and use an elementary technology. 
-
-By doing so, it is possible to examine how the quantities appearing in the bounds affect their shape, and thereby identify which aspects of the learning problem influence the generalization ability of decision trees. 
-
-The final result of this thesis is a bound on the generalization gap of decision trees that is empirically validated as a function describing the shape of the gap, providing a first step to the theoretical understanding of the behavior of decision trees on unseen data. It also develops a framework and a toolkit that can be extended to the study of the generalization ability of other learning algorithms, like gradient-based ones.
-
 % in machine learning, comprendere la generalizzazioe degli algoritmi di learning è una domanda centrale. 
+In machine learning, there exists a large number of algorithms, notably neural networks trained with gradient descent, which achieve great performance at prediction tasks on unseen data. 
+The process of applying a model that has been learned on some available data to new, unseen data is called {\it generalization\/}.
+A central question in learning theory is what drives the generalization ability of a learning algorithm~\cite{zhang2016understanding,neyshabur2014search}. Several works have addressed this question, suggesting that classical theory does not fully explain generalization. In particular, this means that it can fail to justify the behavior of the test error as the complexity of the hypothesis class increases~\cite{belkin2019reconciling,zhang2016understanding,zhang2021understanding,nagarajan2019uniform}.
 
-% cos'è la generalizzazione, regime overparametrizzato 
+This thesis contributes to this discussion by testing classical theoretical results against empirical evidence. Specifically, we study generalization bounds. A generalization bound is a bound on the {\it generalization gap}, i.e.\ the difference between the true and the empirical risk of a model selected on some available data $D$, 
+\begin{equation}\label{eq: target}
+\expv\left[(R-\hat R_D)(\hat h_D)\right]
+\end{equation}
+where the expectation is taken over the disorder of the data. Then, we inquire into the empirical validity of these bounds as functions capturing the {\it qualitative behavior\/} of the empirical generalization gap as model complexity increases. Unlike the traditional use of these results, we are not concerned with finding a quantitatively exact bound on the generalization gap, but one that reproduces its shape. To do so, we run experiments in the setting of a finite hypothesis class of binary decision trees under the zero-one loss. We look for a function that increasingly accounts for the structural aspects of our learning problem. The final result of this thesis is a bound on the generalization gap of decision trees that captures its saturating behavior and that is sensitive to the noise level in the data, summarized in the following theorem. 
 
-% ci sono alcuni lavori che affermano che la teoria statistica classica non sa spiegare bene questa generalizzaizone, soprattutto nel regime overparametrizzato. 
+\begin{theorem}
+Let $R^*_\hyp = \min_{h\in\hyp} R(h)$ be the best risk attainable by hypotheses. Then
+\[
+\expv\left[(R-\hat R_D)(\hat h_D)\right] \le 4\sqrt{\frac{(R^*_\hyp)\left(\log (4\Pi_{2n}(\hyp))+1\right)}{n}} + 20\,\frac{\log(4\Pi_{2n}(\hyp))+1}{n}
+\]
+with
+\[
+\Pi_{2n}(\hyp) \le \min\left\{\vert\hyp\vert, 2^{2n}\right\}.
+\]
+\end{theorem}
 
-% cosa dicono questi lavori. 
-
-% questo lavoro vuole andare a vedere se questo è vero. 
-
-% per fare ciò, partiamo dal contesto degli alberi decisionali e cerchiamo una funzione maggiorante dell'errore di test degli alberi all'aumentare della profondità massima. ci interessa che questa funzione sia maggiorante in senso asintotico. questo vuol dire che non ci interessa che la curva di tale funzione stia fattualmente sopra alla curva dell'errore di test, bensì che ne riproduca la forma.
-
-% in particolare, andremo a considerare funzioni che considerano sempre di più gli aspetti strutturali del problema di learning in questione, in particolare la finitezza dell'algoritmo e il rumore nei dati. inoltre, testeremo la validità di queste funzioni confrontando la loro forma con quella del'errore di test con gli esperimenti. 
-
-% così facendo, è possibile esaminare come gli oggetti che entrano come input della nostra funzione ne determinano la forma, e dunque quali aspetti del problema di learning influenzano la capacità di generalizzazione degli alberi decisionali. il risultato finale è un bound sul gap (pie l'ha detto bene) degli alberi decisionali che è validato empiricamente e che fornisce una spiegazione teorica della capacità di generalizzazione degli alberi decisionali. 
-
-% il contributo di questo lavoro è 
-% qualcosa sugli alberi?
-% e fornire un framework che può essere esteso ad altri algoritmi per spiegarne la generalizzazione. 
+Hence, the main contribution of this work is to provide an empirical analysis of the limits and possibilities of classical bounds as descriptive tools. Hopefully, we also develop a framework and approach that can be extended to the study of more advanced generalization bounds, as well as other learning algorithms, like gradient-based ones.

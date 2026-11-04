@@ -37,10 +37,22 @@ CURVE_NAMES = {
     "train_err": "Train Error",
     "bound_union": "Union Bound",
     "bound_radmass": "Rademacher Bound",
-    "bound_noise": "Best Risk Bound",
+    "bound_noise": "Noise Bound",
     "train_bound_union": "Train Error + Union Bound",
     "train_bound_radmass": "Train Error + Rademacher Bound",
-    "train_bound_noise": "Train Error + Best Risk Bound",
+    "train_bound_noise": "Train Error + Noise Bound",
+}
+# symbol of each curve in the legend
+CURVE_SYMBOLS = {
+    "gap": r"$\mathcal{G}(d)$",
+    "test_err": r"$\mathcal{T}(d)$",
+    "train_err": r"$\mathcal{L}(d)$",
+    "bound_union": r"$\mathcal{B}_{Union}$",
+    "bound_radmass": r"$\mathcal{B}_{RadMass}$",
+    "bound_noise": r"$\mathcal{B}_{Noise}$",
+    "train_bound_union": r"$\mathcal{L}(d) + \mathcal{B}_{Union}$",
+    "train_bound_radmass": r"$\mathcal{L}(d) + \mathcal{B}_{RadMass}$",
+    "train_bound_noise": r"$\mathcal{L}(d) + \mathcal{B}_{Noise}$",
 }
 # colormap of each curve, one shade per noise level; train error + bound has the colormap of the bound
 CMAPS = {
@@ -257,7 +269,7 @@ def experiment(curves: Sequence[Curve] = ("gap", "bound_union"),
                 stds["train_" + b] = stds["train_err"]
 
         for c in curves:
-            label = CURVE_NAMES[c] if len(noise_level) == 1 else f"{CURVE_NAMES[c]}, {fmt_level(level)}"
+            label = CURVE_SYMBOLS[c] if len(noise_level) == 1 else f"{CURVE_SYMBOLS[c]}, {fmt_level(level)}"
             color = plt.get_cmap(CMAPS[c.removeprefix("train_") if "bound" in c else c])(shades[rank])
             ax.plot(depths, values[c], color=color, linewidth=2,
                     marker=None if "bound" in c else "o", markersize=5, label=label,
@@ -275,14 +287,14 @@ def experiment(curves: Sequence[Curve] = ("gap", "bound_union"),
         ax.text(xv, 1.01, name, color="gray", ha="center", va="bottom", fontsize=13,
                 transform=ax.get_xaxis_transform())
 
-    title = join_and([CURVE_NAMES[c] for c in curves])
+    title = join_and([CURVE_NAMES[c] for c in curves]) + " as depth increases"
     if not emp and "bound_noise" not in needed:
         # no curve depends on the noise: no noise in the title
         pass
     elif len(noise_level) == 1:
-        title += f" with noise at {fmt_level(noise_level[0])}"
+        title += f", with noise at {fmt_level(noise_level[0])}"
     else:
-        title += " with noise at " + ", ".join(fmt_level(l) for l in noise_level)
+        title += ", with noise at " + ", ".join(fmt_level(l) for l in noise_level)
     ax.set_title(title, pad=24, fontsize=16)
     # axes start exactly at (1, 0)
     ax.set_xlim(depths[0], depths[-1])
@@ -292,6 +304,44 @@ def experiment(curves: Sequence[Curve] = ("gap", "bound_union"),
     ax.tick_params(labelsize=12)
     ax.legend(fontsize=13)
     ax.grid(True, alpha=0.3)
+    fig.tight_layout()
+    return fig
+
+def best_risk_decomposition(supp_size=1_000_000_000, noise_type: Literal["gaussian", "bernoulli"] = "gaussian",
+                            noise_level=(20,), num_crossing=10):
+    """best risk R*_{H_d} = Bayes risk R* + approximation error A_{H_d}, one panel per noise level"""
+    noise_level = sorted(noise_level, reverse=True)
+    f = lambda x: sine(x, m=num_crossing)
+    N = supp_size
+    depths = np.arange(1, 31)
+
+    fig, axes = plt.subplots(len(noise_level), 1, figsize=(10, 4.5 * len(noise_level)),
+                             sharex=True, sharey=True, squeeze=False)
+    for ax, level in zip(axes[:, 0], noise_level):
+        if noise_type == "gaussian":
+            sigma, p = sigma_for_level(f, level, N), None
+        else:
+            sigma, p = None, 1 - level / 100
+        R_star_d = dp_R_star_d(f, depths, N, noise_type, sigma=sigma, p=p)
+        # the Bayes classifier predicts sign(f): its risk is the average flip probability
+        R_star = flip_prob(support_grid(N), f, noise_type, sigma=sigma, p=p).mean()
+        print(f"noise {fmt_level(level)}: R* = {R_star:.4f}, R*_Hd at d = {depths[-1]}: {R_star_d[-1]:.4f}")
+
+        ax.plot(depths, R_star_d, color=plt.get_cmap("RdPu")(0.75), linewidth=2, marker="o", markersize=5,
+                label=r"$R^*_{\mathcal{H}_d}$", clip_on=False)
+        ax.axhline(R_star, color="black", linestyle="--", linewidth=1.5, label=r"$R^*$")
+        ax.plot(depths, R_star_d - R_star, color=plt.get_cmap("Greys")(0.55), linewidth=2, marker="o",
+                markersize=5, label=r"$A_{\mathcal{H}_d} = R^*_{\mathcal{H}_d} - R^*$", clip_on=False)
+        ax.set_title(f"Noise at {fmt_level(level)}", fontsize=14)
+        ax.tick_params(labelsize=12)
+        ax.legend(fontsize=13)
+        ax.grid(True, alpha=0.3)
+
+    axes[0, 0].set_xlim(depths[0], depths[-1])
+    axes[0, 0].set_xticks(np.r_[depths[0], np.arange(5, depths[-1] + 1, 5)])
+    axes[0, 0].set_ylim(bottom=0)
+    axes[-1, 0].set_xlabel("d", fontsize=14)
+    fig.suptitle("Best Risk, Bayes Risk and Approximation Error as depth increases", fontsize=16)
     fig.tight_layout()
     return fig
 
@@ -316,12 +366,18 @@ def parse_args():
     ap.add_argument("--out", default=None, help="where to save the figure, not saved if omitted")
     ap.add_argument("--show", action="store_true",
                     help="also open the figure in a window, always done if --out is omitted")
+    ap.add_argument("--best_risk", action="store_true",
+                    help="plot best risk, Bayes risk and approximation error instead of --curves")
     return ap.parse_args()
 
 if __name__ == "__main__":
     args = vars(parse_args())
     out, show = args.pop("out"), args.pop("show")
-    fig = experiment(**args)
+    if args.pop("best_risk"):
+        fig = best_risk_decomposition(args["supp_size"], args["noise_type"], args["noise_level"],
+                                      args["num_crossing"])
+    else:
+        fig = experiment(**args)
     if out is not None:
         fig.savefig(out, bbox_inches="tight", dpi=150)
         print(f"saved {out}")

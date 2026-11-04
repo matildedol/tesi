@@ -1,362 +1,12 @@
-\section{Proofs}\label{app: proofs}
+\newpage\section{Explorative Experiments}\label{app: prel exp}
 
-
-
-
-\begin{proof}[Proof of Theorem~\ref{thm: rad bound}]
-Let $Z\coloneq(X,Y)$ and $Z_i\coloneq(X_i,Y_i)$, so that
-\[
-R(h) = \expv[\ell_h(Z)] \qquad \text{and} \qquad \hat R_D(h) = \frac1n\sum_{i=1}^n \ell_h(Z_i).
-\]
-Introduce an independent copy $D'=(Z_1',\ldots,Z_n')$ of the dataset $D$.
-% and to study the random variables $\ell_h(Z_i')-\ell_h(Z_i)$, which have a symmetric distribution ({\it symmetrization trick}).
-Since the $Z_i'$ are distributed as $Z$ and are independent of $D$, we rewrite
-\[
-R(h) = \expv\left[\frac1n\sum_{i=1}^n \ell_h(Z_i')\right] = \expv\left[\frac1n\sum_{i=1}^n \ell_h(Z_i')\,\Big\vert\, D\right].
-\]
-Then,
-\[
-\expv\left[\sup_{\ell_h\in\LL}(R-\hat R_D)(h)\right] = \expv\left[\sup_{\ell_h\in\LL} \expv\left[\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\,\Big\vert\, D\right]\right].
-\]
-since $\ell_h(Z_i)$ is a function of $D$, hence $\expv\left[\ell_h(Z_i)\,\vert\, D\right] = \ell_h(Z_i)$.
-Since the supremum of expectations is at most the expectation of the supremum, and by the law of total expectation, we obtain
-\begin{equation}\label{app/eq: sym step1}
-\expv\left[\sup_{\ell_h\in\LL}(R-\hat R_D)(h)\right] \le \expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right].
-\end{equation}
-Now we apply the symmetrization trick. Let $\hyp = \{h_1,\ldots,h_m\}$, with $m = \card$. Since $Z_i$ and $Z_i'$ are i.i.d. for each $i=1,\ldots,n$, swapping them does not change the joint distribution, i.e.
-\[
-\left(\ell_{h_j}(Z_i')-\ell_{h_j}(Z_i)\right)_{j=1}^m \overset{d}{=} \left(\ell_{h_j}(Z_i)-\ell_{h_j}(Z_i')\right)_{j=1}^m.
-\]
-This means that, for any fixed $(e_1,\ldots,e_n)\in\{-1,1\}^n$,
-\[
-\left(\ell_{h_j}(Z_i')-\ell_{h_j}(Z_i)\right)_{j=1}^m \overset{d}{=} \left(e_i\left(\ell_{h_j}(Z_i')-\ell_{h_j}(Z_i)\right)\right)_{j=1}^m.
-\]
-The pairs $(Z_1,Z_1'),\ldots,(Z_n,Z'_n)$ are also independent, therefore equality in distribution holds also when taking the sum, i.e.
-\[
-\left(\frac1n\sum_{i=1}^n \left(\ell_{h_j}(Z_i')-\ell_{h_j}(Z_i)\right)\right)_{j=1}^m \overset{d}{=} \left(\frac1n\sum_{i=1}^n e_i\left(\ell_{h_j}(Z_i')-\ell_{h_j}(Z_i)\right)\right)_{j=1}^m.
-\]
-Finally, because the $m$ random variables are jointly equally distributed, we have equality in distribution of the suprema
-\[
-\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right) \overset{d}{=} \sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n e_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right).
-\]
-Because the two sides in the previous equation have the same distribution, their expected value is the same
-\[
-\expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right]\, = \,\expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n e_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right].
-\]
-Note that until now we have considered only the disorder of the data $D,D'$. Because this holds for any value of $(e_1,\ldots,e_n)\in\{-1,1\}^n$, it holds surely for the random variable $\xi = (\xi_1,\ldots,\xi_n)$, i.e. 
-\[
-\expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right]\, = \,\expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right)\bigg\vert\, \xi\right]
-\]
-surely. Taking the expected value over the disorder of $\xi$, we obtain
-\[
-\expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right] = \expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right]
-\]
-where the left hand side is independent of $\xi$ and in the right hand side we use the law of total expectation. 
-Plugging the result into~(\ref{app/eq: sym step1}), we have 
-\[
-\expv\left[\sup_{\ell_h\in\LL}(R-\hat R_D)(h)\right] \le\expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right]
-\]
-Now we split the sum over $i=1,\ldots,n$ into
-\[
-\frac1n\sum_{i=1}^n \xi_i\left(\ell_h(Z_i')-\ell_h(Z_i)\right) = \frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i') + \frac1n\sum_{i=1}^n\left(-\xi_i\ell_h(Z_i)\right)
-\]
-Then, we use that the supremum of the sum is bounded by the sum of the suprema, 
-\[
-\sup_{\ell_h\in\LL} \frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i') + \frac1n\sum_{i=1}^n\left(-\xi_i\ell_h(Z_i)\right) \le \sup_{\ell_h\in\LL} \frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i') + \sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n\left(-\xi_i\ell_h(Z_i)\right)
-\]
-and that the expectation of the sum is the sum of the expectations, obtaining
-\[
-\expv\left[\sup_{\ell_h\in\LL}(R-\hat R_D)(h)\right] \le\expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i')\right] + \expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n (-\xi_i)\ell_h(Z_i)\right]
-\]
-We also observe that we can replace $-\xi_i$ with $\xi_i$, because they have the same distributions, hence the same expected value, and are independent of the datasets. Therefore,
-\begin{align*}
-\expv\left[\sup_{\ell_h\in\LL}(R-\hat R_D)(h)\right] &\le \expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i')\right] + \expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\ell_h(Z_i)\right] \\
-&= 2\mathcal R_n(\LL).
-\end{align*}
-\end{proof}
-
-\begin{proof}[Proof of Lemma~\ref{lemma: massart}]
-For any $t>0$,
-\begin{align}
-\exp\left(t\,\expv\left[\sup_{\ell_h\in\LL}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right]\right)
-&\le \expv\left[\exp\left(t\sup_{\ell_h\in\LL}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right)\right] \notag\\
-&= \expv\left[\sup_{\ell_h\in\LL}\exp\left(t\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right)\right] \notag\\
-&\le \expv\left[\sum_{\ell_h\in\LL}\exp\left(t\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right)\right] \notag\\
-&= \expv\left[\sum_{\ell_h\in\LL}\prod_{i=1}^n \expv\left[\exp\left(t\xi_i\ell_h(X_i,Y_i)\right)\big\vert \,D\,\right]\right]
-\label{app/eq: massart start}
-\end{align}
-where we use Jensen's inequality for the convex function $\exp(\cdot)$ in the first inequality, that $\exp$ is increasing in the first equality, we bound the supremum with the sum (all terms are positive) in the second inequality, and we use the independence of the $\xi_i$'s, and their independence of $D$, in the last equality.
-
-Now we apply Hoeffding's lemma (Theorem~\ref{app: hoeffdinglemma}) to each factor for fixed $(X_i,Y_i)=(x_i,y_i)$ taking any value in $\X\times\Y$. The random variable $\xi_i\ell_h(x_i,y_i)$ is centered, since $\expv[\xi_i]=0$, and it satisfies $\vert\xi_i\ell_h(x_i,y_i)\vert = \ell_h(x_i,y_i)\le M$ by non-negativity of the loss and Proposition~\ref{prop: suff assump}, hence it satisfies the assumptions of Hoeffding's lemma. We obtain
-\[
-\expv\left[\exp\left(t\xi_i\ell_h(x_i,y_i)\right)\right] \le e^{t^2M^2/2}.
-\]
-Because this holds for any $(x_i,y_i)\in\X\times\Y$, we have
-\[
-\expv\left[\exp\left(t\xi_i\ell_h(X_i,Y_i)\right)\big\vert\,D\,\right] \le e^{t^2M^2/2}
-\]
-surely.
-Plugging this into~(\ref{app/eq: massart start}),
-\[
-\exp\left(t\,\expv\left[\sup_{\ell_h\in\LL}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right]\right) \le \expv\left[\sum_{\ell_h\in\LL}\prod_{i=1}^n e^{t^2M^2/2}\right] = \vert\LL\vert\, e^{nt^2M^2/2}.
-\]
-Taking the logarithm of both sides,
-\[
-t\,\expv\left[\sup_{\ell_h\in\LL}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right] \le \log\vert\LL\vert + \frac{nt^2M^2}{2},
-\]
-and dividing by $tn>0$,
-\begin{equation}\label{app/eq: massart opt}
-\mathcal R_n(\LL) \le \frac{\log\vert\LL\vert}{tn} + \frac{tM^2}{2} \eqqcolon b(t)
-\end{equation}
-Since~(\ref{app/eq: massart opt}) holds for every $t>0$, we look for the tightest bound. We set the derivative in $t$ to zero
-\[
-\deriv{b(t)}{t}= 
--\frac{\log\vert\LL\vert}{t^2n} + \frac{M^2}{2} = 0 \quad\Longrightarrow\quad t^\star = \sqrt{\frac{2\log\vert\LL\vert}{nM^2}}.
-\]
-Observe that since it is fair to assume $\vert\LL\vert>1$, the second derivative is nonnegative for any $t$
-\[\frac{2\log\vert\LL\vert}{t^3n}\ge0 \quad \forall t\] hence $t^\star$ is a minimizer (if $\vert\LL\vert = 1$, the bound follows by letting $t\to\infty$). Plugging $t^\star$ into~(\ref{app/eq: massart opt}) yields
-\[
-\mathcal R_n(\LL) \le M\sqrt{\frac{2\log\vert\LL\vert}{n}}
-\]
-\end{proof}
-
-\begin{proof}[Proof of Lemma~\ref{lemma: massart loss v}]
-Most of the proof is similar to Proof of Lemma~\ref{lemma: massart}. 
-
-Let $(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n)) = \ell(D)$. For any $t>0$, 
-\[
-\exp\left(t\,\expv\left[\sup_{\ell(D) \in \LL(D)}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right]\right)\le
-\expv\left[\sum_{\ell(D)\in\LL(D)}\prod_{i=1}^n \expv\left[\exp\left(t\xi_i\ell_h(X_i,Y_i)\right)\big\vert\,D\,\right]\right]
-\]
-following the same steps as in Proof of Lemma~\ref{lemma: massart}, all of which are independent of the data disorder, as they can be made fixing an observation $S$. 
-
-Now we apply Hoeffding's lemma (Theorem~\ref{app: hoeffdinglemma}). These steps also regard the argument of the expectation over the Rademacher variables disorder. We obtain
-\[
-\expv\left[\exp\left(t\xi_i\ell_h(X_i,Y_i)\right)\big\vert\,D\,\right] \le e^{t^2M^2/2}.
-\]
-surely as in Proof of Lemma~\ref{lemma: massart}. 
-Plugging this into~(\ref{app/eq: massart start}),
-\begin{align*}
-\exp\left(t\,\expv\left[\sup_{\ell(D)\in\LL(D)}\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i)\right]\right) &\le \expv\left[\sum_{\ell(D)\in\LL(D)}\prod_{i=1}^n e^{t^2M^2/2}\right]\\ &= \expv\left[N_D(\hyp)e^{nt^2M^2/2}\right] \\&= \expv\left[N_D(\hyp)\right] e^{nt^2M^2/2}.
-\end{align*}
-The rest of the proof follows exacltly as Proof of Lemma~\ref{lemma: massart}, replacing $\vert\LL\vert$ with $\expv\left[N_D(\hyp)\right]$ .
-\end{proof}
-
-\begin{proof}[Proof of Lemma~\ref{lemma: counting}]
-  We prove that $N_S(\hyp)\le \card$ and $N_S(\hyp)\le 2^n$ for every $S\in(\X\times\Y)^n$.
-Fix $S=(z_1,\dots,z_n)$ and consider the map
-\[
-\Phi\colon \hyp \to {\{0,1\}}^n,\qquad
-h \mapsto \bigl(\ell_h(z_1),\dots,\ell_h(z_n)\bigr),
-\]
-so that $N_S(\hyp)=|\Phi(\hyp)|$. Since the image of a set under any map
-has cardinality at most that of the domain, $|\Phi(\hyp)|\le|\hyp|$.
-Since $\Phi(\hyp)\subseteq\{0,1\}^n$, we also have
-$|\Phi(\hyp)|\le|\{0,1\}^n|=2^n$. Because this holds for every realization $S$ of $D$, the claim for $N_D(\hyp)$ follows. 
-\end{proof}
-
-\begin{proof}[Proof of Theorem~\ref{thm: rademmassart bound}]
-  Since $\hat h_S \in \hyp$ for any realization $S$ of $D$,
-  \[
-  \expv\left[(R-\hat R_D)(\hat h_D)\right] \le \expv\left[\sup_{h\in\hyp} (R-\hat R_D)(h)\right]
-  \]
-  The proof is concluded applying Theorem~\ref{thm: rad bound}, bounding the Rademacher complexity with Lemma~\ref{lemma: massart loss v}, and bounding $N_D(\hyp)$ with Lemma~\ref{lemma: counting}.
-\end{proof}
-
-\begin{proof}[Proof of Lemma~\ref{lemma: rel dev}]
-Recall $\LL=\{(x,y)\mapsto\ell(y,h(x)):h\in\hyp\}$,
-where $\ell$ is the zero-one loss. Applying the first inequality of Theorem~5.1
-of~\cite{boucheron2005theory}, with $\mathbb{S}_\mathcal{F}(X_1^{2n}) = N_{2n}(\hyp)$, we obtain that with probability at least $1-\delta$, simultaneously for all
-$h\in\hyp$,
-\[
-R(h)-\widehat R_D(h)
-\le
-2\sqrt{\frac{R(h)\log(4N_{2n}(\hyp)/\delta)}{n}}.
-\]
-Set
-\[
-\delta_\varepsilon
-=
-4N_{2n}(\hyp)e^{-n\varepsilon^2/4}.
-\]
-If $\delta_\varepsilon<1$, applying the preceding inequality
-with $\delta=\delta_\varepsilon$ gives
-\[
-\Pr\!\left[
-\exists h\in\hyp:
-R(h)-\widehat R_D(h)>\varepsilon\sqrt{R(h)}
-\right]
-\le
-4N_{2n}(\hyp)e^{-n\varepsilon^2/4}.
-\]
-If $\delta_\varepsilon\ge1$, this probability bound holds
-trivially. Finally, since $n\varepsilon^2\ge8$,
-\[
-4e^{-n\varepsilon^2/4}
-\le
-2e^{-n\varepsilon^2/16},
-\]
-which proves the claim.
-\end{proof}
-
-\begin{proof}[Proof of Theorem~\ref{thm: bound emprisk}]
-Let $\delta\in(0,1)$ and set
-\[
-u\coloneq\frac{\log(2N_{2n}(\hyp)/\delta)}{n} \qquad\text{and}\qquad \varepsilon\coloneq 4\sqrt{u},
-\]
-so that $2N_{2n}(\hyp)e^{-n\varepsilon^2/16} = \delta$. Since $N_{2n}(\hyp)\ge1$ and $\delta<1$, we have $n\varepsilon^2 = 16\log(2N_{2n}(\hyp)/\delta) \ge 16\log 2 \ge 8$, hence Lemma~\ref{lemma: rel dev} applies and gives
-\[
-\Pr\left[\exists h\in\hyp : (R-\hat R_D)(h) > \varepsilon\sqrt{R(h)}\right] \le \delta.
-\]
-Therefore, with probability at least $1-\delta$, we have $(R-\hat R_D)(h)\le\varepsilon\sqrt{R(h)}$ for all $h\in\hyp$, and in particular for $h=\hat h_D\in\hyp$.
-
-On this event, we isolate $\hat R_D(\hat h_D)$. Let $r\coloneq R(\hat h_D)$ and $\hat r\coloneq\hat R_D(\hat h_D)$, so that $r-\varepsilon\sqrt r-\hat r\le0$. This is a quadratic inequality in $x\coloneq\sqrt r\ge0$, namely $x^2-\varepsilon x-\hat r\le0$, which implies that $x$ is at most the largest root,
-\[
-\sqrt r \le \frac{\varepsilon+\sqrt{\varepsilon^2+4\hat r}}{2}.
-\]
-Squaring both sides,
-\[
-r \le \frac{2\varepsilon^2 + 4\hat r + 2\varepsilon\sqrt{\varepsilon^2+4\hat r}}{4} = \hat r + \frac{\varepsilon^2}{2} + \frac{\varepsilon}{2}\sqrt{\varepsilon^2+4\hat r} \le \hat r + \varepsilon^2 + \varepsilon\sqrt{\hat r},
-\]
-where in the last inequality we used $\sqrt{a+b}\le\sqrt a+\sqrt b$. Hence, substituting $\varepsilon = 4\sqrt u$, with probability at least $1-\delta$,
-\begin{align*}
-(R-\hat R_D)(\hat h_D) &= r-\hat r \le \varepsilon\sqrt{\hat r} + \varepsilon^2 \\ &= 4\sqrt{\frac{\hat R_D(\hat h_D)\log(2N_{2n}(\hyp)/\delta)}{n}} + 16\frac{\log(2N_{2n}(\hyp)/\delta)}{n}.
-\end{align*}
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{coroll: bound bestrisk}]
-        Recall $h_b = \argmin_{h\in\hyp} R(h)$, $R(h_b) = R^*_{\hyp}$ by definition of $R^*_\hyp$ and $\hat R_D(\hat h_D) \le \hat R_D(h_b)$ by definition of the ERM $\hat h_D$.
-        Since $h_b$ is independent of the data, the variables $\ell(h_b(X_i),Y_i)$ are i.i.d.\ Bernoulli with mean $R^*_\hyp$ and variance $R^*_\hyp(1-R^*_\hyp) \le R^*_\hyp$. Bernstein inequality (Theorem~\ref{app: bernstein}) with $M=1$ gives, with probability at least $1-\delta/2$,
-        \[
-        \hat R_D(h_b) \le R^*_{\hyp} + \sqrt{\frac{2R^*_\hyp \log (2/\delta)}{n}} + \frac{2\log(2/\delta)}{3n}.
-        \]
-        Let $u\coloneq\log(4N_{2n}(\hyp)/\delta)/n$. Since $N_{2n}(\hyp)\ge 1$, $\log(2/\delta)/n\le u$. Thus
-        \begin{equation}\label{eq: bound hatR h0}
-        \hat R_D(\hat h_D) \le \hat R_D(h_b) \le R^*_\hyp + 2\sqrt{R^*_\hyp u} + u = {\left(\sqrt{R^*_\hyp} + \sqrt{u}\right)}^2.
-        \end{equation}
-        Theorem~\ref{thm: bound emprisk} at confidence $1-\delta/2$ gives, with probability at least $1-\delta/2$,
-        \begin{equation}\label{eq: bo}
-        (R-\hat R_D)(\hat h_D) \le 4\sqrt{\hat R_D(\hat h_D)\,u} + 16u.
-        \end{equation}
-        By a union bound, both events hold simultaneously with probability at least $1-\delta$. Hence, plugging~(\ref{eq: bound hatR h0}) in the RHS of~(\ref{eq: bo}), we obtain that with probability at least $1-\delta$,
-        \begin{align*}
-        (R-\hat R_D)(\hat h_D) &\le 4\sqrt u\left(\sqrt{R^*_\hyp} + \sqrt u\right) + 16u \\
-        &= 4\sqrt{\frac{R^*_{\hyp}\log(4N_{2n}(\hyp)/\delta)}{n}} + 20\frac{\log(4N_{2n}(\hyp)/\delta)}{n}.
-        \end{align*}
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{coroll: bound noiseandappr}]
-  Substitute $R^*_\hyp = \sigma^2 + A_\hyp$ into Corollary~\ref{coroll: bound bestrisk}.
-\end{proof}
-
-\begin{proof}[Proof of Theorem~\ref{thm: bound noiseandappr}]
-    Let $\text{gap} = (R-\hat R_D)(\hat h_D)$ and $C = \sqrt{\frac{\log(4 N_{2n}(\hyp)/\delta)}{n}}$. Corollary~\ref{coroll: bound bestrisk} gives
-\begin{align*}
-&\Pr\left[\text{gap} \le 4\sqrt{R^*_\hyp}\,C + 20C^2\right] \ge 1-\delta \\
-\implies &\Pr\left[\text{gap} > 4\sqrt{R^*_\hyp}\,C + 20C^2\right] \le \delta
-\end{align*}
-Set $\varepsilon = 4\sqrt{R^*_\hyp}\,C + 20C^2$. Let us now find $\delta(\varepsilon)$:
-\[
-20C^2 + 4\sqrt{R^*_\hyp}\,C - \varepsilon = 0 \implies C = \frac{-4\sqrt{R^*_\hyp} + \sqrt{16R^*_\hyp + 80\varepsilon}}{40} = \frac{\sqrt{R^*_\hyp + 5\varepsilon} - \sqrt{R^*_\hyp}}{10}
-\]
-So we have
-\begin{align*}
-\frac{\log(4N_{2n}(\hyp)/\delta)}{n} &= \left(\frac{\sqrt{R^*_\hyp + 5\varepsilon} - \sqrt{R^*_\hyp}}{10}\right)^2 \\
-\frac{4N_{2n}(\hyp)}{\delta} &= \exp\left(n\left(\frac{\sqrt{R^*_\hyp + 5\varepsilon} - \sqrt{R^*_\hyp}}{10}\right)^2\right)
-\end{align*}
-and hence
-\[
-\delta(\varepsilon) = 4N_{2n}(\hyp)\exp\left(-\frac{n}{100}\left(\sqrt{R^*_\hyp + 5\varepsilon} - \sqrt{R^*_\hyp}\right)^2\right).
-\]
-Using that $\expv[X] = \int_0^\infty \Pr[X \ge \varepsilon]\,d\varepsilon$ for $X \ge 0$, applied to $\text{gap}^+ \coloneq \max\{\text{gap}, 0\}$,
-\[
-\expv[\text{gap}] \le \expv[\text{gap}^+] = \int_0^\infty \Pr[\text{gap} \ge \varepsilon]\,d\varepsilon \le \int_0^\infty \min\{1, \delta(\varepsilon)\}\,d\varepsilon.
-\]
-We now compute the integral by exchanging the roles of $\varepsilon$ and $\delta$. The map $\varepsilon\mapsto\delta(\varepsilon)$ is continuous and strictly decreasing on $[0,\infty)$, with $\delta(0) = 4N_{2n}(\hyp) > 1$ and $\delta(\varepsilon)\to0$ as $\varepsilon\to\infty$. Hence, for every $t\in(0,1)$ there is a unique $\varepsilon(t)>0$ such that $\delta(\varepsilon(t)) = t$, and it is given by $\varepsilon(t) = 4\sqrt{R^*_\hyp}\,C + 20C^2$ with $C = \sqrt{\log(4N_{2n}(\hyp)/t)/n}$, by construction of $\delta(\varepsilon)$. Moreover, for $t\in(0,1)$,
-\[
-\min\{1,\delta(\varepsilon)\} > t \iff \delta(\varepsilon) > t \iff \varepsilon < \varepsilon(t).
-\]
-Writing $\min\{1,\delta(\varepsilon)\} = \int_0^1 \mathbf 1\{t < \min\{1,\delta(\varepsilon)\}\}\,dt$ and exchanging the order of integration by Tonelli's theorem (the integrand is non-negative), we obtain
-\[
-\int_0^\infty \min\{1, \delta(\varepsilon)\}\,d\varepsilon = \int_0^1 \int_0^\infty \mathbf 1\{\varepsilon < \varepsilon(t)\}\,d\varepsilon\,dt = \int_0^1 \varepsilon(t)\,dt = \int_0^1 \varepsilon(\delta)\,d\delta.
-\]
-Hence, writing $\varepsilon(\delta) = 4\sqrt{R^*_\hyp}\,C + 20C^2$ explicitly,
-\[
-\expv[\text{gap}] \le \int_0^1 \varepsilon(\delta)\,d\delta = 4\sqrt{\frac{R^*_\hyp}{n}}\int_0^1 \sqrt{\log\frac{4N_{2n}(\hyp)}{\delta}}\,d\delta + \frac{20}{n}\int_0^1 \log\frac{4N_{2n}(\hyp)}{\delta}\,d\delta.
-\]
-The logarithm is the only part depending on $\delta$, and its integral is
-\[
-\int_0^1 \log\frac{4N_{2n}(\hyp)}{\delta}\,d\delta = \log(4N_{2n}(\hyp)) - \int_0^1 \log\delta\,d\delta = \log(4N_{2n}(\hyp)) + 1.
-\]
-Applying Jensen's inequality to the square root term,
-\[
-\int_0^1 \sqrt{\log\frac{4N_{2n}(\hyp)}{\delta}}\,d\delta \le \sqrt{\int_0^1 \log\frac{4N_{2n}(\hyp)}{\delta}\,d\delta} = \sqrt{\log(4N_{2n}(\hyp)) + 1},
-\]
-we obtain
-\[
-\expv[\text{gap}] \le 4\sqrt{\frac{R^*_\hyp\left(\log(4N_{2n}(\hyp)) + 1\right)}{n}} + 20\,\frac{\log(4N_{2n}(\hyp)) + 1}{n}.
-\]
-
-Asymptotically,
-\[
-\expv\left[(R-\hat R_D)(\hat h_D)\right] \le O\left(
-\sqrt{\frac{(A_{\hyp}+\sigma^2)\,\log N_{2n}(\hyp)}{n}} + \frac{\log N_{2n}(\hyp)}{n} \right)
-\]
-because, at the numerator,
-\[
-\log (4 N_{2n}(\hyp)) + 1 = \log 4 + \log N_{2n}(\hyp) + 1 = \log N_{2n}(\hyp) + O(1)
-\]
-and for large $x$, 
-\[
-\log x + O(1) \le C \log x
-\] 
-for some constant $C>0$.
-Apply Lemma~\ref{lemma: counting}, obtaining
-\[
-\expv\left[(R-\hat R_D)(\hat h_D)\right] \le \min\left\{ O\left(
-\sqrt{\frac{(A_{\hyp}+\sigma^2)\log \card}{n}} + \frac{\log\card}{n} \right), O\left(\sqrt{A_{\hyp}+\sigma^2}+1 \right)\right\}
-\]
-\end{proof}
-
-\begin{proof}[Proof of Lemma~\ref{lemma: growth}]
-We prove the inequalities for $N_S(\hyp)$, for every $S\in(\X\times\Y)^n$. Since $N_D(\hyp)$ takes the value $N_S(\hyp)$ when $D$ takes the value $S$, they hold for $N_D(\hyp)$ for every realization of $D$.
-
-Fix $S=((x_1,y_1),\ldots,(x_n,y_n))\in(\X\times\Y)^n$, and consider the maps
-\[
-\Psi\colon\hyp\to\Y^n,\quad h\mapsto\bigl(h(x_1),\ldots,h(x_n)\bigr),
-\]
-\[
-\lambda\colon\Y^n\to\{0,1\}^n,\quad (\hat y_1,\ldots,\hat y_n)\mapsto\bigl(\ell(\hat y_1,y_1),\ldots,\ell(\hat y_n,y_n)\bigr).
-\]
-The map $\Phi\colon h\mapsto(\ell_h(x_1,y_1),\ldots,\ell_h(x_n,y_n))$ of the proof of Lemma~\ref{lemma: counting} factorizes as $\Phi=\lambda\circ\Psi$, hence $N_S(\hyp) = |\Phi(\hyp)| = |\lambda(\Psi(\hyp))|$. Moreover, by definition of growth function, $|\Psi(\hyp)|\le\Pi_n(\hyp)$.
-
-\emph{$1\le N_S(\hyp)$.} Since $\hyp$ is nonempty, $\Phi(\hyp)$ is nonempty.
-
-\emph{$N_S(\hyp)\le\Pi_n(\hyp)$.} Since the image of a set under any map has cardinality at most that of the set,
-\[
-N_S(\hyp) = |\lambda(\Psi(\hyp))| \le |\Psi(\hyp)| \le \Pi_n(\hyp).
-\]
-
-\emph{$\Pi_n(\hyp)\le\min\{\card,2^n\}$.} Let $x_1,\ldots,x_n\in\X$ and let $\Psi$ be the corresponding map. As above, $|\Psi(\hyp)|\le\card$, and $\Psi(\hyp)\subseteq\Y^n$ with $|\Y^n| = 2^n$, since $\Y=\{-1,1\}$. Taking the supremum over $x_1,\ldots,x_n$ gives $\Pi_n(\hyp)\le\card$ and $\Pi_n(\hyp)\le2^n$.
-
-\emph{$\Pi_n(\hyp) = N_n(\hyp)$.} Taking the supremum over $S$ in $N_S(\hyp)\le\Pi_n(\hyp)$ gives $N_n(\hyp)\le\Pi_n(\hyp)$. For the converse, let $x_1,\ldots,x_n\in\X$, take any $y_1,\ldots,y_n\in\Y$, and let $S=((x_1,y_1),\ldots,(x_n,y_n))$. Since $\Y=\{-1,1\}$ and $\ell$ is the zero-one loss, $\hat y_i = y_i$ if $\ell(\hat y_i,y_i)=0$ and $\hat y_i = -y_i$ if $\ell(\hat y_i,y_i)=1$. Hence $\lambda$ is injective, and
-\[
-|\Psi(\hyp)| = |\lambda(\Psi(\hyp))| = N_S(\hyp) \le N_n(\hyp).
-\]
-Taking the supremum over $x_1,\ldots,x_n$ gives $\Pi_n(\hyp)\le N_n(\hyp)$.
-\end{proof}
-
-\newpage
-
-\newpage\section{Preliminary experiments}\label{app: prel exp}
-
-\subsection{Noise structure}\label{app/ sec: noise}
+\subsection{Noise Structure}\label{app/ sec: noise}
 We generate the labels with a centered parabola (see Section~\ref{app/ sec: datagen}), so that roughly half of them are $1$ and half $-1$ in the interval $[0,10]$. Then, we inspect what happens if we use a Bernoullian noise instead of a Gaussian one, i.e. when data is generated as 
 \[
-y \leftarrow sign(h^*(x))b
+y \leftarrow sign(f^*(x))b
 \]
 for $b\sim\mathrm{Bernoulli}(p)$. Notice that this noise flips the labels with a probability of $1-p$. 
-While from the first experiments it seemed that the algorithm achieved a higher test error, we postulate that this may be due to the portion of misclassified inputs, rather than to the noise structure itself. Hence, fixing $p = 0.8$, we look for the value of $\sigma$ that achieves roughly the same portion of mislcassified inputs ($20\%$). Figure~\ref{app/fig: sigmastar parabola} shows that this happens for $\sigma = 5.5$, and Figures~\ref{app/fig: parabola bernoulli} and~\ref{app/fig: parabola gauss} show that the two noise structures then yield essentially the same train and test errors. 
+While from the first experiments it seemed that the algorithm achieved a higher test error, we postulate that this may be due to the portion of misclassified inputs, rather than to the noise structure itself. Hence, fixing $p = 0.8$, we look for the value of $\sigma$ that achieves roughly the same portion of misclassified inputs ($20\%$). Figure~\ref{app/fig: sigmastar parabola} shows that this happens for $\sigma = 5.5$, and Figures~\ref{app/fig: parabola bernoulli} and~\ref{app/fig: parabola gauss} show that the two noise structures then yield essentially the same train and test errors. 
 
 \begin{figure}[h!]
   \centering
@@ -381,10 +31,10 @@ While from the first experiments it seemed that the algorithm achieved a higher 
   \end{minipage}
 \end{figure}
 
-\subsection{Data-generating function}\label{app/ sec: datagen}
-Our first choice of $h^*$ is a parabola centered horizontally at $5$, the midpoint of the support $\mathcal X$, and vertically so that roughly half of the points fall above the $x$-axis and half below. I.e.,
+\subsection{Data-Generating Function}\label{app/ sec: datagen}
+Our first choice of $f^*$ is a parabola centered horizontally at $5$, the midpoint of the support $\mathcal X$, and vertically so that roughly half of the points fall above the $x$-axis and half below. I.e.,
 \[
-h^*(x) = (x-5)^2 -6.25
+f^*(x) = (x-5)^2 -6.25
 \]
 
 \begin{figure}[h!]
@@ -398,9 +48,9 @@ Figure~\ref{app/fig: explore data parabola} shows the data generated with the ce
 
 Because in theory an algorithm could learn such a classification pattern as soon as it sees $3$ points (one point for each region), we investigate what happens when the underlying function is more complex. We study a sinusoid with varying frequency,
 \[
-    h^*(x) = 5\, \sin\left(\frac{\pi \,( m  +1)}{10}\, x\right)
+    f^*(x) = 5\, \sin\left(\frac{\pi \,( m  +1)}{10}\, x\right)
 \]
-We multiply the sine by $5$ to allow for enough height to properly inspect the data, while the argument of the sine is such that $m$ is the number of times $h^*$ crosses the $x$-axis in the open interval $(0,10)$, yielding $m+1$ contiguous blocks of $1s$ and $-1s$.
+We multiply the sine by $5$ to allow for enough height to properly inspect the data, while the argument of the sine is such that $m$ is the number of times $f^*$ crosses the $x$-axis in the open interval $(0,10)$, yielding $m+1$ contiguous blocks of $1s$ and $-1s$.
 
 \begin{figure}[h!]
   \centering
@@ -441,7 +91,7 @@ Figure~\ref{app/fig: explore data sine} shows the data generated with the sine f
 \end{figure}
 
 We explore how a random sample and the performance of the algorithm change for different sine frequencies. In particular, we expect that for a high frequency the algorithm will not learn, as our datasize is $n=50$.
-In Figures~\ref{app/fig: sine m10}--\ref{app/fig: sine m1000}, we test a function that osciallets $10, 100$, and $1000$ times with a noise level of $\sigma = 3$ (we reduce it compared to $\sigma = 5$, having increased the complexity of the function). We notice that for $m=1000$ the algorithm fails to learn, and the test error stays stable at $0.5$. This is because the labels change so frequently with respect to the number of points in the training dataset $n$ that it is as if we had random labels. Hence, we investigate the relation between the complexity of the underlying function $m$ and the data size $n$. We find that for $\frac{m}{n}>5$, roughly, the algorithm ceases to learn (Figure~\ref{app/fig: ratio sweep}). In the following experiments, we fix $m=10$ and $n=50$, which is very far from the threshold.
+In Figures~\ref{app/fig: sine m10}--\ref{app/fig: sine m1000}, we test a function that oscillates $10, 100$, and $1000$ times with a noise level of $\sigma = 3$ (we reduce it compared to $\sigma = 5$, having increased the complexity of the function). We notice that for $m=1000$ the algorithm fails to learn, and the test error stays stable at $0.5$. This is because the labels change so frequently with respect to the number of points in the training dataset $n$ that it is as if we had random labels. Hence, we investigate the relation between the complexity of the underlying function $m$ and the data size $n$. We find that for $\frac{m}{n}>5$, roughly, the algorithm ceases to learn (Figure~\ref{app/fig: ratio sweep}). In the following experiments, we fix $m=10$ and $n=50$, which is very far from the threshold.
 
 \begin{figure}[h!]
   \centering
@@ -479,72 +129,96 @@ We start with little noise, $\sigma = 1$, for which the Bayes risk is $\approx 0
 
 With our noise level, $\sigma = 3.5$, the Bayes risk is $\approx 0.20$ and $n = 1000$ training points are needed on average for the test error to get within $0.01$ of it, both at depth $2$ and $3$ (Figure~\ref{app/fig: simple function}). Hence, although two splits are enough to represent the function, with this amount of noise the algorithm needs many points to place them correctly.
 
-\newpage
-\section{Additional results}\label{app: add res}
 
-% \begin{fact}[The empirical risk is a biased estimate of the true risk for the ERM]\label{app: fact bias}
-% For any distribution $p$, any loss $\ell$ and any finite, nonempty $\hyp$,
-% \[
-% \expv\left[\hat R_D(\hat h_D)\right] \le \min_{h\in\hyp} R(h) \le \expv\left[R(\hat h_D)\right],
-% \]
-% and there exist $p$, $\ell$ and $\hyp$ for which the inequality is strict. Hence, in general, $\expv[\hat R_D(\hat h_D)]\neq\expv[R(\hat h_D)]$.
-% \end{fact}
-%
-% \begin{proof}
-% Fix any $h\in\hyp$. By definition of the ERM, $\hat R_D(\hat h_D)\le\hat R_D(h)$ for every realization of $D$. Taking expectations, and since $h$ does not depend on $D$ and the $(X_i,Y_i)$ are distributed as $(X,Y)$,
-% \[
-% \expv\left[\hat R_D(\hat h_D)\right] \le \expv\left[\hat R_D(h)\right] = \frac1n\sum_{i=1}^n\expv\left[\ell(h(X_i),Y_i)\right] = R(h).
-% \]
-% Since this holds for every $h\in\hyp$, and $\hyp$ is finite, $\expv[\hat R_D(\hat h_D)]\le\min_{h\in\hyp}R(h)$. Moreover, $\hat h_D\in\hyp$ for every realization of $D$, hence $\min_{h\in\hyp}R(h)\le R(\hat h_D)$ pointwise, and taking expectations gives the second inequality.
-%
-% For strictness, let $\X=\{\bar x_1\}$, $p_{1,1}=p_{1,-1}=\frac12$, $\ell$ the zero-one loss, $n=1$ and $\hyp=\{h_+,h_-\}$ with $h_+\equiv1$, $h_-\equiv-1$. Then $R(h_+)=R(h_-)=\frac12$, so $R(\hat h_D)=\frac12$ for every realization of $D$. On the other hand, $\hat h_D$ is the constant classifier equal to $Y_1$, so $\hat R_D(\hat h_D)=0$. Therefore
-% \[
-% \expv\left[\hat R_D(\hat h_D)\right]=0<\frac12=\expv\left[R(\hat h_D)\right].
-% \]
-% \end{proof}
-
-\begin{fact}[Bound on the Rademacher complexity of $\LL$]\label{app: fact rad half}
-Let $\ell$ take values in $[0,M]$ for some $M>0$. Then, for any distribution $p$, any $\hyp$ and any $n\ge1$,
-\[
-\mathcal R_n(\LL) \le \frac M2.
-\]
-In particular, if $\ell$ is the zero-one loss, $\mathcal R_n(\LL)\le\frac12$.
-\begin{proof}
-Fix a realization of $D$ and $\xi$, and let $I_+ = \{i : \xi_i = 1\}$. For every $\ell_h\in\LL$, since $0\le\ell_h(X_i,Y_i)\le M$,
-\[
-\frac1n\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i) = \frac1n\sum_{i\in I_+}\ell_h(X_i,Y_i) - \frac1n\sum_{i\notin I_+}\ell_h(X_i,Y_i) \le \frac1n\sum_{i\in I_+}\ell_h(X_i,Y_i) \le \frac{M\vert I_+\vert}{n}.
-\]
-The right-hand side does not depend on $h$, hence
-\[
-\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \xi_i\ell_h(X_i,Y_i) \le \frac Mn\sum_{i=1}^n \mathbf 1(\xi_i=1).
-\]
-Taking expectations over $\xi$ and $D$, and since $\Pr[\xi_i=1]=\frac12$,
-\[
-\mathcal R_n(\LL) \le \frac Mn\sum_{i=1}^n\Pr[\xi_i=1] = \frac M2.
-\]
-The zero-one loss takes values in $\{0,1\}$, so the second claim follows with $M=1$.
-\end{proof}
-\end{fact}
-
-\paragraph{\bf Plot of Theorem~\ref{thm: bound noiseandappr} without fit} Figure~\ref{app/fig: noise and appr nofit} shows the plot with the noise-sensitive bound derived in Theorem~\ref{thm: bound noiseandappr},
-  \begin{equation*}
-\begin{split}
-\min\Bigg\{ &4\sqrt{\frac{(R^*+A_{\hyp})\left(\log (4\card)+1\right)}{n}} + 20\,\frac{\log(4\card)+1}{n}, \\
-&4\sqrt{\frac{(R^*+A_{\hyp})\left((2n+2)\log 2+1\right)}{n}} + 20\,\frac{(2n+2)\log 2+1}{n} \Bigg\},
-\end{split}
-\end{equation*}
-for different noise levels and before fitting the constants in the function to our problem specification. As is evident, the curve is too high to provide a useful interpretation, reaching a value of $30$. 
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.8\textwidth]{outputs/appendix/app_nofit.png}
-    \caption{Noise and approximation error bound (Theorem~\ref{thm: bound noiseandappr}), before fitting constants}
-    \label{app/fig: noise and appr nofit}
-\end{figure}
+% \paragraph{\bf Plot of Theorem~\ref{thm: bound noiseandappr} without fit} Figure~\ref{app/fig: noise and appr nofit} shows the plot with the noise-sensitive bound derived in Theorem~\ref{thm: bound noiseandappr},
+%   \begin{equation*}
+% \begin{split}
+% \min\Bigg\{ &4\sqrt{\frac{(R^*+A_{\hyp})\left(\log (4\card)+1\right)}{n}} + 20\,\frac{\log(4\card)+1}{n}, \\
+% &4\sqrt{\frac{(R^*+A_{\hyp})\left((2n+2)\log 2+1\right)}{n}} + 20\,\frac{(2n+2)\log 2+1}{n} \Bigg\},
+% \end{split}
+% \end{equation*}
+% for different noise levels and before fitting the constants in the function to our problem specification. As is evident, the curve is too high to provide a useful interpretation, reaching a value of $30$. 
+% \begin{figure}[h!]
+%   \centering
+%     \includegraphics[width=0.8\textwidth]{outputs/appendix/app_nofit.png}
+%     \caption{Noise and approximation error bound (Theorem~\ref{thm: bound noiseandappr}), before fitting constants}
+%     \label{app/fig: noise and appr nofit}
+% \end{figure}
 
 \newpage
-\section{Code specifications}\label{app: code}
+\section{Details on the Experimental Design}\label{app: code}
 
-{\bf Computation of the best risk.} The algorithm is explained using one-based indexing for the sake of exposition, while the real code uses zero-based indexing as usual in Python. We produce $N$ noiseless labels for each input value in the support and we cluster the intervals over $\X$ where inputs have the same label. Let $L$ be the number of contiguous blocks we obtain. We create a \texttt{dp} matrix with dimension $k_{\max} \times 2$: in the columns, we have the labels $y_j \in\{1,-1\}$ for $j = 1,2$; in the rows, we have the number of leaves in the tree $k = 1,\ldots,k_{\max}$, with $k_{\max} = \min(2^{d_{\max}}, L)$ the maximum number of leaves and $d_{\max}$ the largest depth we consider overall (that is a multiple of $\lceil\log_2 n\rceil$ as mentioned in Section~\ref{sec: unionbound}). Note that the tree reproducing exactly the noiseless labels has $L$ leaves and has expected risk equal to $1-p$, the portion of corrupted labels, reaching the Bayes risk. Since the best risk is bounded from below by the Bayes risk, considering more than $L$ leaves cannot improve it. So, to avoid useless computations, we consider the minimum between $L$ and $2^{d_{\max}}$. Given the true labels for each of the $L$ blocks, it is easy to create also a \texttt{cost} matrix with dimension $L\times 2$, where \texttt{cost[i, j]} is the risk given by predicting  $y_j$ at block $i$. Let $y_i$ be the true label in block $i$ and $\rho_i$ the portion of inputs falling into block $i$. We have 
+\subsection{Hyperparameters}\label{app: hyper}
+
+Table~\ref{app/tab: hyperparameters} lists the hyperparameters used in all the experiments, unless stated otherwise. The noise level $\sigma$ is chosen so that the average flip probability $\frac{1}{N}\sum_{j}\Phi\left(-\vert f^*(\bar x_j)\vert/\sigma\right)$ equals the target percentage of flipped labels, where $\Phi$ is the cumulative distribution function of the standard Gaussian. See Appendix~\ref{app: constants} for the computation of the constants.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{lll}
+\toprule
+Parameter & Symbol & Value \\
+\midrule
+Support size & $N$ & $10^9$ \\
+Train size & $n$ & $500$ \\
+Test size & $n_\text{test}$ & $200,000$ \\
+Iterations & $T$ & $100$ \\
+Crossings of $f^*$ & $m$ & $10$ \\
+Noise & $\sigma$ & $\approx 3.5$, $20\%$ flipped labels \\
+Depths & $d$ & $1,\ldots,30$ \\
+Constant, union bound & $C_\text{union}$ & $6\cdot 10^{-4}$ \\
+Constant, Rademacher--Massart & $C_\text{radmass}$ & $0.125$ \\
+Constant, noise bound & $C_\text{noise}$ & $0.01$ \\
+Seed & & $4$ \\
+\bottomrule
+\end{tabular}
+\caption{Hyperparameters of the experiments.}\label{app/tab: hyperparameters}
+\end{table}
+
+\subsection{Fitting Constants}\label{app: constants}
+
+\paragraph{Union bound} We just rescale the bound so that it lies in the interval $[0,1]$. For $d$ large, $\log\vert\hyp_d\vert = N\log 2$. This means that the bound is $2 \sqrt{\frac{N\log 2}{2n}}$, hence we need
+\[
+C_\text{union}\cdot 2 \sqrt{\frac{N\log 2}{2n}} = 1
+\]
+Therefore we set
+\[ C_\text{union} = \frac{1}{2 \sqrt{\frac{10^9\log 2}{2\cdot 500}}} = \frac{1}{2 \sqrt{ 10^6\log 2 }} = \frac{1}{2\sqrt{\log 2}}10^{-3} \approx 0.0006
+\]
+
+
+\paragraph{Rademacher and Massart bound} Using the code \texttt{source/experiments.py}, we print the value of the generalization gap for the highest depth $d=30$, getting 
+\[
+0.2860 \pm 0.0121
+\]
+Therefore, to obtain that the curve of the Rademacher bound saturates at the same level, we need
+\[
+C_{\text{RadMass}}2\sqrt{2\log 2} = 0.286 \quad \Rightarrow \quad C_{\text{RadMass}} = \frac{0.286}{2\sqrt{2\log 2}} = 0.12145302 \approx 0.125
+\]
+which we round up for the bound to lie above the curve. 
+
+
+\paragraph{Noise bound} Similarly, we want the bound to saturate at the same level of the empirical gap curve. The saturating level of the bound, i.e.\ its value for a large depth, is 
+\[
+4\sqrt{R^*_{\hyp_d}M} + 20M \qquad \text{with }M = \frac{(2n+2)\log 2+1}{n}
+\]
+hence we set
+\[
+C_{\text{noise}} (4\sqrt{R^*_{\hyp_d}M} + 20M) = 0.286.
+\]
+We have 
+\[
+M = \frac{(1002)\log 2+1}{500} \approx 1.3910
+\]
+hence 
+\[
+(4\sqrt{R^*_{\hyp_d}M} + 20M) \approx 4 \sqrt{0.2\cdot 1.391} + 20\cdot 1.391 \approx 29.9298
+\]
+Thus,
+\[
+C_{\text{noise}} = 0.286 / 29.9298 \approx 0.01
+\]
+where we use $R^*_d = 0.2$ the Bayes risk, that is the value attained by the best risk for a large enough depth. 
+
+\subsection{Computation of the Best Risk}\label{app: bestrisk} The algorithm is explained using one-based indexing for the sake of exposition, while the real code uses zero-based indexing as usual in Python. We produce $N$ noiseless labels for each input value in the support and we cluster the intervals over $\X$ where inputs have the same label. Let $L$ be the number of contiguous blocks we obtain. We create a \texttt{dp} matrix with dimension $k_{\max} \times 2$: in the columns, we have the labels $y_j \in\{1,-1\}$ for $j = 1,2$; in the rows, we have the number of leaves in the tree $k = 1,\ldots,k_{\max}$, with $k_{\max} = \min(2^{d_{\max}}, L)$ the maximum number of leaves and $d_{\max}$ the largest depth we consider overall (that is $d_{\max}=30$, see Section~\ref{sec: unionbound}). Note that the tree reproducing exactly the noiseless labels has $L$ leaves and has expected risk equal to $1-p$, the portion of corrupted labels, reaching the Bayes risk. Since the best risk is bounded from below by the Bayes risk, considering more than $L$ leaves cannot improve it. So, to avoid useless computations, we consider the minimum between $L$ and $2^{d_{\max}}$. Given the true labels for each of the $L$ blocks, it is easy to create also a \texttt{cost} matrix with dimension $L\times 2$, where \texttt{cost[i, j]} is the risk given by predicting  $y_j$ at block $i$. Let $y_i$ be the true label in block $i$ and $\rho_i$ the portion of inputs falling into block $i$. We have 
 \[
 \texttt{cost[i,j]} = \begin{cases}
     \rho_i \cdot (1-p) & \text{if } y_i = y_j\\
@@ -556,7 +230,7 @@ We initialize the \texttt{dp} matrix setting all entries to $\infty$. For the fi
 \[
 \texttt{new[k,j]} = \min(\texttt{dp[k,j]}, \texttt{dp[k-1,3-j]}) + \texttt{cost[i,j]}
 \]
-Note that $3-j$ swaps the indices $1$ and $2$, i.e.\ it stays for $-y_j$. Also, this code holds for $k>1$, while for $k = 1$ the cost of switchiing is set to $\infty$, as it is not admissible. 
+Note that $3-j$ swaps the indices $1$ and $2$, i.e.\ it stands for $-y_j$. Also, this code holds for $k>1$, while for $k = 1$ the cost of switching is set to $\infty$, as it is not admissible. 
 After passing over all $2k_{\max}$ entries of \texttt{new}, we update $\texttt{dp = new}$ and pass to the next block $i+1$. The \texttt{dp} matrix will now contain the cumulative minimum risks for each possible label predicted in the last block $i$. Note that using an auxiliary matrix \texttt{new} is not strictly necessary, as we could update the \texttt{dp} matrix recursively, but using it eases understanding the logic. 
 In the end, after passing over the last contiguous block, we obtain a matrix with the minimum risk for each number of leaves and each label assigned to the last block. We create a $k_{\max}$-long list \texttt{exact\_k\_risk} with the minimum value for each $k$,
 \[
