@@ -1,5 +1,5 @@
 """
-Experiments of tex/final/tesi.pdf, Sections 2 to 4.
+Experiments of tex/tesi.pdf, Sections 2 to 4.
 
 Target function: sine with num_crossings crossings on [0, 10].
 Model: DecisionTreeClassifier with depths 1, ..., floor(4 log2 n).
@@ -17,7 +17,7 @@ from typing import Literal, Sequence
 
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.colors import LinearSegmentedColormap, to_rgb
 from scipy.optimize import brentq
 from scipy.special import gammaln, logsumexp
 from scipy.stats import binom, norm
@@ -54,17 +54,25 @@ CURVE_SYMBOLS = {
     "train_bound_radmass": r"$\mathcal{L}(d) + \mathcal{B}_{RadMass}$",
     "train_bound_noise": r"$\mathcal{L}(d) + \mathcal{B}_{Noise}$",
 }
-# colormap of each curve, one shade per noise level; train error + bound has the colormap of the bound
-CMAPS = {
-    "gap": "Blues",
-    "test_err": "Purples",
-    "train_err": "Reds",
-    "bound_union": "Greens",
-    # oranges ending in a bright red, to stand apart from the pinks of the noise bound
-    "bound_radmass": LinearSegmentedColormap.from_list(
-        "radmass", [(0, "#fff5eb"), (0.45, "#fdae6b"), (0.7, "#f16913"), (0.95, "#e8000b"), (1, "#b30000")]),
-    "bound_noise": "RdPu",
+# base color of each curve: train pink and test teal as in the appendix
+COLORS = {
+    "train_err": "#FF007F",
+    "test_err": "#00CED1",
+    "gap": "#1f6fbf",
+    "bound_union": "#7b3fbf",
+    "bound_radmass": "#d62728",
+    "bound_noise": "#2ca02c",
 }
+
+def shades_of(color):
+    """colormap from a light tint to a dark shade of the color, which sits at 0.6"""
+    r, g, b = to_rgb(color)
+    tint = (1 - 0.7 * (1 - r), 1 - 0.7 * (1 - g), 1 - 0.7 * (1 - b))
+    dark = (0.55 * r, 0.55 * g, 0.55 * b)
+    return LinearSegmentedColormap.from_list(color, [(0, tint), (0.6, color), (1, dark)])
+
+# colormap of each curve, one shade per noise level; train error + bound has the colormap of the bound
+CMAPS = {c: shades_of(col) for c, col in COLORS.items()}
 
 L, U = 0.0, 10.0
 # grid used to approximate averages over the uniform support of N points
@@ -235,7 +243,8 @@ def experiment(curves: Sequence[Curve] = ("gap", "bound_union"),
     needed = {c.removeprefix("train_") for c in curves}
     # one shade of the curve color per noise level, lighter = less noise
     ranks = np.argsort(np.argsort(noise_level))
-    shades = np.linspace(0.45, 0.95, len(noise_level)) if len(noise_level) > 1 else [0.75]
+    # a single noise level has the base color of the curve
+    shades = np.linspace(0.3, 0.9, len(noise_level)) if len(noise_level) > 1 else [0.6]
 
     fig, ax = plt.subplots(figsize=(10, 6))
     for level, rank in zip(noise_level, ranks):
@@ -327,10 +336,10 @@ def best_risk_decomposition(supp_size=1_000_000_000, noise_type: Literal["gaussi
         R_star = flip_prob(support_grid(N), f, noise_type, sigma=sigma, p=p).mean()
         print(f"noise {fmt_level(level)}: R* = {R_star:.4f}, R*_Hd at d = {depths[-1]}: {R_star_d[-1]:.4f}")
 
-        ax.plot(depths, R_star_d, color=plt.get_cmap("RdPu")(0.75), linewidth=2, marker="o", markersize=5,
+        ax.plot(depths, R_star_d, color="#e6850e", linewidth=2, marker="o", markersize=5,
                 label=r"$R^*_{\mathcal{H}_d}$", clip_on=False)
         ax.axhline(R_star, color="black", linestyle="--", linewidth=1.5, label=r"$R^*$")
-        ax.plot(depths, R_star_d - R_star, color=plt.get_cmap("Greys")(0.55), linewidth=2, marker="o",
+        ax.plot(depths, R_star_d - R_star, color="#6b6b6b", linewidth=2, marker="o",
                 markersize=5, label=r"$A_{\mathcal{H}_d} = R^*_{\mathcal{H}_d} - R^*$", clip_on=False)
         ax.set_title(f"Noise at {fmt_level(level)}", fontsize=14)
         ax.tick_params(labelsize=12)

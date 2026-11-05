@@ -1,0 +1,243 @@
+\newpage\section{Explorative Experiments}\label{app: prel exp}
+
+\subsection{Noise Structure}\label{app/ sec: noise}
+We generate the labels with a centered parabola (see Section~\ref{app/ sec: datagen}), so that roughly half of them are $1$ and half $-1$ in the interval $[0,10]$. Then, we inspect what happens if we use a Bernoullian noise instead of a Gaussian one, i.e. when data is generated as 
+\[
+y \leftarrow sign(f^*(x))b
+\]
+for $b\sim\mathrm{Bernoulli}(p)$. Notice that this noise flips the labels with a probability of $1-p$. 
+While from the first experiments it seemed that the algorithm achieved a higher test error, we postulate that this may be due to the portion of misclassified inputs, rather than to the noise structure itself. Hence, fixing $p = 0.8$, we look for the value of $\sigma$ that achieves roughly the same portion of misclassified inputs ($20\%$). Figure~\ref{app/fig: sigmastar parabola} shows that this happens for $\sigma = 5.5$, and Figures~\ref{app/fig: parabola bernoulli} and~\ref{app/fig: parabola gauss} show that the two noise structures then yield essentially the same train and test errors. 
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\textwidth]{outputs/appendix/app_sigmastar_parabola.png}
+  \caption{}
+  \label{app/fig: sigmastar parabola}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{outputs/appendix/app_parabola_bernoulli.png}
+    \caption{}
+    \label{app/fig: parabola bernoulli}
+  \end{minipage}\hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{outputs/appendix/app_parabola_gauss.png}
+    \caption{}
+    \label{app/fig: parabola gauss}
+  \end{minipage}
+\end{figure}
+
+\subsection{Data-Generating Function}\label{app/ sec: datagen}
+Our first choice of $f^*$ is a parabola centered horizontally at $5$, the midpoint of the support $\mathcal X$, and vertically so that roughly half of the points fall above the $x$-axis and half below. I.e.,
+\[
+f^*(x) = (x-5)^2 -6.25
+\]
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{outputs/appendix/app_explore_parabola.png}
+  \caption{}
+  \label{app/fig: explore data parabola}
+\end{figure}
+
+Figure~\ref{app/fig: explore data parabola} shows the data generated with the centered parabola, for different amounts of noise.
+
+Because in theory an algorithm could learn such a classification pattern as soon as it sees $3$ points (one point for each region), we investigate what happens when the underlying function is more complex. We study a sinusoid with varying frequency,
+\[
+    f^*(x) = 5\, \sin\left(\frac{\pi \,( m  +1)}{10}\, x\right)
+\]
+We multiply the sine by $5$ to allow for enough height to properly inspect the data, while the argument of the sine is such that $m$ is the number of times $f^*$ crosses the $x$-axis in the open interval $(0,10)$, yielding $m+1$ contiguous blocks of $1s$ and $-1s$.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{outputs/appendix/app_explore_sine.png}
+  \caption{}
+  \label{app/fig: explore data sine}
+\end{figure}
+
+Figure~\ref{app/fig: explore data sine} shows the data generated with the sine for $m=10$, for different amounts of noise.
+
+\begin{figure}[h!]
+  \centering
+  \begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{outputs/appendix/app_sine_m10.png}
+    \caption{}
+    \label{app/fig: sine m10}
+  \end{minipage}\hfill
+  \begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{outputs/appendix/app_sine_m100.png}
+    \caption{}
+    \label{app/fig: sine m100}
+  \end{minipage}\hfill
+  \begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{outputs/appendix/app_sine_m1000.png}
+    \caption{}
+    \label{app/fig: sine m1000}
+  \end{minipage}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\textwidth]{outputs/appendix/app_ratio_sweep.png}
+  \caption{}
+  \label{app/fig: ratio sweep}
+\end{figure}
+
+We explore how a random sample and the performance of the algorithm change for different sine frequencies. In particular, we expect that for a high frequency the algorithm will not learn, as our datasize is $n=50$.
+In Figures~\ref{app/fig: sine m10}--\ref{app/fig: sine m1000}, we test a function that oscillates $10, 100$, and $1000$ times with a noise level of $\sigma = 3$ (we reduce it compared to $\sigma = 5$, having increased the complexity of the function). We notice that for $m=1000$ the algorithm fails to learn, and the test error stays stable at $0.5$. This is because the labels change so frequently with respect to the number of points in the training dataset $n$ that it is as if we had random labels. Hence, we investigate the relation between the complexity of the underlying function $m$ and the data size $n$. We find that for $\frac{m}{n}>5$, roughly, the algorithm ceases to learn (Figure~\ref{app/fig: ratio sweep}). In the following experiments, we fix $m=10$ and $n=50$, which is very far from the threshold.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\textwidth]{outputs/appendix/app_misclassified_sine.png}
+  \caption{}
+  \label{app/fig: misclassified sine}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\textwidth]{outputs/appendix/app_sigmastar_sine.png}
+  \caption{}
+  \label{app/fig: sigmastar sine}
+\end{figure}
+
+We then verify whether a Gaussian noise with $\sigma = 5.5$ achieves the same portion of misclassified inputs on average as a Bernoullian noise with $p=0.8$, as was the case for data generated with a parabola. Figure~\ref{app/fig: misclassified sine} shows that this is not the case on average ($29\%$ against $20\%$), while Figure~\ref{app/fig: sigmastar sine} shows that the desired value is $\sigma = 3.5$.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\textwidth]{outputs/appendix/app_simple_function_sigma1.png}
+  \caption{}
+  \label{app/fig: simple function sigma1}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\textwidth]{outputs/appendix/app_simple_function.png}
+  \caption{}
+  \label{app/fig: simple function}
+\end{figure}
+
+Finally, we investigate the afore-mentioned intuition about how easy it is for the algorithm to learn a simple function. We take $m=2$ (which corresponds to a parabola, in terms of classification pattern), sample uniformly from $\X$, and look for the training set size $n$ for which the test error gets within $0.01$ of the Bayes risk on average, at depth $2$ and $3$.
+
+We start with little noise, $\sigma = 1$, for which the Bayes risk is $\approx 0.05$ (Figure~\ref{app/fig: simple function sigma1}). Here the algorithm learns the function quickly: with $n = 50$ points the test error is already $\approx 0.07$, within $0.02$ of the Bayes risk, and it gets within $0.01$ with $n = 200$ at depth $2$ and $n = 500$ at depth $3$.
+
+With our noise level, $\sigma = 3.5$, the Bayes risk is $\approx 0.20$ and $n = 1000$ training points are needed on average for the test error to get within $0.01$ of it, both at depth $2$ and $3$ (Figure~\ref{app/fig: simple function}). Hence, although two splits are enough to represent the function, with this amount of noise the algorithm needs many points to place them correctly.
+
+
+% \paragraph{\bf Plot of Theorem~\ref{thm: bound noiseandappr} without fit} Figure~\ref{app/fig: noise and appr nofit} shows the plot with the noise-sensitive bound derived in Theorem~\ref{thm: bound noiseandappr},
+%   \begin{equation*}
+% \begin{split}
+% \min\Bigg\{ &4\sqrt{\frac{(R^*+A_{\hyp})\left(\log (4\card)+1\right)}{n}} + 20\,\frac{\log(4\card)+1}{n}, \\
+% &4\sqrt{\frac{(R^*+A_{\hyp})\left((2n+2)\log 2+1\right)}{n}} + 20\,\frac{(2n+2)\log 2+1}{n} \Bigg\},
+% \end{split}
+% \end{equation*}
+% for different noise levels and before fitting the constants in the function to our problem specification. As is evident, the curve is too high to provide a useful interpretation, reaching a value of $30$. 
+% \begin{figure}[h!]
+%   \centering
+%     \includegraphics[width=0.8\textwidth]{outputs/appendix/app_nofit.png}
+%     \caption{Noise and approximation error bound (Theorem~\ref{thm: bound noiseandappr}), before fitting constants}
+%     \label{app/fig: noise and appr nofit}
+% \end{figure}
+
+\newpage
+\section{Details on the Experimental Design}\label{app: code}
+
+\subsection{Hyperparameters}\label{app: hyper}
+
+Table~\ref{app/tab: hyperparameters} lists the hyperparameters used in all the experiments, unless stated otherwise. The noise level $\sigma$ is chosen so that the average flip probability $\frac{1}{N}\sum_{j}\Phi\left(-\vert f^*(\bar x_j)\vert/\sigma\right)$ equals the target percentage of flipped labels, where $\Phi$ is the cumulative distribution function of the standard Gaussian. See Appendix~\ref{app: constants} for the computation of the constants.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{lll}
+\toprule
+Parameter & Symbol & Value \\
+\midrule
+Support size & $N$ & $10^9$ \\
+Train size & $n$ & $500$ \\
+Test size & $n_\text{test}$ & $200,000$ \\
+Iterations & $T$ & $100$ \\
+Crossings of $f^*$ & $m$ & $10$ \\
+Noise & $\sigma$ & $\approx 3.5$, $20\%$ flipped labels \\
+Depths & $d$ & $1,\ldots,30$ \\
+Constant, union bound & $C_\text{union}$ & $6\cdot 10^{-4}$ \\
+Constant, Rademacher--Massart & $C_\text{radmass}$ & $0.125$ \\
+Constant, noise bound & $C_\text{noise}$ & $0.01$ \\
+Seed & & $4$ \\
+\bottomrule
+\end{tabular}
+\caption{Hyperparameters of the experiments.}
+\end{table}
+
+\subsection{Fitting Constants}\label{app: constants}
+
+\paragraph{Union bound} We just rescale the bound so that it lies in the interval $[0,1]$. For $d$ large, $\log\vert\hyp_d\vert = N\log 2$. This means that the bound is $2 \sqrt{\frac{N\log 2}{2n}}$, hence we need
+\[
+C_\text{union}\cdot 2 \sqrt{\frac{N\log 2}{2n}} = 1
+\]
+Therefore we set
+\[ C_\text{union} = \frac{1}{2 \sqrt{\frac{10^9\log 2}{2\cdot 500}}} = \frac{1}{2 \sqrt{ 10^6\log 2 }} = \frac{1}{2\sqrt{\log 2}}10^{-3} \approx 0.0006
+\]
+
+
+\paragraph{Rademacher and Massart bound} Using the code \texttt{source/experiments.py}, we print the value of the generalization gap for the highest depth $d=30$, getting 
+\[
+0.2860 \pm 0.0121
+\]
+Therefore, to obtain that the curve of the Rademacher bound saturates at the same level, we need
+\[
+C_{\text{RadMass}}2\sqrt{2\log 2} = 0.286 \quad \Rightarrow \quad C_{\text{RadMass}} = \frac{0.286}{2\sqrt{2\log 2}} = 0.12145302 \approx 0.125
+\]
+which we round up for the bound to lie above the curve. 
+
+
+\paragraph{Noise bound} Similarly, we want the bound to saturate at the same level of the empirical gap curve. The saturating level of the bound, i.e.\ its value for a large depth, is 
+\[
+4\sqrt{R^*_{\hyp_d}M} + 20M \qquad \text{with }M = \frac{(2n+2)\log 2+1}{n}
+\]
+hence we set
+\[
+C_{\text{noise}} (4\sqrt{R^*_{\hyp_d}M} + 20M) = 0.286.
+\]
+We have 
+\[
+M = \frac{(1002)\log 2+1}{500} \approx 1.3910
+\]
+hence 
+\[
+(4\sqrt{R^*_{\hyp_d}M} + 20M) \approx 4 \sqrt{0.2\cdot 1.391} + 20\cdot 1.391 \approx 29.9298
+\]
+Thus,
+\[
+C_{\text{noise}} = 0.286 / 29.9298 \approx 0.01
+\]
+where we use $R^*_d = 0.2$ the Bayes risk, that is the value attained by the best risk for a large enough depth. 
+
+\subsection{Computation of the Best Risk}\label{app: bestrisk} The algorithm is explained using one-based indexing for the sake of exposition, while the real code uses zero-based indexing as usual in Python. We produce $N$ noiseless labels for each input value in the support and we cluster the intervals over $\X$ where inputs have the same label. Let $L$ be the number of contiguous blocks we obtain. We create a \texttt{dp} matrix with dimension $k_{\max} \times 2$: in the columns, we have the labels $y_j \in\{1,-1\}$ for $j = 1,2$; in the rows, we have the number of leaves in the tree $k = 1,\ldots,k_{\max}$, with $k_{\max} = \min(2^{d_{\max}}, L)$ the maximum number of leaves and $d_{\max}$ the largest depth we consider overall (that is $d_{\max}=30$, see Section~\ref{sec: unionbound}). Note that the tree reproducing exactly the noiseless labels has $L$ leaves and has expected risk equal to $1-p$, the portion of corrupted labels, reaching the Bayes risk. Since the best risk is bounded from below by the Bayes risk, considering more than $L$ leaves cannot improve it. So, to avoid useless computations, we consider the minimum between $L$ and $2^{d_{\max}}$. Given the true labels for each of the $L$ blocks, it is easy to create also a \texttt{cost} matrix with dimension $L\times 2$, where \texttt{cost[i, j]} is the risk given by predicting  $y_j$ at block $i$. Let $y_i$ be the true label in block $i$ and $\rho_i$ the portion of inputs falling into block $i$. We have 
+\[
+\texttt{cost[i,j]} = \begin{cases}
+    \rho_i \cdot (1-p) & \text{if } y_i = y_j\\
+    \rho_i \cdot p & \text{if } y_i \neq y_j
+\end{cases}
+\]
+
+We initialize the \texttt{dp} matrix setting all entries to $\infty$. For the first iteration over block $i=1$, we set \[\texttt{dp[1, :]} = \texttt{cost[1, :]}\] For each iteration $i=2,\ldots,L$ we dynamically update the \texttt{dp} matrix with minimum risks. Dynamically updating means that in \texttt{dp[k,j]} we store the cumulative minimum risk of having predicted label $y_j$ at the {\it previous\/} block $i-1$ with $k$ leaves, and we create a new $k_{\max}\times 2$ matrix called \texttt{new} such that in \texttt{new[k,j]} we store the minimum risk of predicting label $y_j$ at the current block $i$ with $k$ leaves. This minimum risk is computed as follows. Given that we predict $y_j$ at block $i$, we choose between the tree that has predicted label $y_j$ at block $i-1$ using $k$ leaves, i.e.\ that keeps the same label, and the tree that has predicted label $-y_j$ at block $i-1$ using $k-1$ leaves, i.e.\ that switches labels. These two values are stored in the \texttt{dp} matrix, as said. Then, we add the cost of predicting label $y_j$ in the current block $i$. This is summarized by the following line
+\[
+\texttt{new[k,j]} = \min(\texttt{dp[k,j]}, \texttt{dp[k-1,3-j]}) + \texttt{cost[i,j]}
+\]
+Note that $3-j$ swaps the indices $1$ and $2$, i.e.\ it stands for $-y_j$. Also, this code holds for $k>1$, while for $k = 1$ the cost of switching is set to $\infty$, as it is not admissible. 
+After passing over all $2k_{\max}$ entries of \texttt{new}, we update $\texttt{dp = new}$ and pass to the next block $i+1$. The \texttt{dp} matrix will now contain the cumulative minimum risks for each possible label predicted in the last block $i$. Note that using an auxiliary matrix \texttt{new} is not strictly necessary, as we could update the \texttt{dp} matrix recursively, but using it eases understanding the logic. 
+In the end, after passing over the last contiguous block, we obtain a matrix with the minimum risk for each number of leaves and each label assigned to the last block. We create a $k_{\max}$-long list \texttt{exact\_k\_risk} with the minimum value for each $k$,
+\[
+\texttt{exact\_k\_risk[k]} = \min_{j \in\{1,2\}} \texttt{dp[k,j]}
+\]
+Then, we create another $k_{\max}$-long list \texttt{at\_most\_k\_risk} that stores the cumulative minimum for each possible {\it maximum} number of leaves, 
+\[
+\texttt{at\_most\_k\_risk[k]} = \min_{r \in[1,k]} \texttt{exact\_k\_risk[r]}
+\]
+Thus, the $k$-th entry of \texttt{at\_most\_k\_risk} contains the best risk allowing at most $k$ leaves. Finally, for each depth $d$ we set $k_d = \min(2^d, L)$ and select the $k_d$-th entry in \texttt{at\_most\_k\_risk}, yielding the best risk among trees with maximum depth $d$.
