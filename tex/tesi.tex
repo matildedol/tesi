@@ -128,8 +128,8 @@ from which
 \]
 A bound on the gap is a bound on the true risk when $\mathcal L(d)$ is $0$ or negligible. For visualization purposes, we obtain the curves $\mathcal B(d)$ by heuristically rescaling the bounds stated in the theorems to make them comparable in magnitude to the empirical curves. This reflects our focus on the qualitative dependence of the bounds on $d$, rather than on their numerical values.
 
-The following sections are organized as follows. Section~\ref{sec: prel} provides some preliminary results used throughout. In Sections~\ref{sec: unionbound} to~\ref{sec: bestrisk}, we present theoretical results, describe the experimental design and plot empirical curves and qualitative bounds, and then comment on the results. Finally, in Section~\ref{sec: concl} we conclude and discuss limitations and potential developments of our analysis. 
-Appendix~\ref{app: prel exp} and~\ref{app: code} contain some preliminary experiments and additional details on the experimental design, respectively.
+The rest of this work is organized as follows. Section~\ref{sec: prel} provides some preliminary results used throughout. In Sections~\ref{sec: unionbound} to~\ref{sec: bestrisk}, we present theoretical results, describe the experimental design and plot empirical curves and qualitative bounds, and then comment on the results. Finally, in Section~\ref{sec: concl} we conclude and discuss limitations and potential developments of our analysis. 
+Appendices~\ref{app: prel exp} and~\ref{app: code} contain some preliminary experiments and additional details on the experimental design, respectively.
 
 The code is available at \href{https://github.com/matildedol/tesi}{https://github.com/matildedol/tesi}.
 
@@ -148,7 +148,7 @@ The following is a fundamental result on the moment generating function of a ran
 \end{theorem}
 The reference states it for $Z\in[a',b']$ with bound $e^{t^2(b'-a')^2/8}$; here $[a',b']=[-a,a]$. See also \cite{hoeffding1963probability}.
 
-The following theorems are established concentration inequalities, i.e.\ upper bounds on the deviation of a random variable from its expected value. While Hoeffding's mainly uses the bounded interval over which the random variable ranges, Bernstein's and Chebyshev's are more refined results using its second moment. 
+The following theorems are established concentration inequalities, i.e.\ upper bounds on the deviation of a random variable from its expected value. While Hoeffding's inequality mainly uses the bounded interval over which the random variable ranges, Bernstein's and Chebyshev's are more refined results using its second moment. 
 
 \begin{theorem}[Hoeffding's inequality]\label{app: hoeffding} [\cite{hoeffding1963probability}, Theorem 2], [\cite{boucheron2013concentration}, Theorem 2.8]
   Let $Z_1,\ldots,Z_n$ be independent real-valued random variables with $Z_i\in[a_i,b_i]$ almost surely for some $a_i,b_i\in\R$, and let $\mu = \frac1n\sum_{i=1}^n \expv[Z_i]$. Then, for every $\varepsilon>0$,
@@ -374,7 +374,7 @@ Note that while the upper bound is valid for any hypothesis $h\in\hyp$, the lowe
 
 {\bf Experimental design}
 
-\paragraph{Data-generating process} We create the support $\mathcal X$ as a discretization over $N= 10^9$ evenly spaced numbers of the open interval $(0,10)$. We set $N$ large enough so that it resembles the infinite-dimensional case. Then, we sample from $\X$ with the uniform measure $p_\X(\bar x) = \sum_{\bar y\in \Y}p(\bar x, \bar y) = \frac{1}{N}$. 
+\paragraph{Data-generating process} We create the support $\mathcal X$ as a discretization of the open interval $(0,10)$ into $N= 10^9$ evenly spaced points. We set $N$ large enough so that it resembles the continuous case. Then, we sample from $\X$ with the uniform measure $p_\X(\bar x) = \sum_{\bar y\in \Y}p(\bar x, \bar y) = \frac{1}{N}$. 
 The law to generate the labels is
 \[
 y \leftarrow \sgn(f^*(x) + \sigma\varepsilon)
@@ -421,7 +421,7 @@ Note that for $2^d > N$,
 \[
 \vert \hyp_d\vert = 2 \sum_{j = 0}^{ N-1}\binom{N-1}{j} = 2^N
 \]
-attaining the upper bound given in Fact~\ref{fact: upp b card}. For $2^d \ll N$, instead, Stirling approximation gives
+attaining the upper bound given in Fact~\ref{fact: upp b card}. For $2^d \ll N$, instead, Stirling's approximation gives
 \[
 \log \vert\hyp_d\vert \approx (2^d -1) \log\frac{eN}{2^d}.
 \]
@@ -460,9 +460,9 @@ We observe that both the test and train error saturate, and that the train error
   \caption{}\label{fig: union bound train}
 \end{figure}
 
-We plot the Union bound~(\ref{eq: union bound}) against empirical curves in Figure~\ref{fig: union bound gap} and~\ref{fig: union bound train} together with the empirical generalization gap $\mathcal G(d)$. The first thing catching the eye is that while the generalization gap saturates from depth $20$, the union bound increases exponentially in $d$ until depth $29$. The saturating depth is only determined by $N$ and is given by roughly $\log_2 N$. 
+We plot the Union bound~(\ref{eq: union bound}) against empirical curves in Figures~\ref{fig: union bound gap} and~\ref{fig: union bound train} together with the empirical generalization gap $\mathcal G(d)$. The first thing catching the eye is that while the generalization gap saturates from depth $20$, the union bound increases exponentially in $d$ until depth $29$. The saturating depth is only determined by $N$ and is given by roughly $\log_2 N$. 
 This is shown by equation~(\ref{eq: log Hd}) or Fact~\ref{fact: upp b card}, combined with the fact that the Union bound depends on $d$ only through $\vert\hyp_d\vert$. 
-Note, however, that we can choose $N$ arbitrarily large, and we use $N<\infty$ only for practical reasons. Therefore, the bound diverges until an arbitrarily large depth. 
+Note, however, that we can choose $N$ arbitrarily large, and we use $N<\infty$ only for practical reasons. Therefore, the bound keeps increasing up to an arbitrarily large depth. 
 
 The train and test error of binary decision trees saturate because of a specific characteristic of the algorithm. As soon as the learned tree has only ``pure'' leaves, i.e.\ leaves containing only inputs that have the same label in the training set, the algorithm ceases to split them and hence any additional allowed depth does not change the learned model. Clearly, the cardinality of the hypothesis classes $\vert\hyp_d\vert$ does not capture this property. 
 
@@ -501,7 +501,7 @@ where the expectation is taken over the disorder of $\xi$ and $D$.
 \end{definition}
 
 Note that in this second definition we also take the expectation over the disorder of the data $D$, because our sample $(X_1,Y_1),\ldots,(X_n,Y_n)$ is random and our quantity of interest~(\ref{eq: gen gap}) is independent of the data realization. 
-In this case, the argument of the supremum is the scaled inner product between the Rademacher vectors $(\xi_1,\ldots,\xi_n)$ and the loss vectors $(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n))$. Since the loss function is fixed, it measures to what extent classifiers $h\in\hyp$ can align to random noise. Note that the supremum is taken before the expectation over the disorder of $\xi$ and $D$, and that it is a maximum, since $\LL$ is finite. Hence, for each dataset and for each realization of the Rademacher vectors, we can choose a different function $\ell_h \in\LL$ that attains the maximum. A high complexity means that for most values of $\xi$ we can find a model $h$ that is similar to that pattern. It is the highest when we can find a function that correlates with any possible pattern.
+In this case, the argument of the supremum is the scaled inner product between the Rademacher vectors $(\xi_1,\ldots,\xi_n)$ and the loss vectors $(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n))$. Since the loss function is fixed, it measures to what extent classifiers $h\in\hyp$ can align to random noise. Note that the supremum is taken before the expectation over the disorder of $\xi$ and $D$, and that it is a maximum, since $\LL$ is finite. Hence, for each dataset and for each realization of the Rademacher vectors, we can choose a different function $\ell_h \in\LL$ that attains the maximum. A high complexity means that for most values of $\xi$ we can find a model $h$ that is similar to that pattern. It is highest when we can find a function that correlates with any possible pattern.
 
 The following results hold. 
 
@@ -532,7 +532,7 @@ Since the supremum of expectations is at most the expectation of the supremum, a
 \begin{equation}\label{app/eq: sym step1}
 \expv\left[\sup_{\ell_h\in\LL}(R-\hat R_D)(h)\right] \le \expv\left[\sup_{\ell_h\in\LL}\frac1n\sum_{i=1}^n \left(\ell_h(Z_i')-\ell_h(Z_i)\right)\right].
 \end{equation}
-Now we apply the symmetrization trick. Let $\hyp = \{h_1,\ldots,h_m\}$, with $m = \card$. Since $Z_i$ and $Z_i'$ are i.i.d. for each $i=1,\ldots,n$, swapping them does not change the joint distribution, i.e.
+Now we apply the symmetrization trick. Let $\hyp = \{h_1,\ldots,h_m\}$, with $m = \card$. Since $Z_i$ and $Z_i'$ are i.i.d.\ for each $i=1,\ldots,n$, swapping them does not change the joint distribution, i.e.
 \[
 \left(\ell_{h_j}(Z_i')-\ell_{h_j}(Z_i)\right)_{j=1}^m \overset{d}{=} \left(\ell_{h_j}(Z_i)-\ell_{h_j}(Z_i')\right)_{j=1}^m.
 \]
@@ -651,7 +651,7 @@ Note that Lemma~\ref{lemma: massart} and Theorem~\ref{thm: unionbound} provide b
   We have $\vert\LL\vert \le \card$ by definition of $\LL$. Moreover, if $\ell$ is the zero-one loss, the inequality is an equality, as $\ell_h$ determines $h$. 
 \end{fact}
 
-Thus, for the zero-one loss, Theorem~\ref{thm: rad bound} and Lemma~\ref{lemma: massart} yield the same generalization bound as Theorem~\ref{thm: unionbound}, up to constants. Now, we introduce a technology that allows us to take a step forward and improve this result. 
+Thus, for the zero-one loss, Theorem~\ref{thm: rad bound} and Lemma~\ref{lemma: massart} yield the same generalization bound as Theorem~\ref{thm: unionbound}, up to constants. Now, we introduce a tool that allows us to take a step forward and improve this result. 
 
 Let \[\LL(D) \coloneq \left\{\left(\ell_h(X_1,Y_1),\ldots,\ell_h(X_n,Y_n)\right): h \in \hyp, D = {((X_i, Y_i))}_{i=1}^n \right\}\] be the set of loss vectors for a random dataset $D$, i.e.\ the set containing the functions in $\LL$ applied to $D$. Let $v_i = \ell_h(X_i,Y_i)$ to ease notation. 
 
@@ -696,7 +696,7 @@ The rest of the proof follows exactly as Proof of Lemma~\ref{lemma: massart}, re
 So, using the Rademacher complexity as an intermediate step allows us to replace the number of predictors $\card$ from Theorem~\ref{thm: unionbound} with the expected number of loss vectors $N_D(\hyp)$ (up to constants). 
 In fact, Theorem~\ref{thm: rad bound} bounds a quantity that depends on the true expected value of $\ell_h(X,Y)$ with a quantity that can be computed on loss vectors. The key ingredient that allows this is a symmetrization technique, which consists in replacing the deviation of the random variable $\ell_h(X,Y)$ from its expected value with the difference between two random variables $\ell_h(X,Y)$ and $\ell_h(X',Y')$ taking two i.i.d.\ copies $D$ and $D'$ as inputs. Note that since the loss function is fixed, counting loss vectors is equivalent to counting classification vectors. We work with loss vectors here because they arise more naturally from the Rademacher complexity, and turn to classification vectors in Section~\ref{sec: growthf}. 
 
-The following result encloses the key point of the saturation mechanism discussed at the end of Section~\ref{sec: unionbound}. 
+The following result contains the key point of the saturation mechanism discussed at the end of Section~\ref{sec: unionbound}. 
 
 \begin{lemma}[Counting]\label{lemma: counting} Let $\ell$ be the zero-one loss. Then
 \[
@@ -852,19 +852,19 @@ The plots in Figures~\ref{fig: gap many noise} and~\ref{fig: test many noise} sh
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.9\textwidth]{outputs/gap_many_noise.png} 
+  \includegraphics[width=0.88\textwidth]{outputs/gap_many_noise.png} 
   \caption{}\label{fig: gap many noise}
 \end{figure}
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.9\textwidth]{outputs/test_many_noise.png} 
+  \includegraphics[width=0.88\textwidth]{outputs/test_many_noise.png} 
   \caption{}\label{fig: test many noise}
 \end{figure}
 
 As noise increases, the test error curve tends to flatten at $0.5$, the error corresponding to guessing perfectly random labels. As a consequence, also the generalization gap $\mathcal G(d) = \mathcal T(d) - \mathcal L(d)$ changes for different values of noise, as seen in Figure~\ref{fig: gap many noise}. Therefore, we would like our bound $\mathcal G(d) \lesssim \mathcal B(d)$ to similarly change for different levels of noise.
 
-Figure~\ref{fig: radmass many noise} shows that the bound obtained in the previous section ($\mathcal B_{RadMass}$, equation~(\ref{eq: radmass bound})) fails to capture the sensitivity of the generalization gap to noise. Indeed, the red, orange, and yellow curves coincide and the plot shows only one of them, because the function does not change with different noise levels. 
+Figure~\ref{fig: radmass many noise} shows that the bound obtained in the previous section ($\mathcal B_{RadMass}$, equation~(\ref{eq: radmass bound})) fails to capture the sensitivity of the generalization gap to noise. Indeed, the orange, red, and bordeaux curves coincide and the plot shows only one of them, because the function does not change with different noise levels. 
 
 \begin{figure}[h!]
   \centering
@@ -1163,7 +1163,7 @@ with $C_{Noise} = 0.01$ so that the curve is of the same scale as the generaliza
   \caption{}\label{fig: noise bound many noise}
 \end{figure}
 
-Figure~\ref{fig: noise bound} shows the Noise bound $\mathcal B_{Noise}$ from equation~(\ref{eq: noise bound}) against the empirical curve of the generalization gap. The curve is similar to that of the Rademacher-Massart bound (Figure~\ref{fig: radmass}), with the bound generally increasing at smaller depths before reaching a plateau. Hence, the Noise bound also captures the saturation of the gap, as expected thanks to the counting lemma. Moreover, Figure~\ref{fig: noise bound many noise} shows that the bound moves for different levels of the noise, capturing the sensitivity of the empirical error that we have seen at the beginning of this section. The saturating value is higher for higher levels of noise, as happens to the generalization gap. At the same time, the change in the theoretical curve is way smaller compared to the empirical one, which constitutes a limitation to the descriptive power of this curve.
+Figure~\ref{fig: noise bound} shows the Noise bound $\mathcal B_{Noise}$ from equation~(\ref{eq: noise bound}) against the empirical curve of the generalization gap. The curve is similar to that of the Rademacher-Massart bound (Figure~\ref{fig: radmass}), with the bound generally increasing at smaller depths before reaching a plateau. Hence, the Noise bound also captures the saturation of the gap, as expected thanks to the counting lemma. Moreover, Figure~\ref{fig: noise bound many noise} shows that the bound moves for different levels of the noise, capturing the sensitivity of the empirical error that we have seen at the beginning of this section. The saturating value is higher for higher levels of noise, as happens to the generalization gap. At the same time, the change in the theoretical curve is much smaller than the empirical one, which constitutes a limitation to the descriptive power of this curve.
  
 \begin{figure}[h!]
   \centering
@@ -1171,7 +1171,7 @@ Figure~\ref{fig: noise bound} shows the Noise bound $\mathcal B_{Noise}$ from eq
   \caption{}\label{fig: best risk many noise}
 \end{figure}
 
- Finally, we aim at obtaining a better understanding of this curve. The Noise bound changes with the noise because it is a function of the best risk $R^*_\hyp$. Figure~\ref{fig: best risk many noise} allows us to investigate how $R^*_\hyp$ is affected by different noise levels (pink line). Let $d_c$ be the depth at which the best risk saturates, which is the same in the three graphs. We make two observations:
+ Finally, we aim at obtaining a better understanding of this curve. The Noise bound changes with the noise because it is a function of the best risk $R^*_\hyp$. Figure~\ref{fig: best risk many noise} allows us to investigate how $R^*_\hyp$ is affected by different noise levels (ochre line). Let $d_c$ be the depth at which the best risk saturates, which is the same in the three graphs. We make two observations:
 \begin{enumerate}
     \item[(1)] for $d< d_c$, the best risk decreases faster with less noise;
     \item[(2)] for $d\ge d_c$, the best risk saturates and the saturating level is lower with less noise. 
@@ -1182,12 +1182,12 @@ The second observation is directly determined by the irreducible noise in the da
 \newpage
 \section{Conclusions}\label{sec: concl}
 
-This work has inquired and qualitatively validated with experiments classical generalization bounds for decision trees. We have started from a bound using Hoeffding's inequality and a union bound over the hypotheses set, which did not capture the saturation of the empirical error curve. Then, we have taken into account that measuring the complexity of the class of functions that decision trees can learn after they have seen the data is more representative of how the algorithm works in practice. By including this in our analysis via Lemma~\ref{lemma: growth}, we have obtained a saturating bound. Finally, 
-we have noticed that the generalization performance of decision trees is affected by the level of noise in the data. Thus, using more refined concentration inequalities, we have obtained a bound that is a function of the lowest risk that a decision tree can attain, that depends on the noise through the Bayes risk. This, combined with the result on the actual complexity of the hypotheses space, has given a bound that saturates and that is sensitive to the noise. 
+This work has inquired into and qualitatively validated with experiments classical generalization bounds for decision trees. We have started from a bound using Hoeffding's inequality and a union bound over the hypotheses set, which did not capture the saturation of the empirical error curve. Then, we have taken into account that measuring the complexity of the class of functions that decision trees can learn after they have seen the data is more representative of how the algorithm works in practice. By including this in our analysis via Lemma~\ref{lemma: growth}, we have obtained a saturating bound. Finally, 
+we have noticed that the generalization performance of decision trees is affected by the level of noise in the data. Thus, using more refined concentration inequalities, we have obtained a bound that is a function of the lowest risk that a decision tree can attain, which depends on the noise through the Bayes risk. This, combined with the result on the actual complexity of the hypotheses space, has given a bound that saturates and that is sensitive to the noise. 
 
-The main limitation of this thesis is the lack of an analysis of the difference between the selected model that we consider for theoretical results, i.e.\ the Empirical Risk Minimizer, and the model learned in practice by the DecisionTreeClassifier algorithm. In fact, this is a greedy algorithm that does not always select the best possible model. Among the results we derived, only the lower bound in Theorem~\ref{thm: unionbound} and the results from Theorem~\ref{thm: bound emprisk} onwards are specific to the ERM. Analyzing more in depth this criticality might be a direction for future work. 
+The main limitation of this thesis is the lack of an analysis of the difference between the selected model that we consider for theoretical results, i.e.\ the Empirical Risk Minimizer, and the model learned in practice by the DecisionTreeClassifier algorithm. In fact, this is a greedy algorithm that does not always select the best possible model. Among the results we derived, only the lower bound in Theorem~\ref{thm: unionbound} and the results from Theorem~\ref{thm: bound emprisk} onwards are specific to the ERM. Analyzing this issue in more depth might be a direction for future work. 
 
-Secondly, although we obtain a bound that saturates and is noise-sensitive, there is clearly space for improving this study and obtaining functions that capture the qualitative behavior of the generalization gap also under other aspects. In this regard, we believe that a promising direction is to study the qualitative descriptive power of bounds based on a {\it localized\/} version of the Rademacher complexity, proposed by~\cite{Bartlett_2005}. Another potential development is to consider other measures of complexity of the hypothesis class, not necessarily based on the maximum depth. 
+Besides this, although we obtain a bound that saturates and is noise-sensitive, there is clearly room for improving this study and obtaining functions that capture the qualitative behavior of the generalization gap also under other aspects. In this regard, we believe that a promising direction is to study the qualitative descriptive power of bounds based on a {\it localized\/} version of the Rademacher complexity, proposed by~\cite{Bartlett_2005}. Another potential development is to consider other measures of complexity of the hypothesis class, not necessarily based on the maximum depth. 
 
 Finally, we hope that the framework and approach proposed in this work might be applied to other algorithms in the future. Specifically, a natural next step would be Random Fourier Features, while we propose neural networks trained with Stochastic Gradient Descent as a more ambitious one. 
 

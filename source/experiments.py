@@ -61,7 +61,7 @@ PALETTES = {
     "gap": ["#6FD8FF", "#32CFFF", "#2B8EE8"],           # azure shades, close to each other
     "bound_union": ["#7FA8FF", "#1F4FD8", "#0B1F7A"],   # blue
     "bound_radmass": ["#FF9A1F", "#F00020", "#A0092A"], # orange, bright red, bordeaux
-    "bound_noise": ["#F2B600", "#FF8C00", "#E02020"],   # dark yellow, orange, red
+    "bound_noise": ["#A3E67A", "#2ECC40", "#14672A"],   # light green, vivid green, dark green
 }
 CMAPS = {c: LinearSegmentedColormap.from_list(c, cols) for c, cols in PALETTES.items()}
 

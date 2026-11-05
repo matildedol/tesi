@@ -1,7 +1,7 @@
 \newpage\section{Explorative Experiments}\label{app: prel exp}
 
 \subsection{Noise Structure}\label{app/ sec: noise}
-We generate the labels with a centered parabola (see Section~\ref{app/ sec: datagen}), so that roughly half of them are $1$ and half $-1$ in the interval $[0,10]$. Then, we inspect what happens if we use a Bernoullian noise instead of a Gaussian one, i.e. when data is generated as 
+We generate the labels with a centered parabola (see Section~\ref{app/ sec: datagen}), so that roughly half of them are $1$ and half $-1$ in the interval $[0,10]$. Then, we inspect what happens if we use a Bernoullian noise instead of a Gaussian one, i.e.\ when data is generated as 
 \[
 y \leftarrow sign(f^*(x))b
 \]
@@ -123,7 +123,7 @@ We then verify whether a Gaussian noise with $\sigma = 6$ achieves the same port
   \label{app/fig: simple function}
 \end{figure}
 
-Finally, we investigate the afore-mentioned intuition about how easy it is for the algorithm to learn a simple function. We take $m=2$ (which corresponds to a parabola, in terms of classification pattern), sample uniformly from $\X$, and look for the training set size $n$ for which the test error gets within $0.01$ of the Bayes risk on average, at depth $2$ and $3$.
+Finally, we investigate the aforementioned intuition about how easy it is for the algorithm to learn a simple function. We take $m=2$ (which corresponds to a parabola, in terms of classification pattern), sample uniformly from $\X$, and look for the training set size $n$ for which the test error gets within $0.01$ of the Bayes risk on average, at depth $2$ and $3$.
 
 We start with little noise, $\sigma = 1$, for which the Bayes risk is $\approx 0.05$ (Figure~\ref{app/fig: simple function sigma1}). Here the algorithm learns the function quickly: with $n = 50$ points the test error is already $\approx 0.07$, within $0.02$ of the Bayes risk, and it gets within $0.01$ with $n = 500$ at both depth $2$ and $3$.
 
