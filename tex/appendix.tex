@@ -6,7 +6,7 @@ We generate the labels with a centered parabola (see Section~\ref{app/ sec: data
 y \leftarrow sign(f^*(x))b
 \]
 for $b\sim\mathrm{Bernoulli}(p)$. Notice that this noise flips the labels with a probability of $1-p$. 
-While from the first experiments it seemed that the algorithm achieved a higher test error, we postulate that this may be due to the portion of misclassified inputs, rather than to the noise structure itself. Hence, fixing $p = 0.8$, we look for the value of $\sigma$ that achieves roughly the same portion of misclassified inputs ($20\%$). Figure~\ref{app/fig: sigmastar parabola} shows that this happens for $\sigma = 5.5$, and Figures~\ref{app/fig: parabola bernoulli} and~\ref{app/fig: parabola gauss} show that the two noise structures then yield essentially the same train and test errors. 
+While from the first experiments it seemed that the algorithm achieved a higher test error, we postulate that this may be due to the portion of misclassified inputs, rather than to the noise structure itself. Hence, fixing $p = 0.8$, we look for the value of $\sigma$ that achieves roughly the same portion of misclassified inputs ($20\%$). Figure~\ref{app/fig: sigmastar parabola} shows that this happens for $\sigma = 6$, and Figures~\ref{app/fig: parabola bernoulli} and~\ref{app/fig: parabola gauss} show that the two noise structures then yield essentially the same train and test errors. 
 
 \begin{figure}[h!]
   \centering
@@ -107,7 +107,7 @@ In Figures~\ref{app/fig: sine m10}--\ref{app/fig: sine m1000}, we test a functio
   \label{app/fig: sigmastar sine}
 \end{figure}
 
-We then verify whether a Gaussian noise with $\sigma = 5.5$ achieves the same portion of misclassified inputs on average as a Bernoullian noise with $p=0.8$, as was the case for data generated with a parabola. Figure~\ref{app/fig: misclassified sine} shows that this is not the case on average ($29\%$ against $20\%$), while Figure~\ref{app/fig: sigmastar sine} shows that the desired value is $\sigma = 3.5$.
+We then verify whether a Gaussian noise with $\sigma = 6$ achieves the same portion of misclassified inputs on average as a Bernoullian noise with $p=0.8$, as was the case for data generated with a parabola. Figure~\ref{app/fig: misclassified sine} shows that this is not the case on average ($31\%$ against $20\%$), while Figure~\ref{app/fig: sigmastar sine} shows that the desired value is $\sigma = 3.5$.
 
 \begin{figure}[h!]
   \centering
@@ -125,9 +125,9 @@ We then verify whether a Gaussian noise with $\sigma = 5.5$ achieves the same po
 
 Finally, we investigate the afore-mentioned intuition about how easy it is for the algorithm to learn a simple function. We take $m=2$ (which corresponds to a parabola, in terms of classification pattern), sample uniformly from $\X$, and look for the training set size $n$ for which the test error gets within $0.01$ of the Bayes risk on average, at depth $2$ and $3$.
 
-We start with little noise, $\sigma = 1$, for which the Bayes risk is $\approx 0.05$ (Figure~\ref{app/fig: simple function sigma1}). Here the algorithm learns the function quickly: with $n = 50$ points the test error is already $\approx 0.07$, within $0.02$ of the Bayes risk, and it gets within $0.01$ with $n = 200$ at depth $2$ and $n = 500$ at depth $3$.
+We start with little noise, $\sigma = 1$, for which the Bayes risk is $\approx 0.05$ (Figure~\ref{app/fig: simple function sigma1}). Here the algorithm learns the function quickly: with $n = 50$ points the test error is already $\approx 0.07$, within $0.02$ of the Bayes risk, and it gets within $0.01$ with $n = 500$ at both depth $2$ and $3$.
 
-With our noise level, $\sigma = 3.5$, the Bayes risk is $\approx 0.20$ and $n = 1000$ training points are needed on average for the test error to get within $0.01$ of it, both at depth $2$ and $3$ (Figure~\ref{app/fig: simple function}). Hence, although two splits are enough to represent the function, with this amount of noise the algorithm needs many points to place them correctly.
+With our noise level, $\sigma = 3.5$, the Bayes risk is $\approx 0.20$ and $n = 1000$ training points at depth $2$ and $n = 2000$ at depth $3$ are needed on average for the test error to get within $0.01$ of it (Figure~\ref{app/fig: simple function}). Hence, although two splits are enough to represent the function, with this amount of noise the algorithm needs many points to place them correctly.
 
 
 % \paragraph{\bf Plot of Theorem~\ref{thm: bound noiseandappr} without fit} Figure~\ref{app/fig: noise and appr nofit} shows the plot with the noise-sensitive bound derived in Theorem~\ref{thm: bound noiseandappr},
@@ -171,7 +171,7 @@ Constant, noise bound & $C_\text{noise}$ & $0.01$ \\
 Seed & & $4$ \\
 \bottomrule
 \end{tabular}
-\caption{Hyperparameters of the experiments.}
+\caption{Hyperparameters of the experiments.}\label{app/tab: hyperparameters}
 \end{table}
 
 \subsection{Fitting Constants}\label{app: constants}
